@@ -52,6 +52,7 @@
         </template>
       </el-table-column>
       <el-table-column label="反馈人名称" align="center" prop="userName" />
+      <el-table-column label="反馈时间" align="center" prop="createTime"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -104,9 +105,9 @@
       </div>
     </el-dialog>
 
-    <el-image-viewer 
-      v-if="showViewer" 
-      :on-close="closeViewer" 
+    <el-image-viewer
+      v-if="showViewer"
+      :on-close="closeViewer"
       :url-list="[bigImg]" />
   </div>
 </template>
@@ -149,7 +150,7 @@ export default {
       // 表单校验
       rules: {
       },
-      
+
       showViewer:false,
       bigImg:''
     };

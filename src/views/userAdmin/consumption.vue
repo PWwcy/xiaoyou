@@ -6,7 +6,6 @@
           <el-option label="充值" value="0" />
           <el-option label="游戏消费" value="1" />
           <el-option label="商品购买" value="2" />
-
         </el-select>
       </el-form-item>
 

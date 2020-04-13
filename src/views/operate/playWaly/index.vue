@@ -72,13 +72,15 @@
     <el-table v-loading="loading" :data="playWalyList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="游戏类型id" align="center" prop="deviceTypeId" />
+      <el-table-column label="设备类型id" align="center" prop="deviceTypeId" />
       <!-- <el-table-column label="设备名称" align="center" prop="deviceName" /> -->
       <el-table-column label="html介绍" prop="content">
         <template slot-scope="scope">
           <div v-html="scope.row.content"></div>
         </template>
       </el-table-column>
+      <el-table-column label="相关信息" prop="remark" />
+      <el-table-column label="最后编辑时间" align="center" prop="updateTime" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -136,6 +138,9 @@
             :min="0"
           />
           <span class="my-unit-span">{{numUnit}}</span>
+        </el-form-item>
+        <el-form-item label="相关信息" prop="remark" v-if="form.id">
+          <el-input type="textarea" v-model="form.remark" placeholder="请输入相关信息" />
         </el-form-item>
         <el-form-item label="游戏类型" prop="typeId">
           <!-- <el-input v-model="form.typeId" placeholder="请输入游戏类型id" /> -->

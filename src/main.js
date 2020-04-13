@@ -23,6 +23,9 @@ import myConst from "@/utils/const"
 import Pagination from "@/components/Pagination";
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer';
 
+// 高德地图
+import VueAMap from "vue-amap"
+
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
@@ -64,6 +67,23 @@ Vue.component('Pagination', Pagination)
 Vue.component('ElImageViewer', ElImageViewer)
 
 Vue.use(permission)
+Vue.use(VueAMap);
+// 高德地圖插件
+VueAMap.initAMapApiLoader({
+    key: "e1dedc6bdd765d46693986ff7ff969f4",
+    plugin: [
+        "AMap.Autocomplete", //输入提示插件
+        "AMap.PlaceSearch", //POI搜索插件
+        "AMap.Scale", //右下角缩略图插件 比例尺
+        "AMap.OverView", //地图鹰眼插件
+        "AMap.ToolBar", //地图工具条
+        "AMap.MapType", //类别切换控件，实现默认图层与卫星图、实施交通图层之间切换的控制
+        "AMap.PolyEditor", //编辑 折线多，边形
+        "AMap.CircleEditor", //圆形编辑器插件
+        "AMap.Geolocation" //定位控件，用来获取和展示用户主机所在的经纬度位置
+    ],
+    uiVersion: "1.0"
+});
 
 /**
  * If you don't want to use mock-server

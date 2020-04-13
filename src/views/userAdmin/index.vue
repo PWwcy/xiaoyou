@@ -96,18 +96,18 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="用户id" align="center" prop="id" />
       <el-table-column label="昵称" align="center" prop="nickname" />
-      <el-table-column label="用户头像" align="center" prop="avatarurl">
+      <el-table-column label="用户头像" align="center" prop="avatarUrl">
         <template slot-scope="scope">
-          <img :src="scope.row.avatarurl" alt class="td-img" @click="showImg(scope.row.avatarurl)" />
+          <img :src="scope.row.avatarUrl" alt class="td-img" @click="showImg(scope.row.avatarUrl)" />
         </template>
       </el-table-column>
       <el-table-column label="省份" align="center" prop="province" />
       <el-table-column label="城市" align="center" prop="city" />
-      <el-table-column label="消费总金额" align="center" prop />
-      <el-table-column label="消费游豆数量" align="center" prop />
+      <el-table-column label="消费总金额" align="center" prop="totalMoney" />
+      <el-table-column label="消费游豆数量" align="center" prop="totalBean" />
       <el-table-column label="剩余游豆数量" align="center" prop="gameBean" />
-      <el-table-column label="消费次数" align="center" prop />
-      <el-table-column label="用户积分" align="center" prop />
+      <el-table-column label="消费次数" align="center" prop="totalNum" />
+      <el-table-column label="用户积分" align="center" prop="totalIntegral" />
       <el-table-column label="电话号码" align="center" prop="phone" />
       <el-table-column label="用户性别" align="center" prop="sex">
         <template slot-scope="scope">
@@ -142,13 +142,16 @@
           <router-link :to="'/user/consumption/data/' + scope.row.id" class="link-type">
             <el-button size="mini" type="text" icon="el-icon-tickets">消费详细</el-button>
           </router-link>
-          <el-button
+          <router-link :to="'/user/integral/data/' + scope.row.id" class="link-type">
+            <el-button size="mini" type="text" icon="el-icon-tickets">积分详细</el-button>
+          </router-link>
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-tickets"
             @click="handleDelete(scope.row)"
             v-hasPermi="['api:user:remove']"
-          >积分详细</el-button>
+          >积分详细</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -170,8 +173,8 @@
         <el-form-item label="昵称" prop="nickname">
           <el-input v-model="form.nickname" placeholder="请输入昵称" />
         </el-form-item>
-        <el-form-item label="用户头像" prop="avatarurl">
-          <!-- <el-input v-model="form.avatarurl" placeholder="请输入用户头像" /> -->
+        <el-form-item label="用户头像" prop="avatarUrl">
+          <!-- <el-input v-model="form.avatarUrl" placeholder="请输入用户头像" /> -->
           <el-upload
             class="upload-demo"
             action="http://47.97.180.206:8081/api/file"
@@ -305,7 +308,7 @@ export default {
         pageSize: 10,
         openid: undefined,
         nickname: undefined,
-        avatarurl: undefined,
+        avatarUrl: undefined,
         phone: undefined,
         sex: undefined,
         age: undefined,
@@ -373,7 +376,7 @@ export default {
       );
     },
     handleSuccess(response, file, fileList) {
-      this.form.avatarurl = response.data.picture;
+      this.form.avatarUrl = response.data.picture;
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -426,7 +429,7 @@ export default {
         id: undefined,
         openid: undefined,
         nickname: undefined,
-        avatarurl: undefined,
+        avatarUrl: undefined,
         phone: undefined,
         sex: undefined,
         age: undefined,

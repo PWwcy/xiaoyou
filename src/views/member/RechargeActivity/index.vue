@@ -182,17 +182,7 @@
           />
           <span class="my-unit-span">{{beanUnit}}</span>
         </el-form-item>
-        <el-form-item label="最后更新时间" prop="lastUpdateTime">
-          <el-date-picker
-            clearable
-            size="small"
-            style="width: 200px"
-            v-model="form.lastUpdateTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择最后更新时间"
-          ></el-date-picker>
-        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>

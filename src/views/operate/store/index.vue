@@ -98,10 +98,20 @@
       </el-table-column>
       <el-table-column label="商家电话" align="center" prop="storephone" />
       <el-table-column label="地址" align="center" prop="address" />
-      <el-table-column label="经纬度" align="center" prop="longitudeandlatitude" />
       <el-table-column label="商家介绍" align="center" prop="storeintroduce" />
       <el-table-column label="预约须知" align="center" prop="appointmentnotice" />
       <el-table-column label="联系人" align="center" prop="contacts" />
+      <el-table-column label="地图信息" align="center">
+        <template slot-scope="scope">
+          <!-- <span @click="lookMap(scope.row)">查看地图</span> -->
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-location"
+            @click="lookMap(scope.row)"
+          >查看地图</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <span>{{formatStatus(scope.row.status)}}</span>
@@ -164,22 +174,26 @@
           <el-input v-model="form.storephone" placeholder="请输入商家电话" />
         </el-form-item>
         <el-form-item label="地址" prop="address">
-          <el-input v-model="form.address" placeholder="请输入地址" />
+          <el-input v-model="form.address" placeholder="请输入地址" @change="getLngLat" />
         </el-form-item>
         <el-form-item label="经纬度" prop="longitudeandlatitude">
-          <el-input v-model="form.longitudeandlatitude" placeholder="请输入经纬度" />
+          <el-input
+            v-model="form.longitudeandlatitude"
+            placeholder="请输入经纬度,如:104.066541,30.572269"
+            @change="getAddress"
+          />
         </el-form-item>
-        <el-form-item label="商家介绍" prop="storeintroduce">
+        <!-- <el-form-item label="经度" prop="xcoordinate">
+          <el-input v-model="form.xcoordinate" placeholder="请输入经度" />
+        </el-form-item>
+        <el-form-item label="纬度" prop="ycoordinate">
+          <el-input v-model="form.ycoordinate" placeholder="请输入纬度" />
+        </el-form-item>-->
+        <!-- <el-form-item label="商家介绍" prop="storeintroduce">
           <el-input v-model="form.storeintroduce" placeholder="请输入商家介绍" />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="预约须知" prop="appointmentnotice">
           <el-input v-model="form.appointmentnotice" placeholder="请输入预约须知" />
-        </el-form-item>
-        <el-form-item label="预约须知" prop="xcoordinate">
-          <el-input v-model="form.xcoordinate" placeholder="请输入预约须知" />
-        </el-form-item>
-        <el-form-item label="预约须知" prop="ycoordinate">
-          <el-input v-model="form.ycoordinate" placeholder="请输入预约须知" />
         </el-form-item>
 
         <el-form-item label="联系人" prop="contacts">
@@ -199,6 +213,11 @@
       </div>
     </el-dialog>
 
+    <!-- 地图 -->
+    <el-dialog :title="'地图'" :visible.sync="isShowMap" width="900px">
+      <v-map ref="map" :centers="longLat"></v-map>
+    </el-dialog>
+
     <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[bigImg]" />
   </div>
 </template>
@@ -214,10 +233,12 @@ import {
 } from "@/api/operate/store";
 import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
+import vMap from "@/components/VueAmap";
 export default {
   components: {
     Editor,
-    VDistpicker
+    VDistpicker,
+    vMap
   },
   data() {
     return {
@@ -237,6 +258,7 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      isShowMap: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -276,7 +298,10 @@ export default {
       },
       fileList: [],
       showViewer: false,
-      bigImg: ""
+      bigImg: "",
+
+      // 地图 经纬度
+      longLat: []
     };
   },
   created() {
@@ -295,6 +320,56 @@ export default {
     showImg(data) {
       this.bigImg = data;
       this.showViewer = true;
+    },
+    // 获取位置的经纬度
+    getLngLat() {
+      let self = this;
+      if (AMap) {
+        let add = this.form.address;
+        AMap.plugin("AMap.Geocoder", function() {
+          var geocoder = new AMap.Geocoder({
+            // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+            city: "成都"
+          });
+
+          geocoder.getLocation(add, function(status, result) {
+            if (status === "complete" && result.info === "OK") {
+              // result中对应详细地理坐标信息
+              self.form.longitudeandlatitude =
+                result.geocodes[0].location.lng +
+                "," +
+                result.geocodes[0].location.lat;
+              self.form.ycoordinate = result.geocodes[0].location.lng;
+              self.form.xcoordinate = result.geocodes[0].location.lat;
+            } else {
+              self.form.longitudeandlatitude = null;
+              self.form.ycoordinate = null;
+              self.form.xcoordinate = null;
+            }
+          });
+        });
+      }
+    },
+    // 获取位置
+    getAddress() {
+      let self = this;
+      if (AMap) {
+        let lnglat = this.form.longitudeandlatitude.split(",");
+        AMap.plugin(["AMap.Geocoder"], () => {
+          const geocoder = new AMap.Geocoder({
+            radius: 1000,
+            extensions: "all"
+          });
+          // var lnglatXY = options.lnglatXY || [114.397169, 30.50576]; //已知点坐标
+          geocoder.getAddress(lnglat, function(status, result) {
+            if (status === "complete" && result.info === "OK") {
+              console.log(result);
+              self.form.address = result.regeocode.formattedAddress;
+            } else {
+            }
+          });
+        });
+      }
     },
     // 关闭查看器
     closeViewer() {
@@ -318,6 +393,16 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    // 查看地图
+    lookMap(data) {
+      this.longLat = [data.ycoordinate * 1, data.xcoordinate * 1];
+      this.isShowMap = true;
+      console.log(this.longLat);
+      let a = setTimeout(() => {
+        this.$refs.map.setCenter(this.longLat);
+        clearTimeout(a);
+      }, 300);
     },
 
     formatStatus(val) {

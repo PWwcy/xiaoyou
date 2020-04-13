@@ -139,8 +139,8 @@
     <!-- 添加或修改设备商对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="124px">
-        <el-form-item label="支付配置id" prop="enterpriseName">
-          <el-input v-model="form.enterpriseName" placeholder="请输入支付配置id" />
+        <el-form-item label="设备商名称" prop="enterpriseName">
+          <el-input v-model="form.enterpriseName" placeholder="请输入设备商名称" />
         </el-form-item>
         <el-form-item label="联系人" prop="contacts">
           <el-input v-model="form.contacts" placeholder="请输入联系人" />
@@ -151,12 +151,28 @@
         <el-form-item label="地址" prop="address">
           <el-input v-model="form.address" placeholder="请输入地址" />
         </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="form.status" placeholder="请选择状态 " clearable size="small">
+            <el-option label="正常" value="0" />
+            <el-option label="停止" value="1" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="是否使用自己支付" prop="isownpayment">
           <!-- <el-input v-model="form.isownpayment" placeholder="请输入是否使用自己支付 0 是 1 否" /> -->
           <el-radio-group v-model="form.isownpayment">
             <el-radio :label="0">是</el-radio>
             <el-radio :label="1">否</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="remarks">
+          <el-input
+            v-model="form.remarks"
+            placeholder="请输入备注"
+            type="textarea"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
         </el-form-item>
         <!-- <el-form-item label="支付配置id" prop="paymentSetupId">
           <el-input v-model="form.paymentSetupId" placeholder="请输入支付配置id" />
@@ -208,7 +224,9 @@ export default {
         phone: undefined,
         address: undefined,
         isownpayment: undefined,
-        paymentSetupId: undefined
+        paymentSetupId: undefined,
+        status: undefined,
+        remarks: undefined
       },
       // 表单参数
       form: {},
@@ -253,7 +271,9 @@ export default {
         phone: undefined,
         address: undefined,
         isownpayment: 0,
-        paymentSetupId: undefined
+        paymentSetupId: undefined,
+        status: undefined,
+        remarks: undefined
       };
       this.resetForm("form");
     },

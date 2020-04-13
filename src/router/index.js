@@ -103,6 +103,12 @@ export const constantRoutes = [
         component: () => import('@/views/userAdmin/consumption'),
         name: 'Data',
         meta: { title: '消费记录', icon: '' }
+      },
+      {
+        path: 'integral/data/:userId(\\d+)',
+        component: () => import('@/views/userAdmin/integralMsg'),
+        name: 'Data',
+        meta: { title: '积分详细', icon: '' }
       }
     ]
   },

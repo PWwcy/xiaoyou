@@ -313,9 +313,9 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        onlymembers: [
+        /*onlymembers: [
           { required: true, message: "请选择是否限会员购买", trigger: "blur" }
-        ],
+        ],*/
         commodityName: [
           { required: true, message: "商品名称不能为空", trigger: "blur" }
         ],
@@ -324,7 +324,7 @@ export default {
         ],
         price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
         storeId: [{ required: true, message: "请选择商家", trigger: "blur" }],
-        formStatus: [{ required: true, message: "请选择状态", trigger: "blur" }]
+       /* formStatus: [{ required: true, message: "请选择状态", trigger: "blur" }]*/
       },
 
       fileList: [],

@@ -1,23 +1,44 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="用户昵称" prop="userId">
+      <el-form-item label="类型" prop="type">
+        <el-select v-model="queryParams.type" placeholder="请选择类型" clearable size="small">
+          <el-option label="充值" value="0" />
+          <el-option label="游戏消费" value="1" />
+          <el-option label="商品购买" value="2" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="用户名称" prop="nickname">
         <el-input
-          v-model="queryParams.nickName"
-          placeholder="请输入用户昵称"
+          v-model="queryParams.nickname"
+          placeholder="请输入用户名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="商品名称" prop="commodityId">
+
+      <el-form-item label="公司" prop="company">
         <el-input
-          v-model="queryParams.commodityName"
-          placeholder="请输入商品名称"
+          v-model="queryParams.company"
+          placeholder="公司"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+
+      <el-form-item label="创建时间" prop="createTime">
+        <el-date-picker
+          clearable
+          size="small"
+          style="width: 200px"
+          v-model="queryParams.createTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择创建时间"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -26,47 +47,31 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['exchange:commodity:remove']"
-        >删除</el-button>
-      </el-col>
       <el-col :span="1.5">
         <el-button
           type="warning"
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['exchange:commodity:export']"
+          v-hasPermi="['user:consumption:export']"
         >导出</el-button>
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="commodityList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="consumptionList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="用户id" align="center" prop="userId" />
-      <el-table-column label="昵称" align="center" prop="nickName" />
-      <el-table-column label="商品id" align="center" prop="commodityId" />
-      <el-table-column label="商品名称" align="center" prop="commodityName" />
-      <el-table-column label="商店名称" align="center" prop="storeName"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="收入公司" align="center" prop="id" />
+      <el-table-column label="类型" align="center" prop="type">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['exchange:commodity:remove']"
-          >删除</el-button>
+          <span>{{formatType(scope.row.type)}}</span>
         </template>
       </el-table-column>
+      <el-table-column label="用户id" align="center" prop="userId" />
+      <el-table-column label="用户名称" align="center" prop="nickname" />
+      <el-table-column label="金额" align="center" prop="money" />
+      <el-table-column label="潇豆" align="center" prop="gameBean" />
+      <el-table-column label="积分" align="center" prop="integral" />
+      <el-table-column label="收入公司" align="center" prop="company" />
     </el-table>
 
     <pagination
@@ -76,27 +81,18 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
-    <!-- 添加或修改商品兑换对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="用户id" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入用户id" />
-        </el-form-item>
-        <el-form-item label="商品id" prop="commodityId">
-          <el-input v-model="form.commodityId" placeholder="请输入商品id" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listCommodity, getCommodity, delCommodity, addCommodity, updateCommodity, exportCommodity } from "@/api/exchange/commodity";
+import {
+  listConsumption,
+  getConsumption,
+  delConsumption,
+  addConsumption,
+  updateConsumption,
+  exportConsumption
+} from "@/api/userAdmin/consumption";
 
 export default {
   data() {
@@ -111,8 +107,8 @@ export default {
       multiple: true,
       // 总条数
       total: 0,
-      // 商品兑换表格数据
-      commodityList: [],
+      // 消费记录表格数据
+      consumptionList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -121,27 +117,41 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        type: undefined,
         userId: undefined,
-        commodityId: undefined,
-        commodityName: undefined,
-        nickName:undefined
+        nickname: undefined,
+        money: undefined,
+        gameBean: undefined,
+        integral: undefined,
+        company: undefined,
+        createTime: undefined
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {}
     };
   },
   created() {
-    this.getList();
+    const userId = this.$route.params && this.$route.params.userId;
+
+    (this.queryParams.userId = userId), this.getList();
   },
   methods: {
-    /** 查询商品兑换列表 */
+    formatType(val) {
+      return val == 0
+        ? "充值"
+        : val == 1
+        ? "游戏消费"
+        : val == 2
+        ? "商品购买"
+        : "";
+    },
+    /** 查询消费记录列表 */
     getList() {
       this.loading = true;
-      listCommodity(this.queryParams).then(response => {
-        this.commodityList = response.rows;
+      listConsumption(this.queryParams).then(response => {
+        this.consumptionList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -155,8 +165,14 @@ export default {
     reset() {
       this.form = {
         id: undefined,
+        type: undefined,
         userId: undefined,
-        commodityId: undefined
+        nickname: undefined,
+        money: undefined,
+        gameBean: undefined,
+        integral: undefined,
+        company: undefined,
+        createTime: undefined
       };
       this.resetForm("form");
     },
@@ -172,24 +188,24 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!=1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length != 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加商品兑换";
+      this.title = "添加消费记录";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
-      getCommodity(id).then(response => {
+      const id = row.id || this.ids;
+      getConsumption(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改商品兑换";
+        this.title = "修改消费记录";
       });
     },
     /** 提交按钮 */
@@ -197,7 +213,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
-            updateCommodity(this.form).then(response => {
+            updateConsumption(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -207,7 +223,7 @@ export default {
               }
             });
           } else {
-            addCommodity(this.form).then(response => {
+            addConsumption(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -223,29 +239,39 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除商品兑换编号为"' + ids + '"的数据项?', "警告", {
+      this.$confirm(
+        '是否确认删除消费记录编号为"' + ids + '"的数据项?',
+        "警告",
+        {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        }).then(function() {
-          return delCommodity(ids);
-        }).then(() => {
+        }
+      )
+        .then(function() {
+          return delConsumption(ids);
+        })
+        .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        }).catch(function() {});
+        })
+        .catch(function() {});
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有商品兑换数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportCommodity(queryParams);
-        }).then(response => {
+      this.$confirm("是否确认导出所有消费记录数据项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
+          return exportConsumption(queryParams);
+        })
+        .then(response => {
           this.download(response.msg);
-        }).catch(function() {});
+        })
+        .catch(function() {});
     }
   }
 };

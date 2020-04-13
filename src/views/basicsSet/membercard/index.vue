@@ -40,10 +40,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="活得次数" prop="getFrequency">
+      <el-form-item label="获得次数" prop="getFrequency">
         <el-input
           v-model="queryParams.getFrequency"
-          placeholder="请输入活得次数"
+          placeholder="请输入获得次数"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -114,20 +114,21 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="membercardList" @selection-change="handleSelectionChange">
+    <!-- <el-table v-loading="loading" :data="membercardList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="会员卡内容描述" align="center" prop="id" />
       <el-table-column label="会员卡名称" align="center" prop="memberCardName" />
       <el-table-column label="类型" align="center" prop="memberCardType" />
       <el-table-column label="充值金额" align="center" prop="rechargeAmount" />
       <el-table-column label="获得游豆" align="center" prop="getBean" />
-      <el-table-column label="活得次数" align="center" prop="getFrequency" />
+      <el-table-column label="获得次数" align="center" prop="getFrequency" />
       <el-table-column label="有效期" align="center" prop="termOfValidity" />
       <el-table-column label="会员卡内容描述" align="center" prop="content">
         <template slot-scope="scope">
           <span v-html="scope.row.content"></span>
         </template>
       </el-table-column>
+      <el-table-column label="最后操作时间" align="center" prop="updateTime" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -137,6 +138,36 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['basicsSet:membercard:edit']"
           >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['basicsSet:membercard:remove']"
+          >删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>-->
+    <el-table v-loading="loading" :data="membercardList" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="id" align="center" prop="id" />
+      <el-table-column label="会员卡名称" align="center" prop="memberCardName" />
+      <el-table-column label="类型" align="center" prop="memberCardType" />
+      <el-table-column label="充值金额" align="center" prop="rechargeAmount" />
+      <el-table-column label="获得游豆" align="center" prop="getBean" />
+      <el-table-column label="活得次数" align="center" prop="getFrequency" />
+      <el-table-column label="有效期" align="center" prop="termOfValidity"></el-table-column>
+
+      <el-table-column label="修改时间" align="center" prop="updateTime" />
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button请选择是否限会
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['basicsSet:membercard:edit']"
+          >修改</el-button请选择是否限会>
           <el-button
             size="mini"
             type="text"

@@ -146,9 +146,9 @@
           <span>{{ parseTime(scope.row.addTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="累计收益金额" align="center" prop />
-      <el-table-column label="累计消费次数" align="center" prop />
-      <el-table-column label="累计服务人数" align="center" prop />
+      <el-table-column label="累计收益金额" align="center" prop="totalMoney"/>
+      <el-table-column label="累计消费次数" align="center" prop="totalNum" />
+      <el-table-column label="累计服务人数" align="center" prop="totalUserNum" />
       <el-table-column label="备注" align="center" :show-overflow-tooltip="true" prop="remarks" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

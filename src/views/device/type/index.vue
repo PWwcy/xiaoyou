@@ -1,21 +1,49 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+      <el-form-item label="类型名称" prop="typeName">
+        <el-input
+          v-model="queryParams.typeName"
+          placeholder="请输入类型名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="玩法介绍" prop="playIntroduce">
+        <el-input
+          v-model="queryParams.playIntroduce"
+          placeholder="请输入玩法介绍"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="封面图片" prop="picture">
+        <el-input
+          v-model="queryParams.picture"
+          placeholder="请输入封面图片"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="城市id" prop="cityId">
-        <!-- <el-input
+        <el-input
           v-model="queryParams.cityId"
           placeholder="请输入城市id"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
-        />-->
-        <v-distpicker
-          class="city-select"
+        />
+      </el-form-item>
+      <el-form-item label="顺序" prop="pos">
+        <el-input
+          v-model="queryParams.pos"
+          placeholder="请输入顺序"
+          clearable
           size="small"
-          :province="queryParams.province"
-          :city="queryParams.city"
-          :area="queryParams.area"
-          @selected="addSelected"
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item>
@@ -31,7 +59,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['basicsSet:banner:add']"
+          v-hasPermi="['device:type:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -41,7 +69,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['basicsSet:banner:edit']"
+          v-hasPermi="['device:type:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -51,7 +79,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['basicsSet:banner:remove']"
+          v-hasPermi="['device:type:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -60,27 +88,23 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['basicsSet:banner:export']"
+          v-hasPermi="['device:type:export']"
         >导出</el-button>
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="bannerList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="城市id" align="center" prop="cityId" />
-      <el-table-column label="图片地址" align="center" prop="picture">
+      <el-table-column label="顺序" align="center" prop="id" />
+      <el-table-column label="类型名称" align="center" prop="typeName" />
+      <el-table-column label="玩法介绍" align="center" prop="playIntroduce" />
+      <el-table-column label="封面图片" align="center" prop="picture">
         <template slot-scope="scope">
-          <img
-            :src="scope.row.picture"
-            width="40"
-            height="40"
-            class="head_pic"
-            @click="showImg(scope.row.picture)"
-          />
+          <img :src="scope.row.picture" class="td-img" @click="showImg(scope.row.picture)" />
         </template>
       </el-table-column>
-
+      <el-table-column label="城市id" align="center" prop="cityId" />
+      <el-table-column label="顺序" align="center" prop="pos" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -88,14 +112,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['basicsSet:banner:edit']"
+            v-hasPermi="['device:type:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['basicsSet:banner:remove']"
+            v-hasPermi="['device:type:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -109,24 +133,16 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改banner对话框 -->
+    <!-- 添加或修改设备类型对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="110px">
-        <el-form-item label="类型对应内容id" prop="contentId">
-          <el-input v-model="form.contentId" placeholder="请输入类型对应内容id" />
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="类型名称" prop="typeName">
+          <el-input v-model="form.typeName" placeholder="请输入类型名称" />
         </el-form-item>
-        <el-form-item label="城市">
-          <!-- <el-input v-model="form.cityId" placeholder="请输入城市id" /> -->
-          <v-distpicker
-            class="city-select"
-            size="small"
-            :province="form.province"
-            :city="form.city"
-            :area="form.area"
-            @selected="addSelected"
-          ></v-distpicker>
+        <el-form-item label="玩法介绍" prop="playIntroduce">
+          <el-input v-model="form.playIntroduce" placeholder="请输入玩法介绍" />
         </el-form-item>
-        <el-form-item label="图片地址" prop="picture">
+        <el-form-item label="封面图片" prop="picture">
           <el-upload
             class="upload-demo"
             action="http://47.97.180.206:8081/api/file"
@@ -144,32 +160,25 @@
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
         </el-form-item>
+        <el-form-item label="城市id" prop="cityId">
+          <el-input v-model="form.cityId" placeholder="请输入城市id" />
+        </el-form-item>
+        <el-form-item label="顺序" prop="pos">
+          <el-input v-model="form.pos" placeholder="请输入顺序" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-
-    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[bigImg]" />
   </div>
 </template>
 
 <script>
-import {
-  listBanner,
-  getBanner,
-  delBanner,
-  addBanner,
-  updateBanner,
-  exportBanner
-} from "@/api/basicsSet/banner";
-import VDistpicker from "v-distpicker";
+import { listType, getType, delType, addType, updateType, exportType } from "@/api/device/type";
 
 export default {
-  components: {
-    VDistpicker
-  },
   data() {
     return {
       // 遮罩层
@@ -182,8 +191,8 @@ export default {
       multiple: true,
       // 总条数
       total: 0,
-      // banner表格数据
-      bannerList: [],
+      // 设备类型表格数据
+      typeList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -192,59 +201,44 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        typeId: undefined,
-        contentId: undefined,
-        cityId: undefined,
+        typeName: undefined,
+        playIntroduce: undefined,
         picture: undefined,
-        province: undefined,
-        city: undefined,
-        area: undefined
+        cityId: undefined,
+        pos: undefined
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        picture: [{ required: true, message: "请选择图片", trigger: "blur" }]
-      },
-      fileList: [],
-      showViewer: false,
-      bigImg: ""
+      }
     };
   },
   created() {
     this.getList();
   },
   methods: {
-    /** 查询banner列表 */
+    /** 查询设备类型列表 */
     getList() {
       this.loading = true;
-      listBanner(this.queryParams).then(response => {
-        this.bannerList = response.rows;
+      listType(this.queryParams).then(response => {
+        this.typeList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
     },
-    showImg(data) {
-      this.bigImg = data;
-      this.showViewer = true;
+
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
     },
-    // 关闭查看器
-    closeViewer() {
-      this.showViewer = false;
+    handlePreview(file) {
+      console.log(file);
     },
-    addSelected(data) {
-      console.log(data);
-      this.form.province = data.province.value;
-      this.form.city = data.city.value;
-      this.form.cityId = data.city.code;
-      this.form.area = data.area.value;
-    },
-    // 图片选择
     handleExceed(files, fileList) {
       this.$message.warning(
         `当前限制选择 1 个文件，本次选择了 ${
           files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+          } 个文件，共选择了 ${files.length + fileList.length} 个文件`
       );
     },
     handleSuccess(response, file, fileList) {
@@ -263,10 +257,11 @@ export default {
     reset() {
       this.form = {
         id: undefined,
-        typeId: undefined,
-        contentId: undefined,
+        typeName: undefined,
+        playIntroduce: undefined,
+        picture: undefined,
         cityId: undefined,
-        picture: undefined
+        pos: undefined
       };
       this.resetForm("form");
     },
@@ -282,24 +277,24 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
-      this.single = selection.length != 1;
-      this.multiple = !selection.length;
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length!=1
+      this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加banner";
+      this.title = "添加设备类型";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids;
-      getBanner(id).then(response => {
+      const id = row.id || this.ids
+      getType(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改banner";
+        this.title = "修改设备类型";
       });
     },
     /** 提交按钮 */
@@ -307,7 +302,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
-            updateBanner(this.form).then(response => {
+            updateType(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -317,7 +312,7 @@ export default {
               }
             });
           } else {
-            addBanner(this.form).then(response => {
+            addType(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -333,35 +328,29 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除banner编号为"' + ids + '"的数据项?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(function() {
-          return delBanner(ids);
-        })
-        .then(() => {
+      this.$confirm('是否确认删除设备类型编号为"' + ids + '"的数据项?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return delType(ids);
+        }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        })
-        .catch(function() {});
+        }).catch(function() {});
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm("是否确认导出所有banner数据项?", "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(function() {
-          return exportBanner(queryParams);
-        })
-        .then(response => {
+      this.$confirm('是否确认导出所有设备类型数据项?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return exportType(queryParams);
+        }).then(response => {
           this.download(response.msg);
-        })
-        .catch(function() {});
+        }).catch(function() {});
     }
   }
 };
