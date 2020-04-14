@@ -178,6 +178,8 @@ import {
 } from "@/api/operate/playWaly";
 import Editor from "@/components/Editor";
 
+import mixins from "@/utils/mixin/upload";
+
 export default {
   components: {
     Editor
@@ -227,6 +229,7 @@ export default {
     this.getList();
     this.getType();
   },
+  mixins: [mixins],
   methods: {
     /** 查询玩法列表 */
     getList() {
