@@ -152,8 +152,7 @@
         <el-form-item label="商家名称" prop="storename">
           <el-input v-model="form.storename" placeholder="请输入商家名称" />
         </el-form-item>
-        <el-form-item label="商家图片" prop="storepicture">
-          <!-- <el-upload v-model="form.storepicture" placeholder="请输入商家图片" /> -->
+        <!-- <el-form-item label="商家图片" prop="storepicture">
           <el-upload
             class="upload-demo"
             action="http://47.97.180.206:8081/api/file"
@@ -165,11 +164,11 @@
             :on-success="handleSuccess"
             :file-list="fileList"
           >
-            <!-- :limit="1" -->
+            :limit="1"
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="商家电话" prop="storephone">
           <el-input v-model="form.storephone" placeholder="请输入商家电话" />
         </el-form-item>
@@ -206,6 +205,18 @@
             <el-radio :label="2">停止</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="商家图片" prop="picture">
+          <el-upload
+            :action="uploadFileUrl"
+            list-type="picture-card"
+            multiple
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -234,6 +245,8 @@ import {
 import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
 import vMap from "@/components/VueAmap";
+
+import mixins from "@/utils/mixin/upload";
 export default {
   components: {
     Editor,
@@ -307,6 +320,7 @@ export default {
   created() {
     this.getList();
   },
+  mixins: [mixins],
   methods: {
     /** 查询商家列表 */
     getList() {
@@ -375,25 +389,7 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    handleSuccess(response, file, fileList) {
-      this.form.storepicture = response.data.picture;
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
+
     // 查看地图
     lookMap(data) {
       this.longLat = [data.ycoordinate * 1, data.xcoordinate * 1];
@@ -471,6 +467,7 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.storepicture = this.initFile();
           if (this.form.id != undefined) {
             updateStore(this.form).then(response => {
               if (response.code === 200) {

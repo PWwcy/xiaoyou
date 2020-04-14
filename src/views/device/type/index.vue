@@ -142,8 +142,14 @@
         <el-form-item label="玩法介绍" prop="playIntroduce">
           <el-input v-model="form.playIntroduce" placeholder="请输入玩法介绍" />
         </el-form-item>
+        <el-form-item label="城市id" prop="cityId">
+          <el-input v-model="form.cityId" placeholder="请输入城市id" />
+        </el-form-item>
+        <el-form-item label="顺序" prop="pos">
+          <el-input v-model="form.pos" placeholder="请输入顺序" />
+        </el-form-item>
         <el-form-item label="封面图片" prop="picture">
-          <el-upload
+          <!-- <el-upload
             class="upload-demo"
             action="http://47.97.180.206:8081/api/file"
             :on-preview="handlePreview"
@@ -158,13 +164,17 @@
           >
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>-->
+          <el-upload
+            :action="uploadFileUrl"
+            list-type="picture-card"
+            multiple
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+          >
+            <i class="el-icon-plus"></i>
           </el-upload>
-        </el-form-item>
-        <el-form-item label="城市id" prop="cityId">
-          <el-input v-model="form.cityId" placeholder="请输入城市id" />
-        </el-form-item>
-        <el-form-item label="顺序" prop="pos">
-          <el-input v-model="form.pos" placeholder="请输入顺序" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -176,7 +186,16 @@
 </template>
 
 <script>
-import { listType, getType, delType, addType, updateType, exportType } from "@/api/device/type";
+import {
+  listType,
+  getType,
+  delType,
+  addType,
+  updateType,
+  exportType
+} from "@/api/device/type";
+
+import mixins from "@/utils/mixin/upload";
 
 export default {
   data() {
@@ -210,13 +229,14 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {},
+      fileList: []
     };
   },
   created() {
     this.getList();
   },
+  mixins: [mixins],
   methods: {
     /** 查询设备类型列表 */
     getList() {
@@ -226,26 +246,6 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
-    },
-
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-          } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    handleSuccess(response, file, fileList) {
-      this.form.picture = response.data.picture;
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
     },
 
     // 取消按钮
@@ -277,9 +277,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!=1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length != 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -290,7 +290,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
+      const id = row.id || this.ids;
       getType(id).then(response => {
         this.form = response.data;
         this.open = true;
@@ -301,6 +301,7 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.picture = this.initFile();
           if (this.form.id != undefined) {
             updateType(this.form).then(response => {
               if (response.code === 200) {
@@ -328,29 +329,39 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除设备类型编号为"' + ids + '"的数据项?', "警告", {
+      this.$confirm(
+        '是否确认删除设备类型编号为"' + ids + '"的数据项?',
+        "警告",
+        {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        }).then(function() {
+        }
+      )
+        .then(function() {
           return delType(ids);
-        }).then(() => {
+        })
+        .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        }).catch(function() {});
+        })
+        .catch(function() {});
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有设备类型数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+      this.$confirm("是否确认导出所有设备类型数据项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
           return exportType(queryParams);
-        }).then(response => {
+        })
+        .then(response => {
           this.download(response.msg);
-        }).catch(function() {});
+        })
+        .catch(function() {});
     }
   }
 };

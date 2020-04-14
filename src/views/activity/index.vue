@@ -144,7 +144,7 @@
           <el-input v-model="form.link" placeholder="请输入外部链接" />
         </el-form-item>
         <el-form-item label="活动封面" prop="picture">
-          <el-upload
+          <!-- <el-upload
             class="upload-demo"
             action="http://47.97.180.206:8081/api/file"
             :on-preview="handlePreview"
@@ -159,6 +159,16 @@
           >
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>-->
+          <el-upload
+            :action="uploadFileUrl"
+            list-type="picture-card"
+            multiple
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+          >
+            <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -179,6 +189,8 @@ import {
   updateActivity,
   exportActivity
 } from "@/api/activity/activity";
+
+import mixins from "@/utils/mixin/upload";
 
 export default {
   data() {
@@ -223,6 +235,7 @@ export default {
   created() {
     this.getList();
   },
+  mixins: [mixins],
   methods: {
     /** 查询活动列表 */
     getList() {
@@ -232,26 +245,6 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
-    },
-
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    handleSuccess(response, file, fileList) {
-      this.form.picture = response.data.picture;
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
     },
 
     // 取消按钮
@@ -306,6 +299,7 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.picture = this.initFile();
           if (this.form.id != undefined) {
             updateActivity(this.form).then(response => {
               if (response.code === 200) {

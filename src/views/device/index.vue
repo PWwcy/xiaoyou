@@ -146,7 +146,7 @@
           <span>{{ parseTime(scope.row.addTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="累计收益金额" align="center" prop="totalMoney"/>
+      <el-table-column label="累计收益金额" align="center" prop="totalMoney" />
       <el-table-column label="累计消费次数" align="center" prop="totalNum" />
       <el-table-column label="累计服务人数" align="center" prop="totalUserNum" />
       <el-table-column label="备注" align="center" :show-overflow-tooltip="true" prop="remarks" />
@@ -190,26 +190,6 @@
           <el-col :span="24">
             <el-form-item label="设备名称" prop="deviceName">
               <el-input v-model="form.deviceName" placeholder="请输入设备名称" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="设备图片" prop="picture">
-              <!-- <el-input v-model="form.picture" placeholder="请输入设备图片" /> -->
-              <el-upload
-                class="upload-demo"
-                action="http://47.97.180.206:8081/api/file"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                accept="image/*"
-                :on-exceed="handleExceed"
-                :on-success="handleSuccess"
-                :file-list="fileList"
-              >
-                <!-- :limit="1" -->
-                <el-button size="small" type="primary">点击上传</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-              </el-upload>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -354,6 +334,35 @@
               <Editor v-model="form.playIntroduce" />
             </el-form-item>
           </el-col>
+          <el-col :span="24" style="margin-top: 60px;">
+            <el-form-item label="设备图片" prop="picture">
+              <!-- <el-upload
+                class="upload-demo"
+                action="http://47.97.180.206:8081/api/file"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                accept="image/*"
+                :on-exceed="handleExceed"
+                :on-success="handleSuccess"
+                :file-list="fileList"
+              >
+                :limit="1"
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              </el-upload>-->
+              <el-upload
+                :action="uploadFileUrl"
+                list-type="picture-card"
+                multiple
+                :on-preview="handlePictureCardPreview"
+                :on-remove="handleRemove"
+                :on-success="handleSuccess"
+              >
+                <i class="el-icon-plus"></i>
+              </el-upload>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer" style="margin-top: 20px;">
@@ -378,6 +387,8 @@ import {
 import { listCategory } from "@/api/device/category";
 import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
+
+import mixins from "@/utils/mixin/upload";
 export default {
   components: {
     Editor,
@@ -458,6 +469,7 @@ export default {
     this.getList();
     this.getType();
   },
+  mixins: [mixins],
   methods: {
     formatStatus(val) {
       return val == 0 ? "正常" : val == 1 ? "停止" : val == 2 ? "维修中" : "";
@@ -479,26 +491,6 @@ export default {
     // 关闭查看器
     closeViewer() {
       this.showViewer = false;
-    },
-
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    handleSuccess(response, file, fileList) {
-      this.form.picture = response.data.picture;
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
     },
 
     loadmore() {
@@ -598,6 +590,7 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.picture = this.initFile();
           if (this.form.id != undefined) {
             updateDevice(this.form).then(response => {
               if (response.code === 200) {

@@ -190,24 +190,7 @@
             @selected="onformSelected"
           />
         </el-form-item>
-        <el-form-item label="商品图片" prop="commodityPicture">
-          <!-- <el-input v-model="form.commodityPicture" placeholder="请输入商品图片" /> -->
-          <el-upload
-            class="upload-demo"
-            :action="uploadFileUrl"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            accept="image/*"
-            :on-exceed="handleExceed"
-            :on-success="handleSuccess"
-            :file-list="fileList"
-          >
-            <!-- :limit="1" -->
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>
-        </el-form-item>
+
         <el-form-item label="商家" prop="storeId">
           <!-- <el-input v-model="form.storeId" placeholder="请输入商店id" /> -->
           <el-select
@@ -244,6 +227,32 @@
         <!-- <el-form-item label="商品介绍" prop="commodityIntroduce">
           <el-input v-model="form.commodityIntroduce" placeholder="请输入商品介绍" />
         </el-form-item>-->
+        <el-form-item label="商品图片" prop="commodityPicture" style="margin-top: 90px;">
+          <!-- <el-upload
+            class="upload-demo"
+            :action="uploadFileUrl"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            accept="image/*"
+            :on-exceed="handleExceed"
+            :on-success="handleSuccess"
+            :file-list="fileList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>-->
+          <el-upload
+            :action="uploadFileUrl"
+            list-type="picture-card"
+            multiple
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -267,6 +276,8 @@ import {
 import { listStore } from "@/api/operate/store";
 import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
+
+import mixins from "@/utils/mixin/upload";
 export default {
   components: {
     Editor,
@@ -323,8 +334,8 @@ export default {
           { required: true, message: "游豆不能为空", trigger: "blur" }
         ],
         price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
-        storeId: [{ required: true, message: "请选择商家", trigger: "blur" }],
-       /* formStatus: [{ required: true, message: "请选择状态", trigger: "blur" }]*/
+        storeId: [{ required: true, message: "请选择商家", trigger: "blur" }]
+        /* formStatus: [{ required: true, message: "请选择状态", trigger: "blur" }]*/
       },
 
       fileList: [],
@@ -341,6 +352,7 @@ export default {
   created() {
     this.getList();
   },
+  mixins: [mixins],
   methods: {
     /** 查询商品列表 */
     getList() {
@@ -379,26 +391,7 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
-    // 上传图片
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    handleSuccess(response, file, fileList) {
-      this.form.commodityPicture = response.data.picture;
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
+
     // 搜索条件的地市切换
     onSelected(data) {
       this.queryParams.province = data.province.value;
@@ -479,6 +472,7 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.commodityPicture = this.initFile();
           if (this.form.id != undefined) {
             updateCommodity(this.form).then(response => {
               if (response.code === 200) {
@@ -558,7 +552,4 @@ export default {
 };
 </script>
 <style scoped>
-.dialog-footer {
-  margin-top: 30px;
-}
 </style>
