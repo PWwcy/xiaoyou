@@ -19,32 +19,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="封面图片" prop="picture">
-        <el-input
-          v-model="queryParams.picture"
-          placeholder="请输入封面图片"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="城市id" prop="cityId">
-        <el-input
-          v-model="queryParams.cityId"
-          placeholder="请输入城市id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="顺序" prop="pos">
-        <el-input
-          v-model="queryParams.pos"
-          placeholder="请输入顺序"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -97,6 +72,11 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="顺序" align="center" prop="id" />
       <el-table-column label="类型名称" align="center" prop="typeName" />
+      <el-table-column label="图标" align="center" prop="picture">
+        <template slot-scope="scope">
+          <img :src="scope.row.icon" class="td-img" @click="showImg(scope.row.icon)" />
+        </template>
+      </el-table-column>
       <el-table-column label="玩法介绍" align="center" prop="playIntroduce" />
       <el-table-column label="封面图片" align="center" prop="picture">
         <template slot-scope="scope">
