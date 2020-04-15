@@ -209,6 +209,10 @@ aside {
     }
 }
 
+.el-image-viewer__wrapper {
+    z-index: 10000 !important;
+}
+
 .td-img {
     max-height: 70px;
     max-width: 70px;
@@ -218,4 +222,7 @@ aside {
 // 自定义单位
 .my-unit-span {
     color: #ccc;
+}
+.shou{
+    cursor: pointer;
 }

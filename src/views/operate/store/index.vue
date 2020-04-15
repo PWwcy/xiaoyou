@@ -173,14 +173,18 @@
           <el-input v-model="form.storephone" placeholder="请输入商家电话" />
         </el-form-item>
         <el-form-item label="地址" prop="address">
-          <el-input v-model="form.address" placeholder="请输入地址" @change="getLngLat" />
+          <el-input v-model="form.address" placeholder="请输入地址" @change="getLngLat">
+            <i slot="suffix" class="el-icon-map-location shou" @click="chooseMap"></i>
+          </el-input>
         </el-form-item>
         <el-form-item label="经纬度" prop="longitudeandlatitude">
           <el-input
             v-model="form.longitudeandlatitude"
             placeholder="请输入经纬度,如:104.066541,30.572269"
             @change="getAddress"
-          />
+          >
+            <i slot="suffix" class="el-icon-map-location shou" @click="chooseMap"></i>
+          </el-input>
         </el-form-item>
         <!-- <el-form-item label="经度" prop="xcoordinate">
           <el-input v-model="form.xcoordinate" placeholder="请输入经度" />
@@ -213,6 +217,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
+            :file-list="uploadFileList"
           >
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -224,9 +229,17 @@
       </div>
     </el-dialog>
 
-    <!-- 地图 -->
-    <el-dialog :title="'地图'" :visible.sync="isShowMap" width="900px">
+    <!-- 查看地图 -->
+    <el-dialog title="查看地图" :visible.sync="isShowMap" width="900px">
       <v-map ref="map" :centers="longLat"></v-map>
+    </el-dialog>
+    <!-- 选择地图 -->
+    <el-dialog title="选择地图" :visible.sync="isChooseMap" width="900px">
+      <v-map ref="cmap" :centers="longLat" :showLocal="true" :height="300"></v-map>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="sureLocal">确 定</el-button>
+        <el-button @click="isChooseMap = false">取 消</el-button>
+      </div>
     </el-dialog>
 
     <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[bigImg]" />
@@ -314,7 +327,8 @@ export default {
       bigImg: "",
 
       // 地图 经纬度
-      longLat: []
+      longLat: [],
+      isChooseMap: false
     };
   },
   created() {
@@ -394,11 +408,27 @@ export default {
     lookMap(data) {
       this.longLat = [data.ycoordinate * 1, data.xcoordinate * 1];
       this.isShowMap = true;
-      console.log(this.longLat);
       let a = setTimeout(() => {
         this.$refs.map.setCenter(this.longLat);
         clearTimeout(a);
       }, 300);
+    },
+    // 选择地图
+    chooseMap() {
+      this.longLat = [114.397169, 30.50576];
+      this.isChooseMap = true;
+      let a = setTimeout(() => {
+        this.$refs.cmap.setCenter(this.longLat);
+        clearTimeout(a);
+      }, 300);
+    },
+    // 确定地点
+    sureLocal() {
+      let obj = this.$refs.cmap.getCenter();
+      this.form.longitudeandlatitude =
+        obj.location.lng + "," + obj.location.lat;
+      this.form.address = obj.address;
+      this.isChooseMap = false;
     },
 
     formatStatus(val) {
@@ -429,6 +459,7 @@ export default {
         ycoordinate: undefined,
         status: 0
       };
+      this.initFileList();
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -461,13 +492,15 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改商家";
+        this.echoImg(this.form.storepicture);
       });
     },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.form.storepicture = this.initFile();
+          // this.form.storepicture = this.initFile();
+          this.form.storepicture = this.urlArrs;
           if (this.form.id != undefined) {
             updateStore(this.form).then(response => {
               if (response.code === 200) {

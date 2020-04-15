@@ -1,7 +1,13 @@
 export default {
   data() {
     return {
-      uploadFileList: []
+      uploadFileList: [],
+      urlArr: [],
+    }
+  },
+  computed: {
+    urlArrs() {
+      return this.urlArr.length > 0 ? this.urlArr : undefined;
     }
   },
   methods: {
@@ -13,10 +19,40 @@ export default {
       }
       return undefined;
     },
-
+    initFileList() {
+      this.uploadFileList = [];
+      this.urlArr = [];
+    },
+    // 修改信息  图片回显
+    echoImg(data) {
+      if (data) {
+        let obj = {};
+        if (typeof data === "string") {
+          obj.url = data;
+          this.urlArr.push(data);
+          this.uploadFileList.push(obj);
+          obj = {};
+        } else {
+          data.forEach(item => {
+            obj.url = item;
+            this.urlArr.push(item);
+            this.uploadFileList.push(obj);
+            obj = {};
+          });
+        }
+      }
+    },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
-      this.uploadFileList = fileList
+      // console.log(file, fileList);
+      // this.uploadFileList = fileList
+      this.urlArr = [];
+      if (fileList.length > 0) {
+        fileList.forEach(item => {
+          console.log(item);
+
+          this.urlArr.push(item)
+        })
+      }
     },
     handlePreview(file) {
       console.log(file);
@@ -29,7 +65,8 @@ export default {
       );
     },
     handleSuccess(response, file, fileList) {
-      this.uploadFileList = fileList
+      // this.uploadFileList = fileList
+      this.urlArr.push(response.data.picture)
       // if (this.uploadFileList) {
       //   this.uploadFileList.push(response.data.picture);
       // } else {
@@ -42,7 +79,9 @@ export default {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     handlePictureCardPreview(file) {
-      console.log(file);
+      // console.log(file);
+      this.bigImg = file.url;
+      this.showViewer = true;
     },
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="_map">
-    <div class="amap-page-container" v-if="center.length > 0">
+    <div class="amap-page-container" v-if="center.length > 0" :style="style_">
       <el-amap-search-box
         class="search-box"
         :search-option="searchOption"
@@ -22,7 +22,7 @@
         ></el-amap-marker>
       </el-amap>
     </div>
-    <!-- <div class="adrs">
+    <div class="adrs" v-if="showLocal">
       <ul>
         <li
           class
@@ -35,7 +35,7 @@
           <p class="nm">{{item.name}}</p>
         </li>
       </ul>
-    </div>-->
+    </div>
   </div>
 </template>
 
@@ -43,6 +43,16 @@
 export default {
   name: "amap-page",
   components: {},
+  props: {
+    showLocal: {
+      type: Boolean,
+      default: false
+    },
+    height: {
+      type: Number,
+      default: 500
+    }
+  },
   data() {
     var me = this;
     me.city = me.city || "成都";
@@ -99,6 +109,7 @@ export default {
                 location: point
               };
               me.list = [obj];
+              console.log(obj);
               me.makerConf.position = [point.lng, point.lat];
             },
             error: function() {}
@@ -111,11 +122,23 @@ export default {
     var me = this;
   },
   mounted() {},
+  computed: {
+    style_() {
+      return {
+        height: this.height + "px"
+      };
+    }
+  },
   methods: {
+    // 设置中心点
     setCenter(arr) {
       this.makerConf.position = arr;
       this.center = arr;
       this.getList(arr);
+    },
+    // 获取选中的地点
+    getCenter() {
+      return this.list[this.currIndex];
     },
     select: function(item, index) {
       var me = this;
@@ -233,5 +256,9 @@ export default {
 }
 ul li.active {
   color: deeppink;
+}
+.adrs {
+  height: calc(100vh - 6vh - 300px - 70px - 60px - 6vh);
+  overflow: auto;
 }
 </style>

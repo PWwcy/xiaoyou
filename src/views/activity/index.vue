@@ -167,6 +167,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
+            :file-list="uploadFileList"
           >
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -259,8 +260,10 @@ export default {
         title: undefined,
         describe: undefined,
         content: undefined,
-        link: undefined
+        link: undefined,
+        pictureList: undefined
       };
+      this.initFileList();
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -293,13 +296,15 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改活动";
+        this.echoImg(this.form.pictureList);
       });
     },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.form.picture = this.initFile();
+          // this.form.pictureList = this.initFile();
+          this.form.pictureList = this.urlArrs;
           if (this.form.id != undefined) {
             updateActivity(this.form).then(response => {
               if (response.code === 200) {
