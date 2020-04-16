@@ -123,7 +123,8 @@
           <img :src="scope.row.picture" class="td-img" @click="showImg(scope.row.picture)" />
         </template>
       </el-table-column>
-      <el-table-column label="设备类型" align="center" prop="typeId" />
+      <el-table-column label="设备类型" align="center" prop="typeName" />
+      <el-table-column label="设备分类" align="center" prop="categoryName" />
       <el-table-column label="省" align="center" prop="province" />
       <el-table-column label="市" align="center" prop="city" />
       <el-table-column label="区" align="center" prop="area" />
@@ -195,18 +196,14 @@
           <el-col :span="24">
             <el-form-item label="设备类型" prop="typeId">
               <!-- <el-input v-model="form.typeId" placeholder="请输入设备类型" /> -->
-              <el-select
-                v-model="form.typeId"
-                placeholder="请选择"
-                filterable
-                v-el-select-loadmore="loadmore"
-              >
+
+              <el-select v-model="form.typeId"  placeholder="请选择">
                 <el-option
-                  v-for="item in optionsType"
+                  v-for="item in deviceType"
                   :key="item.id"
-                  :label="item.categoryName"
-                  :value="item.id"
-                ></el-option>
+                  :label="item.typeName"
+                  :value="item.id">
+                </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -284,16 +281,16 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="单个小时团体消费次数" prop="groupFrequency">
-              <el-input-number
-                v-model="form.groupFrequency"
-                placeholder="请输入单个小时团体消费次数"
-                controls-position="right"
-                :min="0"
-              />
-              <span class="my-unit-span">{{numUnit}}</span>
-            </el-form-item>
-          </el-col>
+          <el-form-item label="单个小时团体消费次数" prop="groupFrequency">
+            <el-input-number
+              v-model="form.groupFrequency"
+              placeholder="请输入单个小时团体消费次数"
+              controls-position="right"
+              :min="0"
+            />
+            <span class="my-unit-span">{{numUnit}}</span>
+          </el-form-item>
+        </el-col>
           <el-col :span="12">
             <el-form-item label="普通团体消费金额" prop="groupMoney">
               <el-input-number
@@ -320,8 +317,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="游戏分类id" prop="categoryId">
-              <el-input v-model="form.categoryId" placeholder="请输入游戏分类id" />
+            <el-form-item label="游戏分类" prop="categoryId">
+            <el-select
+              v-model="form.categoryId"
+              placeholder="请选择"
+              filterable
+              v-el-select-loadmore="loadmore"
+            >
+              <el-option
+                v-for="item in optionsType"
+                :key="item.id"
+                :label="item.categoryName"
+                :value="item.id"
+              ></el-option>
+            </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -463,7 +472,8 @@ export default {
       },
       fileList: [],
       showViewer: false,
-      bigImg: ""
+      bigImg: "",
+      deviceType:[]
     };
   },
   created() {
@@ -574,15 +584,20 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加设备";
+
+      getDevice().then(response => {
+        this.deviceType = response.deviceType;
+        this.reset();
+        this.open = true;
+        this.title = "添加投注配置";
+      });
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids;
       getDevice(id).then(response => {
+        this.deviceType = response.deviceType;
         this.form = response.data;
         this.open = true;
         this.title = "修改设备";

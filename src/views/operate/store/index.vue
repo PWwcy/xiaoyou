@@ -192,9 +192,9 @@
         <el-form-item label="纬度" prop="ycoordinate">
           <el-input v-model="form.ycoordinate" placeholder="请输入纬度" />
         </el-form-item>-->
-        <!-- <el-form-item label="商家介绍" prop="storeintroduce">
+        <el-form-item label="商家介绍" prop="storeintroduce">
           <el-input v-model="form.storeintroduce" placeholder="请输入商家介绍" />
-        </el-form-item>-->
+        </el-form-item>
         <el-form-item label="预约须知" prop="appointmentnotice">
           <el-input v-model="form.appointmentnotice" placeholder="请输入预约须知" />
         </el-form-item>

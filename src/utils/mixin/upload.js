@@ -26,6 +26,8 @@ export default {
     // 修改信息  图片回显
     echoImg(data) {
       if (data) {
+      debugger
+        data = data.split(",");
         let obj = {};
         if (typeof data === "string") {
           obj.url = data;
@@ -49,8 +51,8 @@ export default {
       if (fileList.length > 0) {
         fileList.forEach(item => {
           console.log(item);
-
-          this.urlArr.push(item)
+          debugger
+          this.urlArr.push(item.url)
         })
       }
     },

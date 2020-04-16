@@ -20,7 +20,6 @@
         />
       </el-form-item>
 
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -78,9 +77,9 @@
         </template>
       </el-table-column>
       <el-table-column label="玩法介绍" align="center" prop="playIntroduce" />
-      <el-table-column label="封面图片" align="center" prop="picture">
+      <el-table-column label="封面图片" align="center" prop="cover">
         <template slot-scope="scope">
-          <img :src="scope.row.picture" class="td-img" @click="showImg(scope.row.picture)" />
+          <img :src="scope.row.cover" class="td-img" @click="showImg(scope.row.cover)" />
         </template>
       </el-table-column>
       <el-table-column label="城市id" align="center" prop="cityId" />
@@ -128,25 +127,20 @@
         <el-form-item label="顺序" prop="pos">
           <el-input v-model="form.pos" placeholder="请输入顺序" />
         </el-form-item>
-        <el-form-item label="封面图片" prop="picture">
-          <!-- <el-upload
-            class="upload-demo"
-            action="http://47.97.180.206:8081/api/file"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            accept="image/*"
-            :limit="1"
-            :on-exceed="handleExceed"
-            :on-success="handleSuccess"
-            :file-list="fileList"
-          >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>-->
+        <el-form-item label="封面图片" prop="cover">
           <el-upload
-            :action="uploadFileUrl"
+            action="http://47.97.180.206:8081/api/file"
+            list-type="picture-card"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleCoverRemove"
+            :on-success="handleCoverSuccess"
+            :file-list="coverList">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="图片" prop="picture">
+          <el-upload
+            action="http://47.97.180.206:8081/api/file"
             list-type="picture-card"
             multiple
             :on-preview="handlePictureCardPreview"
@@ -210,8 +204,20 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {},
-      fileList: []
+      rules: {
+        pictureList: [
+          { required: true, message: "图片不能为空", trigger: "blur" }
+        ],
+        cover: [
+          { required: true, message: "封面不能为空", trigger: "blur" }
+        ],
+        icon: [
+          { required: true, message: "图标不能为空", trigger: "blur" }
+        ],
+      },
+      fileList: [],
+      pictureList:[],
+      coverList:[],
     };
   },
   created() {
@@ -227,6 +233,22 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+    },
+
+    /** 监听封面图片*/
+    handleCoverRemove(file, fileList) {
+      console.log(file, fileList);
+      if (fileList.length == 0) {
+        this.form.cover = null;
+      } else {
+        fileList.forEach(item => {
+          this.coverList.push(item.url)
+        });
+      }
+
+    },
+    handleCoverSuccess(response, file, fileList){
+      this.form.cover = response.data.picture;
     },
 
     // 取消按钮
@@ -272,20 +294,30 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      this.coverList =[]
       const id = row.id || this.ids;
       getType(id).then(response => {
+
         this.form = response.data;
         this.open = true;
         this.title = "修改设备类型";
         this.echoImg(this.form.picture);
+        if(this.form.cover!=null && this.form.cover !=""){
+        var obj = {};
+        obj.url = this.form.cover
+        var pictures = [];
+        pictures.push(obj)
+          this.coverList = pictures;
+        }
       });
     },
     /** 提交按钮 */
     submitForm: function() {
+      debugger
       this.$refs["form"].validate(valid => {
         if (valid) {
-          // this.form.picture = this.initFile();
-          this.form.picture = this.urlArrs;
+          this.form.pictureList = this.urlArrs;
+          debugger
           if (this.form.id != undefined) {
             updateType(this.form).then(response => {
               if (response.code === 200) {

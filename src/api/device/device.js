@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import { praseStrEmpty } from "@/utils/ruoyi"
 // 查询设备管理列表
 export function listDevice(query) {
   return request({
@@ -12,7 +12,7 @@ export function listDevice(query) {
 // 查询设备管理详细
 export function getDevice(id) {
   return request({
-    url: '/device/' + id,
+    url: '/device/' + praseStrEmpty(id),
     method: 'get'
   })
 }

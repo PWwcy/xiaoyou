@@ -80,7 +80,7 @@
           />
         </template>
       </el-table-column>
-
+      <el-table-column label="排序" align="center" prop="sort" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -112,9 +112,9 @@
     <!-- 添加或修改banner对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="110px">
-        <el-form-item label="类型对应内容id" prop="contentId">
-          <el-input v-model="form.contentId" placeholder="请输入类型对应内容id" />
-        </el-form-item>
+        <!--<el-form-item label="类型对应内容id" prop="contentId">-->
+          <!--<el-input v-model="form.contentId" placeholder="请输入类型对应内容id" />-->
+        <!--</el-form-item>-->
         <el-form-item label="城市">
           <!-- <el-input v-model="form.cityId" placeholder="请输入城市id" /> -->
           <v-distpicker
@@ -143,6 +143,10 @@
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
+        </el-form-item>
+
+        <el-form-item label="排序" prop="sort">
+          <el-input-number v-model="form.sort" controls-position="right" :min="0" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -266,7 +270,8 @@ export default {
         typeId: undefined,
         contentId: undefined,
         cityId: undefined,
-        picture: undefined
+        picture: undefined,
+        sort:undefined
       };
       this.resetForm("form");
     },

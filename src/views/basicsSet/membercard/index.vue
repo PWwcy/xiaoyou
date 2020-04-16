@@ -155,7 +155,7 @@
       <el-table-column label="类型" align="center" prop="memberCardType" />
       <el-table-column label="充值金额" align="center" prop="rechargeAmount" />
       <el-table-column label="获得游豆" align="center" prop="getBean" />
-      <el-table-column label="活得次数" align="center" prop="getFrequency" />
+      <el-table-column label="获得次数" align="center" prop="getFrequency" />
       <el-table-column label="有效期" align="center" prop="termOfValidity"></el-table-column>
 
       <el-table-column label="修改时间" align="center" prop="updateTime" />

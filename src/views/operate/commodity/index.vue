@@ -106,11 +106,6 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="商品介绍" align="center" prop="commodityIntroduce">
-        <template slot-scope="scope">
-          <span v-html="scope.row.commodityIntroduce"></span>
-        </template>
-      </el-table-column>
       <el-table-column label="商家名称" align="center" prop="storeName" />
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
