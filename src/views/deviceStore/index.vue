@@ -82,7 +82,7 @@
     <el-table v-loading="loading" :data="deviceStoreList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="供应商ID" align="center" prop="id" />
-      <el-table-column label="名称" align="center" prop="enterpriseName" />
+      <el-table-column label="供应商名称" align="center" prop="enterpriseName" />
       <el-table-column label="联系人" align="center" prop="contacts" />
       <el-table-column label="联系电话" align="center" prop="phone" />
       <el-table-column label="地址" align="center" prop="address" />
@@ -193,7 +193,8 @@ import {
   delDeviceStore,
   addDeviceStore,
   updateDeviceStore,
-  exportDeviceStore
+  exportDeviceStore,
+  updateStatus
 } from "@/api/deviceStore/deviceStore";
 
 export default {
@@ -257,6 +258,7 @@ export default {
     formatStatus(val) {
       return val == 0 ? "是" : val == 1 ? "否" : "";
     },
+
     // 取消按钮
     cancel() {
       this.open = false;
@@ -346,7 +348,7 @@ export default {
         type: "warning"
       })
         .then(function() {
-          return delDeviceStore(ids);
+          return updateStatus(ids);
         })
         .then(() => {
           this.getList();

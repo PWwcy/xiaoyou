@@ -230,7 +230,7 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        pictureList: [
+        picture: [
           { required: true, message: "图片不能为空", trigger: "blur" }
         ],
         cover: [{ required: true, message: "封面不能为空", trigger: "blur" }],

@@ -51,3 +51,12 @@ export function exportDeviceStore(query) {
     params: query
   })
 }
+
+// 删除
+export function updateStatus(id) {
+  return request({
+   url: '/deviceStore/' + id,
+    method: 'delete'
+
+  })
+}
