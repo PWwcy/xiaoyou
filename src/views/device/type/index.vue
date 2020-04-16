@@ -349,7 +349,7 @@ export default {
         if (this.form.icon != null && this.form.icon != "") {
           var obj = {};
           obj.url = this.form.icon;
-          obj.name = this.form.cover.split("-").pop();
+          obj.name = this.form.icon.split("-").pop();
           var pictures = [];
           pictures.push(obj);
           this.iconList = pictures;
