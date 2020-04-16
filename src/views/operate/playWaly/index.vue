@@ -250,12 +250,10 @@ export default {
       }
     },
     getType() {
-      this.loading = true;
       listDevice(this.queryParamsType).then(response => {
         const list = response.rows;
         this.optionsType = [...this.optionsType, ...list];
         this.typeTotal = response.total;
-        this.loading = false;
       });
     },
     // 取消按钮

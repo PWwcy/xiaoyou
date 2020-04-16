@@ -134,6 +134,24 @@
         <el-form-item label="玩法介绍" prop="playIntroduce">
           <el-input type="textarea" v-model="form.playIntroduce" placeholder="请输入玩法介绍" />
         </el-form-item>
+        <el-form-item label="游戏模式" prop="mode">
+          <el-select
+            v-model="form.modeList"
+            multiple
+            filterable
+            allow-create
+            default-first-option
+            placeholder="请选择游戏模式"
+            v-el-select-loadmore="loadmore"
+          >
+            <el-option
+              v-for="item in modelList"
+              :key="item.id"
+              :label="item.modeName"
+              :id="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="图标" prop="icon">
           <el-upload
             :action="uploadFileUrl"
@@ -194,6 +212,7 @@ import {
   exportType,
   getModelList
 } from "@/api/device/type";
+import { listMode } from "@/api/operate/mode";
 
 import mixins from "@/utils/mixin/upload";
 
@@ -230,20 +249,24 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        picture: [
-          { required: true, message: "图片不能为空", trigger: "blur" }
-        ],
+        picture: [{ required: true, message: "图片不能为空", trigger: "blur" }],
         cover: [{ required: true, message: "封面不能为空", trigger: "blur" }],
         icon: [{ required: true, message: "图标不能为空", trigger: "blur" }]
       },
       pictureList: [], //
       coverList: [], // 封面
       iconList: [], // 图标
-      modelList: [] // 模式
+      modelList: [], // 模式
+      modelTotal: 0,
+      modelParams: {
+        pageNum: 1,
+        pageSize: 10
+      }
     };
   },
   created() {
     this.getList();
+    this.getModelList();
   },
   mixins: [mixins],
   methods: {
@@ -259,9 +282,20 @@ export default {
     // 获取游戏模式列表
     getModelList() {
       console.log("获取模式列表");
-      // getModelList().then(res => {
-      //   console.log(res)
-      // })
+      listMode(this.modelParams).then(response => {
+        const list = response.rows;
+        this.modeList = [...this.modeList, ...list];
+        this.modelTotal = response.total;
+      });
+    },
+    loadmore() {
+      if (
+        this.modelParams.pageNum * this.modelParams.pageSize >=
+        this.modelTotal
+      ) {
+        this.modelParams.pageNum++;
+        this.getModelList();
+      }
     },
 
     /** 监听封面图片*/
@@ -295,7 +329,8 @@ export default {
         pos: undefined,
         pictureList: undefined,
         cover: undefined,
-        icon: undefined
+        icon: undefined,
+        modeList: undefined
       };
       this.initFileList();
       this.resetForm("form");
@@ -359,6 +394,7 @@ export default {
     /** 提交按钮 */
     submitForm: function() {
       this.form.pictureList = this.urlArrs;
+      this.form.modeList = this.form.modeList && this.form.modeList.join(",");
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
@@ -421,6 +457,23 @@ export default {
           this.download(response.msg);
         })
         .catch(function() {});
+    }
+  },
+  directives: {
+    "el-select-loadmore": {
+      bind(el, binding) {
+        // 获取element-ui定义好的scroll盒子
+        const SELECTWRAP_DOM = el.querySelector(
+          ".el-select-dropdown .el-select-dropdown__wrap"
+        );
+        SELECTWRAP_DOM.addEventListener("scroll", function() {
+          const condition =
+            this.scrollHeight - this.scrollTop <= this.clientHeight;
+          if (condition) {
+            binding.value();
+          }
+        });
+      }
     }
   }
 };
