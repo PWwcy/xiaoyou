@@ -3,11 +3,20 @@ export default {
     return {
       uploadFileList: [],
       urlArr: [],
+      bigImg: null,
+      showViewer: false
     }
   },
   computed: {
     urlArrs() {
       return this.urlArr.length > 0 ? this.urlArr : undefined;
+    },
+    imgArr() {
+      if (this.bigImg && typeof this.bigImg === "string") {
+        return [this.bigImg];
+      } else if (this.bigImg) {
+        return this.bigImg;
+      }
     }
   },
   methods: {
@@ -23,10 +32,25 @@ export default {
       this.uploadFileList = [];
       this.urlArr = [];
     },
+    // 关闭查看器
+    closeViewer() {
+      this.showViewer = false;
+    },
+    //
+    showImgs(data) {
+      if (data.pictureList) {
+        this.bigImg = data.pictureList.split(",");
+        this.showViewer = true;
+      } else if (typeof data === "string") {
+        this.bigImg = data;
+        this.showViewer = true;
+      } else {
+        this.bigImg = null;
+      }
+    },
     // 修改信息  图片回显
     echoImg(data) {
       if (data) {
-      debugger
         data = data.split(",");
         let obj = {};
         if (typeof data === "string") {
@@ -50,8 +74,6 @@ export default {
       this.urlArr = [];
       if (fileList.length > 0) {
         fileList.forEach(item => {
-          console.log(item);
-          debugger
           this.urlArr.push(item.url)
         })
       }
@@ -81,9 +103,14 @@ export default {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     handlePictureCardPreview(file) {
-      // console.log(file);
-      this.bigImg = file.url;
-      this.showViewer = true;
+      if (file.url) {
+        this.bigImg = file.url;
+      } else {
+        this.bigImg = file.response && file.response.data && file.response.data.picture;
+      }
+      if (this.bigImg) {
+        this.showViewer = true;
+      }
     },
   }
 }

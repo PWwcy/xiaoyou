@@ -347,6 +347,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getStoreList();
   },
   mixins: [mixins],
   methods: {
@@ -361,7 +362,11 @@ export default {
     },
     // 查询商家列表   新增商品时用
     getStoreList() {
-      listStore().then(response => {
+      let para = {
+        pageNum: this.sPage,
+        pageSize: this.sPageSize
+      };
+      listStore(para).then(response => {
         this.storeList = response.rows;
         this.sTotal = response.total;
       });
@@ -453,7 +458,8 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加商品";
-      this.getStoreList();
+      // if()
+      // this.getStoreList();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {

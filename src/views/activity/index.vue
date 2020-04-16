@@ -97,7 +97,6 @@
       </el-table-column>
       <el-table-column label="所需游豆" align="center" prop="bean" />
 
-
       <el-table-column label="外部链接" align="center" prop="link">
         <template slot-scope="scope">
           <a
@@ -150,8 +149,8 @@
         </el-form-item>
         <el-form-item label="是否免费">
           <el-radio-group v-model="form.isFree" @change="oddsChange">
-            <el-radio  v-model="form.isFree"  :label="0">免费</el-radio>
-            <el-radio  v-model="form.isFree" :label="1">收费</el-radio>
+            <el-radio v-model="form.isFree" :label="0">免费</el-radio>
+            <el-radio v-model="form.isFree" :label="1">收费</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -161,35 +160,34 @@
         <el-form-item label="外部链接" prop="link">
           <el-input v-model="form.link" placeholder="请输入外部链接" />
         </el-form-item>
-        <el-form-item label="活动图片" prop="picture">
+        <el-form-item label="活动图片" prop="pictureList">
           <!--<el-upload-->
-            <!--class="upload-demo"-->
-            <!--action="http://47.97.180.206:8081/api/file"-->
-            <!--:on-preview="handlePreview"-->
-            <!--:on-remove="handleRemove"-->
-            <!--:before-remove="beforeRemove"-->
-            <!--multiple-->
-            <!--accept="image/*"-->
-            <!--:limit="3"-->
-            <!--:on-exceed="handleExceed"-->
-            <!--:on-success="handleSuccess"-->
-            <!--:file-list="fileList"-->
+          <!--class="upload-demo"-->
+          <!--:action="uploadFileUrl"-->
+          <!--:on-preview="handlePreview"-->
+          <!--:on-remove="handleRemove"-->
+          <!--:before-remove="beforeRemove"-->
+          <!--multiple-->
+          <!--accept="image/*"-->
+          <!--:limit="3"-->
+          <!--:on-exceed="handleExceed"-->
+          <!--:on-success="handleSuccess"-->
+          <!--:file-list="fileList"-->
           <!--&gt;-->
 
-
-            <el-upload
-              action="http://47.97.180.206:8081/api/file"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove"
-              :on-success="handleSuccess">
-              <i class="el-icon-plus"></i>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-            <!--<el-button size="small" type="primary">点击上传</el-button>-->
-            <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+          <el-upload
+            :action="uploadFileUrl"
+            list-type="picture-card"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            multiple
+            :on-success="handleSuccess"
+            :file-list="uploadFileList"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <!--<el-button size="small" type="primary">点击上传</el-button>-->
+          <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
 
           <!--</el-upload>-->
         </el-form-item>
@@ -199,6 +197,10 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt />
+    </el-dialog>-->
+    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="imgArr" />
   </div>
 </template>
 
@@ -212,10 +214,12 @@ import {
   exportActivity
 } from "@/api/activity/activity";
 
+import mixins from "@/utils/mixin/upload";
+
 export default {
   data() {
     return {
-      dialogImageUrl: '',
+      dialogImageUrl: "",
       dialogVisible: false,
       // 遮罩层
       loading: true,
@@ -245,9 +249,7 @@ export default {
       },
       // 表单参数
       form: {
-
-        pictureList:[]
-
+        pictureList: []
       },
       // 表单校验
       rules: {
@@ -255,13 +257,14 @@ export default {
           { required: true, message: "活动标题不能为空", trigger: "blur" }
         ]
       },
-      isShow: false
-      , fileList: []
+      isShow: false,
+      fileList: []
     };
   },
   created() {
     this.getList();
   },
+  mixins: [mixins],
   methods: {
     /** 查询活动列表 */
     getList() {
@@ -272,43 +275,17 @@ export default {
         this.loading = false;
       });
     },
-    oddsChange:function(val){
-      if(val==0){
+    oddsChange: function(val) {
+      if (val == 0) {
         this.isShow = false;
-      }else{
+      } else {
         this.isShow = true;
       }
-
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
     },
 
-    handleRemove(file, fileList) {
-      debugger
-      console.log(file, fileList);
-    },
-    handlePictureCardPreview(file) {
+    handlePictureCardPreview1(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
-    },
-    handleSuccess(response, file, fileList) {
-      debugger
-      this.form.pictureList.push("/" + response.key);
-
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
     },
 
     // 取消按钮
@@ -324,13 +301,14 @@ export default {
         describe: undefined,
         content: undefined,
         link: undefined,
-        isFree:0,
-        bean:0
+        pictureList: undefined,
+        isFree: 0,
+        bean: 0
       };
       this.resetForm("form");
     },
     formatStatus(val) {
-      return val==0 ? '免费' : val == 1 ? '收费' : ''
+      return val == 0 ? "免费" : val == 1 ? "收费" : "";
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -362,17 +340,17 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改活动";
-        if(response.data.isFree==0){
+        if (response.data.isFree == 0) {
           this.isShow = false;
-          this.form.bean=0;
-        }else{
+          this.form.bean = 0;
+        } else {
           this.isShow = true;
         }
-
       });
     },
     /** 提交按钮 */
     submitForm: function() {
+      this.form.pictureList = this.urlArrs;
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {

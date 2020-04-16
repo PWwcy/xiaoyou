@@ -17,6 +17,14 @@ export function getType(id) {
   })
 }
 
+// 查询游戏模式列表
+export function getModelList(id) {
+  return request({
+    url: '/device/type/' + id,
+    method: 'get'
+  })
+}
+
 // 新增设备类型
 export function addType(data) {
   return request({

@@ -110,14 +110,19 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="创建人" align="center" prop="id" />
+      <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="活动名称" align="center" prop="activityName" />
+      <el-table-column label="图片" align="center">
+        <template slot-scope="scope">
+          <img :src="scope.row.picture" class="td-img" @click="showImgs(scope.row.picture)" />
+        </template>
+      </el-table-column>
       <el-table-column label="充值金额" align="center" prop="money" />
       <el-table-column label="获得游豆数量" align="center" prop="getbean" />
       <el-table-column label="赠送游豆数量" align="center" prop="givebean" />
       <el-table-column label="最后更新时间" align="center" prop="lastUpdateTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.lastUpdateTime) }}</span>
+          <span>{{ parseTime(scope.row.lastUpdateTime || scope.row.createTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建人" align="center" prop="createby" />
@@ -182,13 +187,27 @@
           />
           <span class="my-unit-span">{{beanUnit}}</span>
         </el-form-item>
-
+        <el-form-item label="图片" prop="picture">
+          <el-upload
+            :action="uploadFileUrl"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handlePicRemove"
+            :on-success="handlePicSuccess"
+            :limit="1"
+            :file-list="pictureList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+          </el-upload>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- 图片查看 -->
+    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="imgArr" />
   </div>
 </template>
 
@@ -202,6 +221,7 @@ import {
   exportRechargeActivity
 } from "@/api/member/RechargeActivity";
 
+import mixins from "@/utils/mixin/upload";
 export default {
   data() {
     return {
@@ -247,13 +267,18 @@ export default {
         ],
         lastUpdateTime: [
           { required: true, message: "请选择最后更新时间", trigger: "blur" }
+        ],
+        picture: [
+          { required: true, message: "请选择上传图片", trigger: "blur" }
         ]
-      }
+      },
+      pictureList: [] // 回显图片
     };
   },
   created() {
     this.getList();
   },
+  mixins: [mixins],
   methods: {
     /** 查询会员充值活动列表 */
     getList() {
@@ -269,6 +294,13 @@ export default {
       this.open = false;
       this.reset();
     },
+    // 图片选择和删除
+    handlePicRemove(file, fileList) {
+      this.form.picture = null;
+    },
+    handlePicSuccess(response, file, fileList) {
+      this.form.picture = response.data.picture;
+    },
     // 表单重置
     reset() {
       this.form = {
@@ -279,7 +311,8 @@ export default {
         givebean: 0,
         lastUpdateTime: undefined,
         createTime: undefined,
-        createby: undefined
+        createby: undefined,
+        picture: undefined
       };
       this.resetForm("form");
     },
@@ -313,10 +346,14 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改会员充值活动";
+        if (this.form) {
+          this.pictureList = this.form.picture;
+        }
       });
     },
     /** 提交按钮 */
     submitForm: function() {
+      console.log(this.form);
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {

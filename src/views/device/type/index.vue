@@ -71,15 +71,15 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="顺序" align="center" prop="id" />
       <el-table-column label="类型名称" align="center" prop="typeName" />
-      <el-table-column label="图标" align="center" prop="picture">
+      <el-table-column label="图标" align="center">
         <template slot-scope="scope">
-          <img :src="scope.row.icon" class="td-img" @click="showImg(scope.row.icon)" />
+          <img :src="scope.row.icon" class="td-img" @click="showImgs(scope.row.icon)" />
         </template>
       </el-table-column>
       <el-table-column label="玩法介绍" align="center" prop="playIntroduce" />
       <el-table-column label="封面图片" align="center" prop="cover">
         <template slot-scope="scope">
-          <img :src="scope.row.cover" class="td-img" @click="showImg(scope.row.cover)" />
+          <img :src="scope.row.cover" class="td-img" @click="showImgs(scope.row.cover)" />
         </template>
       </el-table-column>
       <el-table-column label="城市id" align="center" prop="cityId" />
@@ -100,6 +100,13 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['device:type:remove']"
           >删除</el-button>
+          <!-- <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="showImgs(scope.row)"
+            v-hasPermi="['device:type:look']"
+          >查看图片</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -118,29 +125,44 @@
         <el-form-item label="类型名称" prop="typeName">
           <el-input v-model="form.typeName" placeholder="请输入类型名称" />
         </el-form-item>
-        <el-form-item label="玩法介绍" prop="playIntroduce">
-          <el-input v-model="form.playIntroduce" placeholder="请输入玩法介绍" />
-        </el-form-item>
         <el-form-item label="城市id" prop="cityId">
           <el-input v-model="form.cityId" placeholder="请输入城市id" />
         </el-form-item>
         <el-form-item label="顺序" prop="pos">
           <el-input v-model="form.pos" placeholder="请输入顺序" />
         </el-form-item>
+        <el-form-item label="玩法介绍" prop="playIntroduce">
+          <el-input type="textarea" v-model="form.playIntroduce" placeholder="请输入玩法介绍" />
+        </el-form-item>
+        <el-form-item label="图标" prop="icon">
+          <el-upload
+            :action="uploadFileUrl"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleIconRemove"
+            :on-success="handleIconSuccess"
+            :limit="1"
+            :file-list="iconList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+          </el-upload>
+        </el-form-item>
         <el-form-item label="封面图片" prop="cover">
           <el-upload
-            action="http://47.97.180.206:8081/api/file"
-            list-type="picture-card"
+            :action="uploadFileUrl"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleCoverRemove"
             :on-success="handleCoverSuccess"
-            :file-list="coverList">
-            <i class="el-icon-plus"></i>
+            :limit="1"
+            :file-list="coverList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
           </el-upload>
         </el-form-item>
-        <el-form-item label="图片" prop="picture">
+        <el-form-item label="图片" prop="pictureList">
           <el-upload
-            action="http://47.97.180.206:8081/api/file"
+            :action="uploadFileUrl"
             list-type="picture-card"
             multiple
             :on-preview="handlePictureCardPreview"
@@ -157,6 +179,8 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- 图片查看 -->
+    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="imgArr" />
   </div>
 </template>
 
@@ -167,7 +191,8 @@ import {
   delType,
   addType,
   updateType,
-  exportType
+  exportType,
+  getModelList
 } from "@/api/device/type";
 
 import mixins from "@/utils/mixin/upload";
@@ -208,16 +233,13 @@ export default {
         pictureList: [
           { required: true, message: "图片不能为空", trigger: "blur" }
         ],
-        cover: [
-          { required: true, message: "封面不能为空", trigger: "blur" }
-        ],
-        icon: [
-          { required: true, message: "图标不能为空", trigger: "blur" }
-        ],
+        cover: [{ required: true, message: "封面不能为空", trigger: "blur" }],
+        icon: [{ required: true, message: "图标不能为空", trigger: "blur" }]
       },
-      fileList: [],
-      pictureList:[],
-      coverList:[],
+      pictureList: [], //
+      coverList: [], // 封面
+      iconList: [], // 图标
+      modelList: [] // 模式
     };
   },
   created() {
@@ -234,21 +256,27 @@ export default {
         this.loading = false;
       });
     },
+    // 获取游戏模式列表
+    getModelList() {
+      console.log("获取模式列表");
+      // getModelList().then(res => {
+      //   console.log(res)
+      // })
+    },
 
     /** 监听封面图片*/
     handleCoverRemove(file, fileList) {
-      console.log(file, fileList);
-      if (fileList.length == 0) {
-        this.form.cover = null;
-      } else {
-        fileList.forEach(item => {
-          this.coverList.push(item.url)
-        });
-      }
-
+      this.form.cover = null;
     },
-    handleCoverSuccess(response, file, fileList){
+    handleCoverSuccess(response, file, fileList) {
       this.form.cover = response.data.picture;
+    },
+    /** 监听图标*/
+    handleIconRemove(file, fileList) {
+      this.form.icon = null;
+    },
+    handleIconSuccess(response, file, fileList) {
+      this.form.icon = response.data.picture;
     },
 
     // 取消按钮
@@ -264,7 +292,10 @@ export default {
         playIntroduce: undefined,
         picture: undefined,
         cityId: undefined,
-        pos: undefined
+        pos: undefined,
+        pictureList: undefined,
+        cover: undefined,
+        icon: undefined
       };
       this.initFileList();
       this.resetForm("form");
@@ -290,34 +321,46 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加设备类型";
+      if (this.modelList.length === 0) {
+        this.getModelList();
+      }
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      this.coverList =[]
+      this.coverList = [];
       const id = row.id || this.ids;
+      if (this.modelList.length === 0) {
+        this.getModelList();
+      }
       getType(id).then(response => {
-
         this.form = response.data;
         this.open = true;
         this.title = "修改设备类型";
-        this.echoImg(this.form.picture);
-        if(this.form.cover!=null && this.form.cover !=""){
-        var obj = {};
-        obj.url = this.form.cover
-        var pictures = [];
-        pictures.push(obj)
+        this.echoImg(this.form.pictureList);
+        if (this.form.cover != null && this.form.cover != "") {
+          var obj = {};
+          obj.url = this.form.cover;
+          obj.name = this.form.cover.split("-").pop();
+          var pictures = [];
+          pictures.push(obj);
           this.coverList = pictures;
+        }
+        if (this.form.icon != null && this.form.icon != "") {
+          var obj = {};
+          obj.url = this.form.icon;
+          obj.name = this.form.cover.split("-").pop();
+          var pictures = [];
+          pictures.push(obj);
+          this.iconList = pictures;
         }
       });
     },
     /** 提交按钮 */
     submitForm: function() {
-      debugger
+      this.form.pictureList = this.urlArrs;
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.form.pictureList = this.urlArrs;
-          debugger
           if (this.form.id != undefined) {
             updateType(this.form).then(response => {
               if (response.code === 200) {
