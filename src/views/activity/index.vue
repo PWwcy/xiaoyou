@@ -160,6 +160,19 @@
         <el-form-item label="外部链接" prop="link">
           <el-input v-model="form.link" placeholder="请输入外部链接" />
         </el-form-item>
+        <el-form-item label="封面图片" prop="cover">
+          <el-upload
+            :action="uploadFileUrl"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleCoverRemove"
+            :on-success="handleCoverSuccess"
+            :limit="1"
+            :file-list="coverList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+          </el-upload>
+        </el-form-item>
         <el-form-item label="活动图片" prop="pictureList">
           <!--<el-upload-->
           <!--class="upload-demo"-->
@@ -258,7 +271,8 @@ export default {
         ]
       },
       isShow: false,
-      fileList: []
+      fileList: [],
+      coverList: []
     };
   },
   created() {
@@ -287,6 +301,13 @@ export default {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
+    /** 监听封面图片*/
+    handleCoverRemove(file, fileList) {
+      this.form.cover = null;
+    },
+    handleCoverSuccess(response, file, fileList) {
+      this.form.cover = response.data.picture;
+    },
 
     // 取消按钮
     cancel() {
@@ -303,8 +324,10 @@ export default {
         link: undefined,
         pictureList: undefined,
         isFree: 0,
-        bean: 0
+        bean: 0,
+        cover: undefined
       };
+      this.coverList = [];
       this.resetForm("form");
     },
     formatStatus(val) {
@@ -340,6 +363,9 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改活动";
+        if (this.form.cover) {
+          this.coverList.push(this.form.cover);
+        }
         if (response.data.isFree == 0) {
           this.isShow = false;
           this.form.bean = 0;
