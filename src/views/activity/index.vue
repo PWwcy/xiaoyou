@@ -87,6 +87,11 @@
     <el-table v-loading="loading" :data="activityList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="活动id" align="center" prop="id" />
+      <el-table-column label="封面图片" align="center" prop="cover">
+        <template slot-scope="scope">
+          <img :src="scope.row.cover" class="td-img" @click="showImgs(scope.row.cover)" />
+        </template>
+      </el-table-column>
       <el-table-column label="活动标题" align="center" prop="title" />
       <el-table-column label="活动描述" align="center" prop="describe" />
       <el-table-column label="活动内容" align="center" prop="content" />
