@@ -337,7 +337,7 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改设备类型";
-        this.echoImg(this.form.pictureList);
+        this.echoImg(this.form.picture);
         if (this.form.cover != null && this.form.cover != "") {
           var obj = {};
           obj.url = this.form.cover;
