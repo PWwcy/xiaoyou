@@ -368,8 +368,12 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改活动";
+        this.echoImg(this.form.pictureList);
         if (this.form.cover) {
-          this.coverList.push(this.form.cover);
+          this.coverList.push({
+            url: this.form.cover,
+            name: this.form.cover.split("-").pop()
+          });
         }
         if (response.data.isFree == 0) {
           this.isShow = false;

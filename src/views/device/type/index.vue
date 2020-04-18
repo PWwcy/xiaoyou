@@ -148,8 +148,9 @@
               v-for="item in modelList"
               :key="item.id"
               :label="item.modeName"
-              :id="item.value"
+              :value="item.id"
             ></el-option>
+            <!-- :id="item.value" -->
           </el-select>
         </el-form-item>
         <el-form-item label="图标" prop="icon">
@@ -281,10 +282,10 @@ export default {
     },
     // 获取游戏模式列表
     getModelList() {
-      console.log("获取模式列表");
+      console.log(this.modelParams);
       listMode(this.modelParams).then(response => {
-        const list = response.rows;
-        this.modeList = [...this.modeList, ...list];
+        let list = response.rows;
+        this.modelList = [...this.modelList, ...list];
         this.modelTotal = response.total;
       });
     },

@@ -55,12 +55,14 @@ export default {
         let obj = {};
         if (typeof data === "string") {
           obj.url = data;
+          obj.uid = parseInt(Math.random() * 100000)
           this.urlArr.push(data);
           this.uploadFileList.push(obj);
           obj = {};
         } else {
           data.forEach(item => {
             obj.url = item;
+            obj.uid = parseInt(Math.random() * 100000)
             this.urlArr.push(item);
             this.uploadFileList.push(obj);
             obj = {};
