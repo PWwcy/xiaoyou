@@ -334,6 +334,7 @@ export default {
         modeList: undefined
       };
       this.initFileList();
+      this.uploadFileList = [];
       this.resetForm("form");
     },
     /** 搜索按钮操作 */

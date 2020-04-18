@@ -333,6 +333,7 @@ export default {
         cover: undefined
       };
       this.coverList = [];
+      this.initFileList();
       this.resetForm("form");
     },
     formatStatus(val) {
