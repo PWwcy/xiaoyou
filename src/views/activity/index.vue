@@ -369,7 +369,7 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改活动";
-        this.echoImg(this.form.pictureList);
+        this.echoImg(this.form.picture);
         if (this.form.cover) {
           this.coverList.push({
             url: this.form.cover,
