@@ -87,15 +87,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="商家id" align="center" prop="id" />
       <el-table-column label="商家名称" align="center" prop="storename" />
-      <el-table-column label="商家图片" align="center" prop="storepicture">
-        <template slot-scope="scope">
-          <img
-            class="td-img"
-            :src="scope.row.storepicture"
-            @click="showImg(scope.row.storepicture)"
-          />
-        </template>
-      </el-table-column>
+
       <el-table-column label="商家电话" align="center" prop="storephone" />
       <el-table-column label="地址" align="center" prop="address" />
       <el-table-column label="商家介绍" align="center" prop="storeintroduce" />
@@ -500,7 +492,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           // this.form.storepicture = this.initFile();
-          this.form.storepicture = this.urlArrs;
+          this.form.pictureList = this.urlArrs;
           if (this.form.id != undefined) {
             updateStore(this.form).then(response => {
               if (response.code === 200) {

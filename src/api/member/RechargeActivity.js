@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import { praseStrEmpty } from "@/utils/ruoyi"
 // 查询会员充值活动列表
 export function listRechargeActivity(query) {
   return request({
@@ -12,7 +12,7 @@ export function listRechargeActivity(query) {
 // 查询会员充值活动详细
 export function getRechargeActivity(id) {
   return request({
-    url: '/member/RechargeActivity/' + id,
+    url: '/member/RechargeActivity/' + praseStrEmpty(id),
     method: 'get'
   })
 }

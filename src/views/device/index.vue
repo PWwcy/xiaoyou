@@ -118,11 +118,11 @@
       <el-table-column label="设备id" align="center" prop="id" />
       <el-table-column label="设备编号" align="center" prop="deviceNumber" />
       <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column label="设备图片" align="center" prop="picture">
-        <template slot-scope="scope">
-          <img :src="scope.row.picture" class="td-img" @click="showImg(scope.row.picture)" />
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="设备图片" align="center" prop="picture">-->
+<!--        <template slot-scope="scope">-->
+<!--          <img :src="scope.row.picture" class="td-img" @click="showImg(scope.row.picture)" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="设备类型" align="center" prop="typeName" />
       <el-table-column label="设备分类" align="center" prop="categoryName" />
       <el-table-column label="省" align="center" prop="province" />
@@ -609,7 +609,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           // this.form.picture = this.initFile();
-          this.form.picture = this.urlArrs;
+          this.form.picture = this.urlArrs.join();
           if (this.form.id != undefined) {
             updateDevice(this.form).then(response => {
               if (response.code === 200) {

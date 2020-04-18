@@ -212,7 +212,7 @@ export default {
         userId: undefined,
         buyTime: undefined,
         isuse: undefined,
-        status: -1,
+        status: undefined,
         commodityId: undefined,
         exchangeTime: undefined,
         commodityName: undefined,

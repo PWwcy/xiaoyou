@@ -112,6 +112,8 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="活动名称" align="center" prop="activityName" />
+      <el-table-column label="会员卡名称" align="center" prop="memberCardName" />
+
       <el-table-column label="图片" align="center">
         <template slot-scope="scope">
           <img :src="scope.row.picture" class="td-img" @click="showImgs(scope.row.picture)" />
@@ -168,6 +170,18 @@
             :min="0"
           />
           <span class="my-unit-span">{{moneyUnit}}</span>
+        </el-form-item>
+        <el-form-item label="会员卡" prop="memberCardId">
+          <!-- <el-input v-model="form.typeId" placeholder="请输入设备类型" /> -->
+
+          <el-select v-model="form.memberCardId"  placeholder="请选择">
+            <el-option
+              v-for="item in memberCard"
+              :key="item.id"
+              :label="item.memberCardName"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="获得游豆数量" prop="getbean">
           <el-input-number
@@ -272,7 +286,8 @@ export default {
           { required: true, message: "请选择上传图片", trigger: "blur" }
         ]
       },
-      pictureList: [] // 回显图片
+      pictureList: [], // 回显图片,
+      memberCard:[] // 会员卡
     };
   },
   created() {
@@ -334,15 +349,20 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加会员充值活动";
+      getRechargeActivity().then(response => {
+        this.memberCard = response.memberCard;
+        this.reset();
+        this.open = true;
+        this.title = "添加会员充值活动";
+      });
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids;
       getRechargeActivity(id).then(response => {
+        debugger
+        this.memberCard = response.memberCard;
         this.form = response.data;
         this.open = true;
         this.title = "修改会员充值活动";
