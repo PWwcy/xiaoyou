@@ -371,7 +371,7 @@ export default {
         this.getModelList();
       }
       getType(id).then(response => {
-        this.form = response.data;
+        this.form = response.data.deviceType;
         this.open = true;
         this.title = "修改设备类型";
         this.echoImg(this.form.picture);
