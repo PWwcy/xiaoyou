@@ -160,11 +160,11 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      // rules: {
-      //   formCategoryName: [
-      //     { required: true, message: "设备类型不能为空", trigger: "blur" }
-      //   ]
-      // },
+      rules: {
+        // formCategoryName: [
+        //   { required: true, message: "设备类型不能为空", trigger: "blur" }
+        // ]
+      },
       fileList: []
     };
   },

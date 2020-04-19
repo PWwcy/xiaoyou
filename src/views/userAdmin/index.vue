@@ -6,10 +6,12 @@
         <v-distpicker
           class="city-select"
           size="small"
-          :province="queryParams.province"
-          :city="queryParams.city"
-          :area="queryParams.area"
-          @selected="onSelected"
+          :province="queryParams.provinceText"
+          :city="queryParams.cityText"
+          :area="queryParams.areaText"
+          @province="onChangeProvince('queryParams',$event)"
+          @city="onChangeCity('queryParams',$event)"
+          @area="onChangeArea('queryParams',$event)"
         ></v-distpicker>
       </el-form-item>
       <el-form-item label="昵称" prop="nickname">
@@ -215,10 +217,12 @@
           <v-distpicker
             class="city-select"
             size="small"
-            :province="form.province"
-            :city="form.city"
-            :area="form.area"
-            @selected="addSelected"
+            :province="form.provinceText"
+            :city="form.cityText"
+            :area="form.areaText"
+            @province="onChangeProvince('form',$event)"
+            @city="onChangeCity('form',$event)"
+            @area="onChangeArea('form',$event)"
           ></v-distpicker>
         </el-form-item>
         <el-form-item label="用户性别">
@@ -278,6 +282,8 @@ import {
 
 import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
+
+import region from "@/utils/mixin/region";
 
 export default {
   components: {
@@ -344,6 +350,7 @@ export default {
   created() {
     this.getList();
   },
+  mixins: [region],
   methods: {
     /** 查询用户列表 */
     getList() {
@@ -448,6 +455,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetRegion("queryParams");
       this.resetForm("queryForm");
       this.handleQuery();
     },
@@ -478,6 +486,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
+            this.testForm();
             updateUser(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");

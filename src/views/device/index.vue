@@ -5,10 +5,12 @@
       <el-form-item label="地区">
         <v-distpicker
           size="small"
-          :province="queryParams.province"
-          :city="queryParams.city"
-          :area="queryParams.area"
-          @selected="onSelected"
+          :province="queryParams.provinceText"
+          :city="queryParams.cityText"
+          :area="queryParams.areaText"
+          @province="onChangeProvince('queryParams',$event)"
+          @city="onChangeCity('queryParams',$event)"
+          @area="onChangeArea('queryParams',$event)"
         ></v-distpicker>
       </el-form-item>
       <el-form-item label="设备类型" prop="typeId">
@@ -118,11 +120,11 @@
       <el-table-column label="设备id" align="center" prop="id" />
       <el-table-column label="设备编号" align="center" prop="deviceNumber" />
       <el-table-column label="设备名称" align="center" prop="deviceName" />
-<!--      <el-table-column label="设备图片" align="center" prop="picture">-->
-<!--        <template slot-scope="scope">-->
-<!--          <img :src="scope.row.picture" class="td-img" @click="showImg(scope.row.picture)" />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <!--      <el-table-column label="设备图片" align="center" prop="picture">-->
+      <!--        <template slot-scope="scope">-->
+      <!--          <img :src="scope.row.picture" class="td-img" @click="showImg(scope.row.picture)" />-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
       <el-table-column label="设备类型" align="center" prop="typeName" />
       <el-table-column label="设备分类" align="center" prop="categoryName" />
       <el-table-column label="省" align="center" prop="province" />
@@ -168,7 +170,6 @@
             v-hasPermi="['device:device:remove']"
           >删除</el-button>
 
-
           <router-link :to="'/device/duration/data/' + scope.row.id" class="link-type">
             <el-button size="mini" type="text" icon="el-icon-tickets">游戏时长</el-button>
           </router-link>
@@ -202,23 +203,25 @@
             <el-form-item label="设备类型" prop="typeId">
               <!-- <el-input v-model="form.typeId" placeholder="请输入设备类型" /> -->
 
-              <el-select v-model="form.typeId"  placeholder="请选择">
+              <el-select v-model="form.typeId" placeholder="请选择">
                 <el-option
                   v-for="item in deviceType"
                   :key="item.id"
                   :label="item.typeName"
-                  :value="item.id">
-                </el-option>
+                  :value="item.id"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="地区">
               <v-distpicker
-                :province="form.province"
-                :city="form.city"
-                :area="form.area"
-                @selected="updateSelected"
+                :province="form.provinceText"
+                :city="form.cityText"
+                :area="form.areaText"
+                @province="onChangeProvince('form',$event)"
+                @city="onChangeCity('form',$event)"
+                @area="onChangeArea('form',$event)"
               ></v-distpicker>
             </el-form-item>
           </el-col>
@@ -286,16 +289,16 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-          <el-form-item label="单个小时团体消费次数" prop="groupFrequency">
-            <el-input-number
-              v-model="form.groupFrequency"
-              placeholder="请输入单个小时团体消费次数"
-              controls-position="right"
-              :min="0"
-            />
-            <span class="my-unit-span">{{numUnit}}</span>
-          </el-form-item>
-        </el-col>
+            <el-form-item label="单个小时团体消费次数" prop="groupFrequency">
+              <el-input-number
+                v-model="form.groupFrequency"
+                placeholder="请输入单个小时团体消费次数"
+                controls-position="right"
+                :min="0"
+              />
+              <span class="my-unit-span">{{numUnit}}</span>
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
             <el-form-item label="普通团体消费金额" prop="groupMoney">
               <el-input-number
@@ -323,19 +326,19 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="游戏分类" prop="categoryId">
-            <el-select
-              v-model="form.categoryId"
-              placeholder="请选择"
-              filterable
-              v-el-select-loadmore="loadmore"
-            >
-              <el-option
-                v-for="item in optionsType"
-                :key="item.id"
-                :label="item.categoryName"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+              <el-select
+                v-model="form.categoryId"
+                placeholder="请选择"
+                filterable
+                v-el-select-loadmore="loadmore"
+              >
+                <el-option
+                  v-for="item in optionsType"
+                  :key="item.id"
+                  :label="item.categoryName"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -404,6 +407,7 @@ import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
 
 import mixins from "@/utils/mixin/upload";
+import region from "@/utils/mixin/region";
 export default {
   components: {
     Editor,
@@ -478,14 +482,14 @@ export default {
       fileList: [],
       showViewer: false,
       bigImg: "",
-      deviceType:[]
+      deviceType: []
     };
   },
   created() {
     this.getList();
     this.getType();
   },
-  mixins: [mixins],
+  mixins: [mixins, region],
   methods: {
     formatStatus(val) {
       return val == 0 ? "正常" : val == 1 ? "停止" : val == 2 ? "维修中" : "";
@@ -569,6 +573,7 @@ export default {
         describe: undefined
       };
       this.initFileList();
+      this.resetRegion("form");
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -578,6 +583,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetRegion("queryParams");
       this.resetForm("queryForm");
       this.handleQuery();
     },
@@ -589,7 +595,6 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-
       getDevice().then(response => {
         this.deviceType = response.deviceType;
         this.reset();
@@ -616,6 +621,7 @@ export default {
           // this.form.picture = this.initFile();
           this.form.picture = this.urlArrs.join();
           if (this.form.id != undefined) {
+            this.testForm();
             updateDevice(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");

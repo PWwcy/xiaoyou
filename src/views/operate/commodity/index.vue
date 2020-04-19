@@ -4,10 +4,12 @@
       <el-form-item label="地区">
         <v-distpicker
           size="small"
-          :province="queryParams.province"
-          :city="queryParams.city"
-          :area="queryParams.area"
-          @selected="onSelected"
+          :province="queryParams.provinceText"
+          :city="queryParams.cityText"
+          :area="queryParams.areaText"
+          @province="onChangeProvince('queryParams',$event)"
+          @city="onChangeCity('queryParams',$event)"
+          @area="onChangeArea('queryParams',$event)"
         />
       </el-form-item>
 
@@ -184,10 +186,12 @@
         <el-form-item label="地区">
           <v-distpicker
             size="small"
-            :province="form.province"
-            :city="form.city"
-            :area="form.area"
-            @selected="onformSelected"
+            :province="form.provinceText"
+            :city="form.cityText"
+            :area="form.areaText"
+            @province="onChangeProvince('form',$event)"
+            @city="onChangeCity('form',$event)"
+            @area="onChangeArea('form',$event)"
           />
         </el-form-item>
 
@@ -292,6 +296,7 @@ import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
 
 import mixins from "@/utils/mixin/upload";
+import region from "@/utils/mixin/region";
 export default {
   components: {
     Editor,
@@ -370,7 +375,7 @@ export default {
     this.getStoreList();
   },
 
-  mixins: [mixins],
+  mixins: [mixins, region],
   methods: {
     /** 查询商品列表 */
     getList() {
@@ -479,6 +484,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetRegion("queryParams");
       this.resetForm("queryForm");
       this.handleQuery();
     },
@@ -503,10 +509,10 @@ export default {
       const id = row.id || this.ids;
       getCommodity(id).then(response => {
         this.form = response.data;
+        this.initForm(this.form);
         this.open = true;
         this.title = "修改商品";
         this.echoImg(this.form.commodityPicture);
-
         if (this.form.img != null && this.form.img != "") {
           var obj = {};
           obj.url = this.form.img;
@@ -524,6 +530,7 @@ export default {
           // this.form.commodityPicture = this.initFile();
           this.form.commodityPicture = this.urlArrs.join();
           if (this.form.id != undefined) {
+            this.testForm();
             updateCommodity(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");

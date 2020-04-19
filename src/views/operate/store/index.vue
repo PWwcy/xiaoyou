@@ -4,11 +4,14 @@
       <el-form-item label="地区">
         <v-distpicker
           size="small"
-          :province="queryParams.province"
-          :city="queryParams.city"
-          :area="queryParams.area"
-          @selected="onSelected"
+          :province="queryParams.provinceText"
+          :city="queryParams.cityText"
+          :area="queryParams.areaText"
+          @province="onChangeProvince('queryParams',$event)"
+          @city="onChangeCity('queryParams',$event)"
+          @area="onChangeArea('queryParams',$event)"
         ></v-distpicker>
+        <!-- @selected="onSelected" -->
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
@@ -252,6 +255,7 @@ import VDistpicker from "v-distpicker";
 import vMap from "@/components/VueAmap";
 
 import mixins from "@/utils/mixin/upload";
+import region from "@/utils/mixin/region";
 export default {
   components: {
     Editor,
@@ -326,7 +330,7 @@ export default {
   created() {
     this.getList();
   },
-  mixins: [mixins],
+  mixins: [mixins, region],
   methods: {
     /** 查询商家列表 */
     getList() {
@@ -432,6 +436,7 @@ export default {
       this.reset();
     },
     onSelected(data) {
+      console.log(data);
       this.queryParams.province = data.province.value;
       this.queryParams.city = data.city.value;
       this.queryParams.area = data.area.value;
@@ -461,6 +466,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetRegion("queryParams");
       this.resetForm("queryForm");
       this.handleQuery();
     },
