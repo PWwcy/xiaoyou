@@ -73,8 +73,9 @@ export default {
             }
           });
           //去掉logo
-          document.getElementsByClassName("amap-logo")[0].style.display =
-            "none";
+          if (document.getElementsByClassName("amap-logo")[0])
+            document.getElementsByClassName("amap-logo")[0].style.display =
+              "none";
         },
         dragend: function(e) {
           //console.log("dragging",e,this.getCenter());

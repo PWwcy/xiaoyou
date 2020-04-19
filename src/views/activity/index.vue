@@ -171,7 +171,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleCoverRemove"
             :on-success="handleCoverSuccess"
-            :limit="1"
+            :limit="2"
             :file-list="coverList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
@@ -312,6 +312,13 @@ export default {
     },
     handleCoverSuccess(response, file, fileList) {
       this.form.cover = response.data.picture;
+      this.coverList = [];
+      let obj = {
+        url: response.data.picture,
+        name: file.name,
+        uid: file.uid
+      };
+      this.coverList.push(obj);
     },
 
     // 取消按钮

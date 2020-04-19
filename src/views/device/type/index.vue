@@ -143,6 +143,7 @@
             default-first-option
             placeholder="请选择游戏模式"
             v-el-select-loadmore="loadmore"
+            style="width: 100%;"
           >
             <el-option
               v-for="item in modelList"
@@ -302,16 +303,32 @@ export default {
     /** 监听封面图片*/
     handleCoverRemove(file, fileList) {
       this.form.cover = null;
+      this.coverList = [];
     },
     handleCoverSuccess(response, file, fileList) {
       this.form.cover = response.data.picture;
+      this.coverList = [];
+      let obj = {
+        url: response.data.picture,
+        name: file.name,
+        uid: file.uid
+      };
+      this.coverList.push(obj);
     },
     /** 监听图标*/
     handleIconRemove(file, fileList) {
       this.form.icon = null;
+      this.iconList = [];
     },
     handleIconSuccess(response, file, fileList) {
       this.form.icon = response.data.picture;
+      this.iconList = [];
+      let obj = {
+        url: response.data.picture,
+        name: file.name,
+        uid: file.uid
+      };
+      this.iconList.push(obj);
     },
 
     // 取消按钮
@@ -335,6 +352,8 @@ export default {
       };
       this.initFileList();
       this.uploadFileList = [];
+      this.coverList = [];
+      this.iconList = [];
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -375,6 +394,12 @@ export default {
         this.open = true;
         this.title = "修改设备类型";
         this.echoImg(this.form.picture);
+        this.form.modeList =
+          response.data.modes &&
+          response.data.modes.map(item => {
+            return item.id;
+          });
+        console.log(this.form);
         if (this.form.cover != null && this.form.cover != "") {
           var obj = {};
           obj.url = this.form.cover;

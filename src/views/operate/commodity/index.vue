@@ -97,24 +97,20 @@
       <el-table-column label="商品名称" align="center" prop="commodityName" />
       <el-table-column label="价格" align="center" prop="price" />
       <el-table-column label="游豆" align="center" prop="gameBean" />
-            <el-table-column label="商品主图" align="center" prop="img">
-              <template slot-scope="scope">
-                <img
-                  class="td-img"
-                  :src="scope.row.img"
-                  @click="showImg(scope.row.img)"
-                />
-              </template>
-            </el-table-column>
-<!--      <el-table-column label="商品图片" align="center" prop="commodityPicture">-->
-<!--        <template slot-scope="scope">-->
-<!--          <img-->
-<!--            class="td-img"-->
-<!--            :src="scope.row.commodityPicture"-->
-<!--            @click="showImg(scope.row.commodityPicture)"-->
-<!--          />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="商品主图" align="center" prop="img">
+        <template slot-scope="scope">
+          <img class="td-img" :src="scope.row.img" @click="showImg(scope.row.img)" />
+        </template>
+      </el-table-column>
+      <!--      <el-table-column label="商品图片" align="center" prop="commodityPicture">-->
+      <!--        <template slot-scope="scope">-->
+      <!--          <img-->
+      <!--            class="td-img"-->
+      <!--            :src="scope.row.commodityPicture"-->
+      <!--            @click="showImg(scope.row.commodityPicture)"-->
+      <!--          />-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
       <el-table-column label="商家名称" align="center" prop="storeName" />
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
@@ -231,19 +227,20 @@
         <!-- <el-form-item label="商品介绍" prop="commodityIntroduce">
           <el-input v-model="form.commodityIntroduce" placeholder="请输入商品介绍" />
         </el-form-item>-->
-        <el-form-item label="商品主图" prop="img">
+        <el-form-item label="商品主图" prop="img" style="margin-top: 90px;">
           <el-upload
             :action="uploadFileUrl"
             :on-remove="handleImgRemove"
             :on-success="handleImgSuccess"
-            :limit="1"
+            :on-preview="handlePictureCardPreview"
+            :limit="2"
             :file-list="imgList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
             <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
           </el-upload>
         </el-form-item>
-        <el-form-item label="商品图片" prop="commodityPicture" style="margin-top: 90px;">
+        <el-form-item label="商品图片" prop="commodityPicture">
           <!-- <el-upload
             class="upload-demo"
             :action="uploadFileUrl"
@@ -365,7 +362,7 @@ export default {
       sPageSize: 10,
       sTotal: 0,
       // 商品主图
-      imgList:[]
+      imgList: []
     };
   },
   created() {
@@ -390,6 +387,13 @@ export default {
     },
     handleImgSuccess(response, file, fileList) {
       this.form.img = response.data.picture;
+      this.imgList = [];
+      let obj = {
+        url: response.data.picture,
+        name: file.name,
+        uid: file.uid
+      };
+      this.imgList.push(obj);
     },
     // 查询商家列表   新增商品时用
     getStoreList() {
@@ -503,7 +507,6 @@ export default {
         this.title = "修改商品";
         this.echoImg(this.form.commodityPicture);
 
-        debugger
         if (this.form.img != null && this.form.img != "") {
           var obj = {};
           obj.url = this.form.img;
