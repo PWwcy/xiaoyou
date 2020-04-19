@@ -167,6 +167,11 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['device:device:remove']"
           >删除</el-button>
+
+
+          <router-link :to="'/device/duration/data/' + scope.row.id" class="link-type">
+            <el-button size="mini" type="text" icon="el-icon-tickets">游戏时长</el-button>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>

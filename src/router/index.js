@@ -113,6 +113,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/device',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'duration/data/:id(\\d+)',
+        component: () => import('@/views/operate/duration'),
+        name: 'Data',
+        meta: { title: '游戏时长', icon: '' }
+      }
+    ]
+  },
+  {
     path: '/gen',
     component: Layout,
     hidden: true,
