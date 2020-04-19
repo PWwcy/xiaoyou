@@ -174,13 +174,13 @@
         <el-form-item label="会员卡" prop="memberCardId">
           <!-- <el-input v-model="form.typeId" placeholder="请输入设备类型" /> -->
 
-          <el-select v-model="form.memberCardId"  placeholder="请选择">
+          <el-select v-model="form.memberCardId" placeholder="请选择">
             <el-option
               v-for="item in memberCard"
               :key="item.id"
               :label="item.memberCardName"
-              :value="item.id">
-            </el-option>
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="获得游豆数量" prop="getbean">
@@ -207,7 +207,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handlePicRemove"
             :on-success="handlePicSuccess"
-            :limit="1"
+            :limit="2"
             :file-list="pictureList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
@@ -287,7 +287,7 @@ export default {
         ]
       },
       pictureList: [], // 回显图片,
-      memberCard:[] // 会员卡
+      memberCard: [] // 会员卡
     };
   },
   created() {
@@ -315,6 +315,13 @@ export default {
     },
     handlePicSuccess(response, file, fileList) {
       this.form.picture = response.data.picture;
+      this.pictureList = [];
+      let obj = {
+        name: file.name,
+        url: response.data.picture,
+        uid: file.uid
+      };
+      this.pictureList.push(obj);
     },
     // 表单重置
     reset() {
@@ -361,13 +368,17 @@ export default {
       this.reset();
       const id = row.id || this.ids;
       getRechargeActivity(id).then(response => {
-        debugger
         this.memberCard = response.memberCard;
         this.form = response.data;
         this.open = true;
         this.title = "修改会员充值活动";
-        if (this.form) {
-          this.pictureList = this.form.picture;
+        if (this.form && this.form.picture) {
+          this.pictureList = [
+            {
+              url: this.form.picture,
+              name: this.form.picture.split("-").pop()
+            }
+          ];
         }
       });
     },
