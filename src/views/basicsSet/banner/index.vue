@@ -5,12 +5,12 @@
         <v-distpicker
           class="city-select"
           size="small"
-          :province="region.province"
-          :city="region.city"
-          :area="region.area"
-          @province="onChangeProvince"
-          @city="onChangeCity"
-          @area="onChangeArea"
+          :province="regionQuery.province"
+          :city="regionQuery.city"
+          :area="regionQuery.area"
+          @province="onChangeProvince($event, 'regionQuery')"
+          @city="onChangeCity($event, 'regionQuery')"
+          @area="onChangeArea($event, 'regionQuery')"
         />
       </el-form-item>
       <el-form-item>
@@ -115,12 +115,12 @@
           <v-distpicker
             class="city-select"
             size="small"
-            :province="region.province"
-            :city="region.city"
-            :area="region.area"
-            @province="onChangeProvince"
-            @city="onChangeCity"
-            @area="onChangeArea"
+            :province="regionForm.province"
+            :city="regionForm.city"
+            :area="regionForm.area"
+            @province="onChangeProvince($event, 'regionForm')"
+            @city="onChangeCity($event, 'regionForm')"
+            @area="onChangeArea($event, 'regionForm')"
           ></v-distpicker>
         </el-form-item>
         <el-form-item label="图片地址" prop="picture">
@@ -167,6 +167,7 @@ import {
 import VDistpicker from "v-distpicker";
 
 import upload from "@/utils/mixin/upload";
+import region from "@/utils/mixin/region";
 export default {
   components: {
     VDistpicker
@@ -215,7 +216,7 @@ export default {
   created() {
     this.getList();
   },
-  mixins: [upload],
+  mixins: [upload, region],
   methods: {
     /** 查询banner列表 */
     getList() {

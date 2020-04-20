@@ -1,7 +1,12 @@
 export default {
   data() {
     return {
-      region: {
+      regionForm: {
+        province: undefined,
+        city: undefined,
+        area: undefined
+      },
+      regionQuery: {
         province: undefined,
         city: undefined,
         area: undefined
@@ -11,11 +16,9 @@ export default {
   methods: {
     // 修改时赋值
     assignRegion(data) {
-      this.region.province = data.province;
-      this.region.city = data.city;
-      this.region.area = data.area;
-      console.log(this.region);
-
+      this.regionForm.province = data.province;
+      this.regionForm.city = data.city;
+      this.regionForm.area = data.area;
     },
     // initForm(form) {
     //   if (isNaN(form.province * 1)) {
@@ -32,18 +35,19 @@ export default {
     //   this.form.area = form.area;
     // },
     initForm(index) {
-      this[index].province = this.region.province;
-      this[index].city = this.region.city;
-      this[index].area = this.region.area;
+      let region = index === 'form' ? 'regionForm' : 'regionQuery'
+      this[index].province = this[region].province;
+      this[index].city = this[region].city;
+      this[index].area = this[region].area;
 
-      if (!this.region.province || this.region.province === '省') {
-        this[index].province = undefined;
+      if (!this[region].province || this[region].province === '省') {
+        this[index].province = '';
       }
-      if (!this.region.city || this.region.city === '市') {
-        this[index].city = undefined;
+      if (!this[region].city || this[region].city === '市') {
+        this[index].city = '';
       }
-      if (!this.region.area || this.region.area === '区') {
-        this[index].area = undefined;
+      if (!this[region].area || this[region].area === '区') {
+        this[index].area = '';
       }
     },
     // 暂时没用
@@ -94,6 +98,7 @@ export default {
         this.queryParams.area = undefined;
       }
     },
+    // 重置
     resetRegion(index) {
       // this[index].province = undefined
       // this[index].city = undefined
@@ -101,23 +106,25 @@ export default {
       // this[index].provinceText = undefined
       // this[index].cityText = undefined
       // this[index].areaText = undefined
-      this.region.province = undefined;
-      this.region.city = undefined;
-      this.region.area = undefined;
+      let region = index === 'form' ? 'regionForm' : 'regionQuery'
+      this[index].province = undefined;
+      this[index].city = undefined;
+      this[index].area = undefined;
+      this[region].province = undefined;
+      this[region].city = undefined;
+      this[region].area = undefined;
     },
     // 选择省
-    onChangeProvince(data) {
-      this.region.province = data.value;
-      console.log(this.region);
-
+    onChangeProvince(data, index) {
+      this[index].province = data.value;
     },
     // 选择市
-    onChangeCity(data) {
-      this.region.city = data.value;
+    onChangeCity(data, index) {
+      this[index].city = data.value;
     },
     // 选择区
-    onChangeArea(data) {
-      this.region.area = data.value;
+    onChangeArea(data, index) {
+      this[index].area = data.value;
     }
   }
 }

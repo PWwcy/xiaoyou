@@ -4,12 +4,12 @@
       <el-form-item label="地区">
         <v-distpicker
           size="small"
-          :province="region.province"
-          :city="region.city"
-          :area="region.area"
-          @province="onChangeProvince"
-          @city="onChangeCity"
-          @area="onChangeArea"
+          :province="regionQuery.province"
+          :city="regionQuery.city"
+          :area="regionQuery.area"
+          @province="onChangeProvince($event, 'regionQuery')"
+          @city="onChangeCity($event, 'regionQuery')"
+          @area="onChangeArea($event, 'regionQuery')"
         />
       </el-form-item>
 
@@ -186,12 +186,12 @@
         <el-form-item label="地区">
           <v-distpicker
             size="small"
-            :province="region.province"
-            :city="region.city"
-            :area="region.area"
-            @province="onChangeProvince"
-            @city="onChangeCity"
-            @area="onChangeArea"
+            :province="regionForm.province"
+            :city="regionForm.city"
+            :area="regionForm.area"
+            @province="onChangeProvince($event, 'regionForm')"
+            @city="onChangeCity($event, 'regionForm')"
+            @area="onChangeArea($event, 'regionForm')"
           />
         </el-form-item>
 
