@@ -5,10 +5,12 @@
         <v-distpicker
           class="city-select"
           size="small"
-          :province="queryParams.province"
-          :city="queryParams.city"
-          :area="queryParams.area"
-          @selected="addSelected"
+          :province="region.province"
+          :city="region.city"
+          :area="region.area"
+          @province="onChangeProvince"
+          @city="onChangeCity"
+          @area="onChangeArea"
         />
       </el-form-item>
       <el-form-item>
@@ -113,25 +115,26 @@
           <v-distpicker
             class="city-select"
             size="small"
-            :province="form.province"
-            :city="form.city"
-            :area="form.area"
-            @selected="addSelected"
+            :province="region.province"
+            :city="region.city"
+            :area="region.area"
+            @province="onChangeProvince"
+            @city="onChangeCity"
+            @area="onChangeArea"
           ></v-distpicker>
         </el-form-item>
         <el-form-item label="图片地址" prop="picture">
           <el-upload
             class="upload-demo"
-            action="http://47.97.180.206:8081/api/file"
-            :on-preview="handlePreview"
+            :action="uploadFileUrl"
+            :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
-            multiple
             accept="image/*"
             :limit="1"
             :on-exceed="handleExceed"
             :on-success="handleSuccess"
-            :file-list="fileList"
+            :file-list="uploadFileList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -163,6 +166,7 @@ import {
 } from "@/api/basicsSet/banner";
 import VDistpicker from "v-distpicker";
 
+import upload from "@/utils/mixin/upload";
 export default {
   components: {
     VDistpicker
@@ -211,10 +215,12 @@ export default {
   created() {
     this.getList();
   },
+  mixins: [upload],
   methods: {
     /** 查询banner列表 */
     getList() {
       this.loading = true;
+      this.initForm("queryParams");
       listBanner(this.queryParams).then(response => {
         this.bannerList = response.rows;
         this.total = response.total;
@@ -297,6 +303,7 @@ export default {
       getBanner(id).then(response => {
         this.form = response.data;
         this.open = true;
+        this.addFileList(this.form.picture);
         this.title = "修改banner";
       });
     },
@@ -304,6 +311,7 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.initForm("form");
           if (this.form.id != undefined) {
             updateBanner(this.form).then(response => {
               if (response.code === 200) {

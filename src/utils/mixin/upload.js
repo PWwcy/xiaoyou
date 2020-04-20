@@ -28,6 +28,19 @@ export default {
       }
       return undefined;
     },
+    addFileList(data) {
+      if (typeof data === 'string') {
+        data = data.split(',');
+        data.forEach(item => {
+          let obj = {
+            url: item,
+            name: item.split('-').pop(),
+            uid: parseInt(Math.random() * 1000000)
+          }
+          this.uploadFileList.push(obj)
+        })
+      }
+    },
     initFileList() {
       this.uploadFileList = [];
       this.urlArr = [];
