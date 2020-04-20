@@ -2,13 +2,6 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
       <el-form-item label="城市id" prop="cityId">
-        <!-- <el-input
-          v-model="queryParams.cityId"
-          placeholder="请输入城市id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />-->
         <v-distpicker
           class="city-select"
           size="small"
@@ -113,7 +106,7 @@
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <!--<el-form-item label="类型对应内容id" prop="contentId">-->
-          <!--<el-input v-model="form.contentId" placeholder="请输入类型对应内容id" />-->
+        <!--<el-input v-model="form.contentId" placeholder="请输入类型对应内容id" />-->
         <!--</el-form-item>-->
         <el-form-item label="城市">
           <!-- <el-input v-model="form.cityId" placeholder="请输入城市id" /> -->
@@ -271,7 +264,7 @@ export default {
         contentId: undefined,
         cityId: undefined,
         picture: undefined,
-        sort:undefined
+        sort: undefined
       };
       this.resetForm("form");
     },

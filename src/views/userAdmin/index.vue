@@ -6,12 +6,12 @@
         <v-distpicker
           class="city-select"
           size="small"
-          :province="queryParams.provinceText"
-          :city="queryParams.cityText"
-          :area="queryParams.areaText"
-          @province="onChangeProvince('queryParams',$event)"
-          @city="onChangeCity('queryParams',$event)"
-          @area="onChangeArea('queryParams',$event)"
+          :province="region.province"
+          :city="region.city"
+          :area="region.area"
+          @province="onChangeProvince"
+          @city="onChangeCity"
+          @area="onChangeArea"
         ></v-distpicker>
       </el-form-item>
       <el-form-item label="昵称" prop="nickname">
@@ -217,12 +217,12 @@
           <v-distpicker
             class="city-select"
             size="small"
-            :province="form.provinceText"
-            :city="form.cityText"
-            :area="form.areaText"
-            @province="onChangeProvince('form',$event)"
-            @city="onChangeCity('form',$event)"
-            @area="onChangeArea('form',$event)"
+            :province="region.province"
+            :city="region.city"
+            :area="region.area"
+            @province="onChangeProvince"
+            @city="onChangeCity"
+            @area="onChangeArea"
           ></v-distpicker>
         </el-form-item>
         <el-form-item label="用户性别">
@@ -355,6 +355,7 @@ export default {
     /** 查询用户列表 */
     getList() {
       this.loading = true;
+      this.initForm("queryParams");
       listUser(this.queryParams).then(response => {
         this.userList = response.rows;
         this.total = response.total;
@@ -485,8 +486,8 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.initForm("form");
           if (this.form.id != undefined) {
-            this.testForm();
             updateUser(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");

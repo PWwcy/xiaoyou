@@ -5,12 +5,12 @@
       <el-form-item label="地区">
         <v-distpicker
           size="small"
-          :province="queryParams.provinceText"
-          :city="queryParams.cityText"
-          :area="queryParams.areaText"
-          @province="onChangeProvince('queryParams',$event)"
-          @city="onChangeCity('queryParams',$event)"
-          @area="onChangeArea('queryParams',$event)"
+          :province="region.province"
+          :city="region.city"
+          :area="region.area"
+          @province="onChangeProvince"
+          @city="onChangeCity"
+          @area="onChangeArea"
         ></v-distpicker>
       </el-form-item>
       <el-form-item label="设备类型" prop="typeId">
@@ -216,12 +216,12 @@
           <el-col :span="24">
             <el-form-item label="地区">
               <v-distpicker
-                :province="form.province"
-                :city="form.city"
-                :area="form.area"
-                @province="onChangeProvince('form',$event)"
-                @city="onChangeCity('form',$event)"
-                @area="onChangeArea('form',$event)"
+                :province="region.province"
+                :city="region.city"
+                :area="region.area"
+                @province="onChangeProvince"
+                @city="onChangeCity"
+                @area="onChangeArea"
               ></v-distpicker>
             </el-form-item>
           </el-col>
@@ -346,11 +346,11 @@
               <el-input v-model="form.describe" placeholder="请输入描述" />
             </el-form-item>
           </el-col>
-<!--          <el-col :span="24">-->
-<!--            <el-form-item label="玩法介绍" prop="playIntroduce">-->
-<!--              <Editor v-model="form.playIntroduce" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
+          <!--          <el-col :span="24">-->
+          <!--            <el-form-item label="玩法介绍" prop="playIntroduce">-->
+          <!--              <Editor v-model="form.playIntroduce" />-->
+          <!--            </el-form-item>-->
+          <!--          </el-col>-->
           <el-col :span="24" style="margin-top: 60px;">
             <el-form-item label="设备图片" prop="picture">
               <!-- <el-upload
@@ -497,6 +497,7 @@ export default {
     /** 查询设备管理列表 */
     getList() {
       this.loading = true;
+      this.initForm("queryParams");
       listDevice(this.queryParams).then(response => {
         this.deviceList = response.rows;
         this.total = response.total;
@@ -611,6 +612,7 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改设备";
+        this.assignRegion(this.form);
         this.echoImg(this.form.picture);
       });
     },
@@ -620,8 +622,8 @@ export default {
         if (valid) {
           // this.form.picture = this.initFile();
           this.form.picture = this.urlArrs.join();
+          this.initForm("form");
           if (this.form.id != undefined) {
-            //this.testForm();
             updateDevice(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");

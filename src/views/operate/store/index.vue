@@ -4,12 +4,12 @@
       <el-form-item label="地区">
         <v-distpicker
           size="small"
-          :province="queryParams.provinceText"
-          :city="queryParams.cityText"
-          :area="queryParams.areaText"
-          @province="onChangeProvince('queryParams',$event)"
-          @city="onChangeCity('queryParams',$event)"
-          @area="onChangeArea('queryParams',$event)"
+          :province="region.provinceText"
+          :city="region.cityText"
+          :area="region.areaText"
+          @province="onChangeProvince"
+          @city="onChangeCity"
+          @area="onChangeArea"
         ></v-distpicker>
         <!-- @selected="onSelected" -->
       </el-form-item>
@@ -335,6 +335,7 @@ export default {
     /** 查询商家列表 */
     getList() {
       this.loading = true;
+      this.initForm(queryParams);
       listStore(this.queryParams).then(response => {
         this.storeList = response.rows;
         this.total = response.total;

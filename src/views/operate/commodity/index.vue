@@ -4,12 +4,12 @@
       <el-form-item label="地区">
         <v-distpicker
           size="small"
-          :province="queryParams.provinceText"
-          :city="queryParams.cityText"
-          :area="queryParams.areaText"
-          @province="onChangeProvince('queryParams',$event)"
-          @city="onChangeCity('queryParams',$event)"
-          @area="onChangeArea('queryParams',$event)"
+          :province="region.province"
+          :city="region.city"
+          :area="region.area"
+          @province="onChangeProvince"
+          @city="onChangeCity"
+          @area="onChangeArea"
         />
       </el-form-item>
 
@@ -186,12 +186,12 @@
         <el-form-item label="地区">
           <v-distpicker
             size="small"
-            :province="form.provinceText"
-            :city="form.cityText"
-            :area="form.areaText"
-            @province="onChangeProvince('form',$event)"
-            @city="onChangeCity('form',$event)"
-            @area="onChangeArea('form',$event)"
+            :province="region.province"
+            :city="region.city"
+            :area="region.area"
+            @province="onChangeProvince"
+            @city="onChangeCity"
+            @area="onChangeArea"
           />
         </el-form-item>
 
@@ -380,6 +380,7 @@ export default {
     /** 查询商品列表 */
     getList() {
       this.loading = true;
+      this.initForm("queryParams");
       listCommodity(this.queryParams).then(response => {
         this.commodityList = response.rows;
         this.total = response.total;
@@ -509,7 +510,7 @@ export default {
       const id = row.id || this.ids;
       getCommodity(id).then(response => {
         this.form = response.data;
-        this.initForm(this.form);
+        this.assignRegion(this.form);
         this.open = true;
         this.title = "修改商品";
         this.echoImg(this.form.commodityPicture);
