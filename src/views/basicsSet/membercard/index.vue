@@ -161,13 +161,13 @@
       <el-table-column label="修改时间" align="center" prop="updateTime" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button请选择是否限会
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['basicsSet:membercard:edit']"
-          >修改</el-button请选择是否限会>
+          >修改</el-button>
           <el-button
             size="mini"
             type="text"
