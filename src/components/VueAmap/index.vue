@@ -139,6 +139,7 @@ export default {
     },
     // 获取选中的地点
     getCenter() {
+      console.log('----------------',this.list)
       return this.list[this.currIndex];
     },
     select: function(item, index) {

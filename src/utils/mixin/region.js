@@ -20,6 +20,9 @@ export default {
         this.form.cityText = form.city * 1
         this.form.areaText = form.area * 1
       }
+      this.form.province = form.province
+      this.form.city = form.city
+      this.form.area = form.area;
     },
     testForm() {
       if (this.form.provinceText === this.form.province) {
@@ -31,9 +34,9 @@ export default {
       if (this.form.areaText === this.form.area) {
         this.form.area = undefined;
       }
-      this.form.provinceText = undefined
-      this.form.cityText = undefined
-      this.form.areaText = undefined
+      // this.form.provinceText = undefined
+      // this.form.cityText = undefined
+      // this.form.areaText = undefined
     },
     resetRegion(index) {
       this[index].province = undefined
@@ -44,16 +47,20 @@ export default {
       this[index].areaText = undefined
     },
     onChangeProvince(index, data) {
-      this[index].province = data.code && data.code * 1;
-      this[index].provinceText = data.value;
+      // this[index].province = data.code && data.code * 1;
+      // this[index].provinceText = data.value;
+      this[index].province = data.value;
     },
     onChangeCity(index, data) {
-      this[index].city = data.code && data.code * 1;
-      this[index].cityText = data.value;
+      // this[index].city = data.code && data.code * 1;
+      // this[index].cityText = data.value;
+
+      this[index].city = data.value;
     },
     onChangeArea(index, data) {
-      this[index].area = data.code && data.code * 1;
-      this[index].areaText = data.value;
+      // this[index].area = data.code && data.code * 1;
+      // this[index].areaText = data.value;
+      this[index].area = data.value;
     }
   }
 }

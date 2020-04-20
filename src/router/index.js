@@ -59,7 +59,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/index'),
+        // component: () => import('@/views/index'),
         name: '首页',
         meta: { title: '首页', icon: 'dashboard', noCache: true, affix: true }
       }
@@ -119,7 +119,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'duration/data/:id(\\d+)',
-        component: () => import('@/views/operate/duration'),
+        component: () => import('@/views/operate/duration/index'),
         name: 'Data',
         meta: { title: '游戏时长', icon: '' }
       }

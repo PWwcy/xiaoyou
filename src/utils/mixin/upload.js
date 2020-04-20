@@ -9,7 +9,7 @@ export default {
   },
   computed: {
     urlArrs() {
-      return this.urlArr.length > 0 ? this.urlArr : undefined;
+      return this.urlArr.length > 0 ? this.urlArr : [];
     },
     imgArr() {
       if (this.bigImg && typeof this.bigImg === "string") {

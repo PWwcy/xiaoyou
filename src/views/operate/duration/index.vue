@@ -65,7 +65,7 @@
       <el-table-column label="价钱" align="center" prop="price" />
       <el-table-column label="次数" align="center" prop="num" />
       <el-table-column label="设备类型id" align="center" prop="typeId" />
-      <el-table-column label="游戏id" align="center" prop="gameId" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -139,6 +139,7 @@ export default {
       total: 0,
       // 游戏时长表格数据
       durationList: [],
+      gameId :undefined,
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -164,8 +165,8 @@ export default {
   created() {
     const gameId = this.$route.params && this.$route.params.id;
 
-    this.queryParams.gameId = gameId,
-      this.form.gameId = gameId;
+    this.gameId = gameId;
+    this.queryParams.gameId = gameId;
     this.getList();
   },
   methods: {
@@ -232,7 +233,9 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.gameId =this.gameId
           if (this.form.id != undefined) {
+
             updateDuration(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");

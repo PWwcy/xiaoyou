@@ -216,9 +216,9 @@
           <el-col :span="24">
             <el-form-item label="地区">
               <v-distpicker
-                :province="form.provinceText"
-                :city="form.cityText"
-                :area="form.areaText"
+                :province="form.province"
+                :city="form.city"
+                :area="form.area"
                 @province="onChangeProvince('form',$event)"
                 @city="onChangeCity('form',$event)"
                 @area="onChangeArea('form',$event)"
@@ -346,11 +346,11 @@
               <el-input v-model="form.describe" placeholder="请输入描述" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="玩法介绍" prop="playIntroduce">
-              <Editor v-model="form.playIntroduce" />
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="24">-->
+<!--            <el-form-item label="玩法介绍" prop="playIntroduce">-->
+<!--              <Editor v-model="form.playIntroduce" />-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
           <el-col :span="24" style="margin-top: 60px;">
             <el-form-item label="设备图片" prop="picture">
               <!-- <el-upload
@@ -621,7 +621,7 @@ export default {
           // this.form.picture = this.initFile();
           this.form.picture = this.urlArrs.join();
           if (this.form.id != undefined) {
-            this.testForm();
+            //this.testForm();
             updateDevice(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
