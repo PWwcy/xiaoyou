@@ -11,12 +11,13 @@
         />
       </el-form-item>
       <el-form-item label="模式难度" prop="difficult">
-        <el-input
+        <el-input-number
           v-model="queryParams.difficult"
           placeholder="请输入模式难度"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
+          controls-position="right"
         />
       </el-form-item>
       <el-form-item>
@@ -106,7 +107,11 @@
           <el-input v-model="form.modeName" placeholder="请输入模式名称" />
         </el-form-item>
         <el-form-item label="模式难度" prop="difficult">
-          <el-input v-model="form.difficult" placeholder="请输入模式难度" />
+          <el-input-number
+            v-model="form.difficult"
+            placeholder="请输入模式难度"
+            controls-position="right"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -118,7 +123,14 @@
 </template>
 
 <script>
-import { listMode, getMode, delMode, addMode, updateMode, exportMode } from "@/api/operate/mode";
+import {
+  listMode,
+  getMode,
+  delMode,
+  addMode,
+  updateMode,
+  exportMode
+} from "@/api/operate/mode";
 
 export default {
   data() {
@@ -144,13 +156,12 @@ export default {
         pageNum: 1,
         pageSize: 10,
         modeName: undefined,
-        difficult: undefined,
+        difficult: undefined
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {}
     };
   },
   created() {
@@ -193,9 +204,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!=1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length != 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -206,7 +217,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
+      const id = row.id || this.ids;
       getMode(id).then(response => {
         this.form = response.data;
         this.open = true;
@@ -244,29 +255,39 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除游戏模式编号为"' + ids + '"的数据项?', "警告", {
+      this.$confirm(
+        '是否确认删除游戏模式编号为"' + ids + '"的数据项?',
+        "警告",
+        {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        }).then(function() {
+        }
+      )
+        .then(function() {
           return delMode(ids);
-        }).then(() => {
+        })
+        .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        }).catch(function() {});
+        })
+        .catch(function() {});
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有游戏模式数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+      this.$confirm("是否确认导出所有游戏模式数据项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
           return exportMode(queryParams);
-        }).then(response => {
+        })
+        .then(response => {
           this.download(response.msg);
-        }).catch(function() {});
+        })
+        .catch(function() {});
     }
   }
 };

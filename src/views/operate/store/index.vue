@@ -107,11 +107,11 @@
           >查看地图</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="状态" align="center" prop="status">
+      <!-- <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <span>{{formatStatus(scope.row.status)}}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column label="添加时间" align="center" prop="createTime" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -197,13 +197,13 @@
         <el-form-item label="联系人" prop="contacts">
           <el-input v-model="form.contacts" placeholder="请输入联系人" />
         </el-form-item>
-        <el-form-item label="状态">
+        <!-- <el-form-item label="状态">
           <el-radio-group v-model="form.status">
             <el-radio :label="0">正常</el-radio>
             <el-radio :label="1">已删除</el-radio>
             <el-radio :label="2">停止</el-radio>
           </el-radio-group>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="商家图片" prop="picture">
           <el-upload
             :action="uploadFileUrl"

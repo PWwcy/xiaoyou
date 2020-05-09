@@ -164,6 +164,9 @@
             <el-radio :label="1">否</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="收款账号" prop="makeuser" v-if="form.isownpayment === 0">
+          <el-input v-model="form.makeuser  " placeholder="请输入收款账号" />
+        </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input
             v-model="form.remarks"
@@ -232,7 +235,23 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {}
+      rules: {
+        enterpriseName: {
+          required: true,
+          message: "设备商名称不能为空",
+          trigger: "blur"
+        },
+        phone: {
+          required: true,
+          message: "联系电话不能为空",
+          trigger: "blur"
+        }
+        // makeuser: {
+        //   required: true,
+        //   message: "收款账号不能为空",
+        //   trigger: "blur"
+        // }
+      }
     };
   },
   created() {

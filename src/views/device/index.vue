@@ -14,13 +14,21 @@
         ></v-distpicker>
       </el-form-item>
       <el-form-item label="设备类型" prop="typeId">
-        <el-input
+        <el-select v-model="queryParams.typeId" placeholder="请选择">
+          <el-option
+            v-for="item in deviceType"
+            :key="item.id"
+            :label="item.typeName"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+        <!-- <el-input
           v-model="queryParams.typeId"
           placeholder="请输入设备类型"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
-        />
+        />-->
       </el-form-item>
       <el-form-item label="设备厂商" prop="manufacturer">
         <el-input
@@ -202,7 +210,6 @@
           <el-col :span="24">
             <el-form-item label="设备类型" prop="typeId">
               <!-- <el-input v-model="form.typeId" placeholder="请输入设备类型" /> -->
-
               <el-select v-model="form.typeId" placeholder="请选择">
                 <el-option
                   v-for="item in deviceType"
@@ -232,7 +239,20 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="设备厂商" prop="manufacturer">
-              <el-input v-model="form.manufacturer" placeholder="请输入设备厂商" />
+              <!-- <el-input v-model="form.manufacturer" placeholder="请输入设备厂商" /> -->
+              <el-select
+                v-model="form.manufacturer"
+                placeholder="请选择"
+                filterable
+                v-el-select-loadmore="loadmoreStore"
+              >
+                <el-option
+                  v-for="item in optionsStore"
+                  :key="item.id"
+                  :label="item.enterpriseName"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -402,6 +422,8 @@ import {
   updateDevice,
   exportDevice
 } from "@/api/device/device";
+
+import { listDeviceStore } from "@/api/deviceStore/deviceStore";
 import { listCategory } from "@/api/device/category";
 import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
@@ -479,6 +501,13 @@ export default {
         pageSize: 10,
         categoryName: undefined
       },
+      optionsStore: [],
+      storeTotal: 0,
+      queryParamsStore: {
+        pageNum: 1,
+        pageSize: 10,
+        enterpriseName: ""
+      },
       fileList: [],
       showViewer: false,
       bigImg: "",
@@ -488,6 +517,8 @@ export default {
   created() {
     this.getList();
     this.getType();
+    this.getStoreList();
+    this.getGameType();
   },
   mixins: [mixins, region],
   methods: {
@@ -504,7 +535,7 @@ export default {
         this.loading = false;
       });
     },
-
+    // 图片查看
     showImg(data) {
       this.bigImg = data;
       this.showViewer = true;
@@ -513,33 +544,45 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
-
+    // 加载更多
     loadmore() {
       if (
-        this.queryParamsType.pageNum * this.queryParamsType.pageSize >=
+        this.queryParamsType.pageNum * this.queryParamsType.pageSize <
         this.typeTotal
       ) {
         this.queryParamsType.pageNum++;
         this.getType();
       }
     },
+    // 获取游戏分类列表
     getType() {
-      this.loading = true;
       listCategory(this.queryParamsType).then(response => {
         const list = response.rows;
         this.optionsType = [...this.optionsType, ...list];
-        this.loading = false;
       });
     },
-    onSelected(data) {
-      this.queryParams.province = data.province.value;
-      this.queryParams.city = data.city.value;
-      this.queryParams.area = data.area.value;
+    getGameType() {
+      getDevice().then(response => {
+        this.deviceType = response.deviceType;
+      });
     },
-    updateSelected(data) {
-      this.form.province = data.province.value;
-      this.form.city = data.city.value;
-      this.form.area = data.area.value;
+    // 加载更多 设备商
+    loadmoreStore() {
+      if (
+        this.queryParamsStore.pageNum * this.queryParamsStore.pageSize <
+        this.storeTotal
+      ) {
+        this.queryParamsStore.pageNum++;
+        this.getStoreList();
+      }
+    },
+    // 获取设备上列表
+    getStoreList() {
+      listDeviceStore(this.queryParamsStore).then(response => {
+        const list = response.rows;
+        this.optionsStore = [...this.optionsStore, ...list];
+        this.storeTotal = response.total;
+      });
     },
 
     // 取消按钮
@@ -596,19 +639,19 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      getDevice().then(response => {
-        this.deviceType = response.deviceType;
-        this.reset();
-        this.open = true;
-        this.title = "添加投注配置";
-      });
+      // getDevice().then(response => {
+      //   this.deviceType = response.deviceType;
+      this.reset();
+      this.open = true;
+      this.title = "添加投注配置";
+      // });
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids;
       getDevice(id).then(response => {
-        this.deviceType = response.deviceType;
+        // this.deviceType = response.deviceType;
         this.form = response.data;
         this.open = true;
         this.title = "修改设备";
@@ -692,9 +735,11 @@ export default {
         const SELECTWRAP_DOM = el.querySelector(
           ".el-select-dropdown .el-select-dropdown__wrap"
         );
+        if (!SELECTWRAP_DOM) return;
         SELECTWRAP_DOM.addEventListener("scroll", function() {
           const condition =
             this.scrollHeight - this.scrollTop <= this.clientHeight;
+
           if (condition) {
             binding.value();
           }

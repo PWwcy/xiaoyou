@@ -152,7 +152,11 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="会员卡名称" align="center" prop="memberCardName" />
-      <el-table-column label="类型" align="center" prop="memberCardType" />
+      <el-table-column label="类型" align="center">
+        <template slot-scope="scope">
+          <span>{{type_(scope.row.memberCardType)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="充值金额" align="center" prop="rechargeAmount" />
       <el-table-column label="获得游豆" align="center" prop="getBean" />
       <el-table-column label="获得次数" align="center" prop="getFrequency" />
@@ -376,6 +380,12 @@ export default {
         }
       });
     },
+    type_(s) {
+      let arr = this.typeList.filter(item => {
+        return item.dictCode == s;
+      });
+      return arr.length === 0 ? s : arr[0].dictLabel;
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -387,10 +397,10 @@ export default {
         id: undefined,
         memberCardName: undefined,
         memberCardType: undefined,
-        rechargeAmount: 0,
-        getBean: 0,
-        getFrequency: 0,
-        termOfValidity: 0,
+        rechargeAmount: undefined,
+        getBean: undefined,
+        getFrequency: undefined,
+        termOfValidity: undefined,
         content: undefined
       };
       this.resetForm("form");
@@ -423,6 +433,9 @@ export default {
       const id = row.id || this.ids;
       getMembercard(id).then(response => {
         this.form = response.data;
+        if (!isNaN(this.form.memberCardType * 1)) {
+          this.form.memberCardType = this.form.memberCardType * 1;
+        }
         this.open = true;
         this.title = "修改会员卡";
       });

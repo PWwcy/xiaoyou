@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="用户昵称" prop="userId">
+      <el-form-item label="用户昵称" prop="nickName">
         <el-input
           v-model="queryParams.nickName"
           placeholder="请输入用户昵称"
@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="商品名称" prop="commodityId">
+      <el-form-item label="商品名称" prop="commodityName">
         <el-input
           v-model="queryParams.commodityName"
           placeholder="请输入商品名称"
@@ -26,7 +26,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-
       <el-col :span="1.5">
         <el-button
           type="danger"
@@ -55,7 +54,7 @@
       <el-table-column label="昵称" align="center" prop="nickName" />
       <el-table-column label="商品id" align="center" prop="commodityId" />
       <el-table-column label="商品名称" align="center" prop="commodityName" />
-      <el-table-column label="商店名称" align="center" prop="storeName"/>
+      <el-table-column label="商店名称" align="center" prop="storeName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -96,7 +95,14 @@
 </template>
 
 <script>
-import { listCommodity, getCommodity, delCommodity, addCommodity, updateCommodity, exportCommodity } from "@/api/exchange/commodity";
+import {
+  listCommodity,
+  getCommodity,
+  delCommodity,
+  addCommodity,
+  updateCommodity,
+  exportCommodity
+} from "@/api/exchange/commodity";
 
 export default {
   data() {
@@ -124,13 +130,12 @@ export default {
         userId: undefined,
         commodityId: undefined,
         commodityName: undefined,
-        nickName:undefined
+        nickName: undefined
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {}
     };
   },
   created() {
@@ -172,9 +177,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!=1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length != 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -185,7 +190,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
+      const id = row.id || this.ids;
       getCommodity(id).then(response => {
         this.form = response.data;
         this.open = true;
@@ -223,29 +228,39 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除商品兑换编号为"' + ids + '"的数据项?', "警告", {
+      this.$confirm(
+        '是否确认删除商品兑换编号为"' + ids + '"的数据项?',
+        "警告",
+        {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        }).then(function() {
+        }
+      )
+        .then(function() {
           return delCommodity(ids);
-        }).then(() => {
+        })
+        .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        }).catch(function() {});
+        })
+        .catch(function() {});
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有商品兑换数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+      this.$confirm("是否确认导出所有商品兑换数据项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
           return exportCommodity(queryParams);
-        }).then(response => {
+        })
+        .then(response => {
           this.download(response.msg);
-        }).catch(function() {});
+        })
+        .catch(function() {});
     }
   }
 };
