@@ -232,7 +232,14 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="设备厂商" prop="manufacturer">
-              <el-input v-model="form.manufacturer" placeholder="请输入设备厂商" />
+              <el-select v-model="form.manufacturer" filterable placeholder="请选择设备厂商">
+                <el-option
+                  v-for="item in deviceStoreList"
+                  :key="item.id"
+                  :label="item.enterpriseName"
+                  :value="item.id">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -400,7 +407,8 @@ import {
   delDevice,
   addDevice,
   updateDevice,
-  exportDevice
+  exportDevice,
+  listDeviceStore
 } from "@/api/device/device";
 import { listCategory } from "@/api/device/category";
 import Editor from "@/components/Editor";
@@ -431,6 +439,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 设备商列表
+      deviceStoreList:[],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -470,7 +480,8 @@ export default {
         deviceName: [
           { required: true, message: "设备名称不能为空", trigger: "blur" }
         ],
-        typeId: [{ required: true, message: "请选择设备类型", trigger: "blur" }]
+        typeId: [{ required: true, message: "请选择设备类型", trigger: "blur" }],
+        manufacturer:[{ required: true, message: "请选择设备厂商", trigger: "blur" }]
       },
       optionsType: [],
       typeTotal: 0,
@@ -488,6 +499,7 @@ export default {
   created() {
     this.getList();
     this.getType();
+    this.listDeviceStore();
   },
   mixins: [mixins, region],
   methods: {
@@ -505,6 +517,13 @@ export default {
       });
     },
 
+    listDeviceStore() {
+
+      listDeviceStore(null).then(response => {
+        this.deviceStoreList = response.rows;
+
+      });
+    },
     showImg(data) {
       this.bigImg = data;
       this.showViewer = true;
@@ -600,7 +619,7 @@ export default {
         this.deviceType = response.deviceType;
         this.reset();
         this.open = true;
-        this.title = "添加投注配置";
+        this.title = "添加设备";
       });
     },
     /** 修改按钮操作 */

@@ -51,3 +51,14 @@ export function exportDevice(query) {
     params: query
   })
 }
+
+
+// 查询设备商列表
+export function listDeviceStore(query) {
+  return request({
+    url: '/deviceStore/list',
+    method: 'get',
+    params: query
+  })
+}
+
