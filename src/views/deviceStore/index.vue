@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+      <el-form-item label="供应商名称" prop="enterpriseName">
+        <el-input
+          v-model="queryParams.enterpriseName"
+          placeholder="请输入供应商名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="联系人" prop="contacts">
         <el-input
           v-model="queryParams.contacts"
@@ -10,7 +19,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
       <el-form-item label="电话" prop="phone">
         <el-input
           v-model="queryParams.phone"

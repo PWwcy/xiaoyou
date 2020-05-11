@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="商品名称" prop="commodityId">
+      <el-form-item label="商品名称" prop="commodityName">
         <el-input
           v-model="queryParams.commodityName"
           placeholder="请输入商品名称"
@@ -156,7 +156,7 @@ export default {
       this.form = {
         id: undefined,
         userId: undefined,
-        commodityId: undefined
+        commodityId: undefined,
       };
       this.resetForm("form");
     },

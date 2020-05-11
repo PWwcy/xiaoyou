@@ -17,55 +17,10 @@
           <el-option
             v-for="item in typeList"
             :key="item.id"
-            :value="item.dictCode"
+            :value="item.dictLabel"
             :label="item.dictLabel"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="充值金额" prop="rechargeAmount">
-        <el-input
-          v-model="queryParams.rechargeAmount"
-          placeholder="请输入充值金额"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="获得游豆" prop="getBean">
-        <el-input
-          v-model="queryParams.getBean"
-          placeholder="请输入获得游豆"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="获得次数" prop="getFrequency">
-        <el-input
-          v-model="queryParams.getFrequency"
-          placeholder="请输入获得次数"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="有效期" prop="termOfValidity">
-        <el-input
-          v-model="queryParams.termOfValidity"
-          placeholder="请输入有效期"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="会员卡内容描述" prop="content">
-        <el-input
-          v-model="queryParams.content"
-          placeholder="请输入会员卡内容描述"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -203,7 +158,7 @@
                 <el-option
                   v-for="item in typeList"
                   :key="item.id"
-                  :value="item.dictCode"
+                  :value="item.dictLabel"
                   :label="item.dictLabel"
                 />
               </el-select>

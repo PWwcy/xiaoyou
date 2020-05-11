@@ -1,108 +1,23 @@
 <template>
-  <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="使用协议" prop="useProtocol">
-        <el-input
-          v-model="queryParams.useProtocol"
-          placeholder="请输入使用协议"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
+  <div>
+
+
+    <el-form ref="form" :model="form" :rules="rules">
+      <el-row>
+        <el-col>
+          <el-form-item label="用户协议">
+            <Editor v-model="form.useProtocol" style="width: 90%;margin: 50px auto;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['basicsSet:protocal:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['basicsSet:protocal:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['basicsSet:protocal:remove']"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['basicsSet:protocal:export']"
-        >导出</el-button>
-      </el-col>
-    </el-row>
-
-    <el-table v-loading="loading" :data="protocalList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="使用协议" align="center" prop="id" />
-      <el-table-column label="使用协议" align="center" prop="useProtocol" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['basicsSet:protocal:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['basicsSet:protocal:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 添加或修改使用协议对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="使用协议" prop="useProtocol">
-          <el-input v-model="form.useProtocol" placeholder="请输入使用协议" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    <div slot="footer" class="dialog-footer" style="padding-top:20px;margin-left: 100px">
+      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button @click="cancel">取 消</el-button>
+    </div>
   </div>
 </template>
+
 
 <script>
 import {
@@ -113,8 +28,11 @@ import {
   updateProtocal,
   exportProtocal
 } from "@/api/basicsSet/protocal";
-
+import Editor from '@/components/Editor';
 export default {
+  components: {
+    Editor
+  },
   data() {
     return {
       // 遮罩层
@@ -157,9 +75,9 @@ export default {
     getList() {
       this.loading = true;
       listProtocal(this.queryParams).then(response => {
-        this.protocalList = response.rows;
-        this.total = response.total;
-        this.loading = false;
+        this.form = response.rows[0];
+        // this.total = response.total;
+        // this.loading = false;
       });
     },
     // 取消按钮
@@ -214,7 +132,7 @@ export default {
           if (this.form.id != undefined) {
             updateProtocal(this.form).then(response => {
               if (response.code === 200) {
-                this.msgSuccess("修改成功");
+                this.msgSuccess("保存成功");
                 this.open = false;
                 this.getList();
               } else {
