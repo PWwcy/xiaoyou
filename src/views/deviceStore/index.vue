@@ -158,15 +158,22 @@
           </el-select>
         </el-form-item>
         <el-form-item label="是否使用自己支付" prop="isownpayment">
-          <!-- <el-input v-model="form.isownpayment" placeholder="请输入是否使用自己支付 0 是 1 否" /> -->
-          <el-radio-group v-model="form.isownpayment">
+          <el-radio-group v-model="form.isownpayment" @change="isShow">
             <el-radio :label="0">是</el-radio>
             <el-radio :label="1">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="收款账号" prop="makeuser" v-if="form.isownpayment === 0">
+        <!-- <el-form-item label="收款账号" prop="makeuser" v-if="form.isownpayment === 0">
           <el-input v-model="form.makeuser  " placeholder="请输入收款账号" />
+        </el-form-item>-->
+
+        <el-form-item label="商户号" prop="mchId" v-show="show">
+          <el-input v-model="form.mchId" placeholder="请输入商户号" />
         </el-form-item>
+        <el-form-item label="API密钥" prop="apiKey" v-show="show">
+          <el-input v-model="form.apiKey" placeholder="请输入API密钥" />
+        </el-form-item>
+
         <el-form-item label="备注" prop="remarks">
           <el-input
             v-model="form.remarks"
@@ -251,7 +258,9 @@ export default {
         //   message: "收款账号不能为空",
         //   trigger: "blur"
         // }
-      }
+      },
+      // 是否显示
+      show: true
     };
   },
   created() {
@@ -265,6 +274,13 @@ export default {
       return val == 0 ? "是" : val == 1 ? "否" : "";
     },
 
+    isShow: function(val) {
+      if (val == 0) {
+        this.show = true;
+      } else {
+        this.show = false;
+      }
+    },
     /** 查询设备商列表 */
     getList() {
       this.loading = true;
@@ -324,6 +340,12 @@ export default {
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids;
+      if (row.isownpayment == 0) {
+        this.show = true;
+      } else {
+        this.show = false;
+      }
+
       getDeviceStore(id).then(response => {
         this.form = response.data;
         this.open = true;

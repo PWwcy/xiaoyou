@@ -13,7 +13,7 @@
       <el-form-item label="玩法介绍" prop="playIntroduce">
         <el-input
           v-model="queryParams.playIntroduce"
-          placeholder="请输入玩法介绍"
+          placeholder="请输入设备玩法介绍"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -83,6 +83,7 @@
         </template>
       </el-table-column>
       <el-table-column label="城市ID" align="center" prop="cityId" />
+      <el-table-column label="免费体验次数" align="center" prop="experienceNum" />
       <el-table-column label="顺序" align="center" prop="pos" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -121,13 +122,17 @@
 
     <!-- 添加或修改设备类型对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="110px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="类型名称" prop="typeName">
           <el-input v-model="form.typeName" placeholder="请输入类型名称" />
         </el-form-item>
         <el-form-item label="城市" prop="cityId">
           <!-- <el-input v-model="form.cityId" placeholder="请输入城市id" /> -->
           <el-input-number v-model="form.cityId" controls-position="right" placeholder="请输入城市id" />
+        </el-form-item>
+
+        <el-form-item label="免费体验次数" prop="experienceNum">
+          <el-input v-model="form.experienceNum" placeholder="请输入免费体验次数" />
         </el-form-item>
         <el-form-item label="顺序" prop="pos">
           <el-input v-model="form.pos" placeholder="请输入顺序" />

@@ -400,7 +400,7 @@ export default {
     // 角色状态修改
     handleStatusChange(row) {
       let text = row.status === "0" ? "启用" : "禁用";
-      this.$confirm('确认要"' + text + '""' + row.nickname + '"吗?', "警告", {
+      this.$confirm('确认要"' + text + '"' + row.nickname + '"吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

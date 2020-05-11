@@ -240,7 +240,7 @@
           <el-col :span="24">
             <el-form-item label="设备厂商" prop="manufacturer">
               <!-- <el-input v-model="form.manufacturer" placeholder="请输入设备厂商" /> -->
-              <el-select
+              <!-- <el-select
                 v-model="form.manufacturer"
                 placeholder="请选择"
                 filterable
@@ -248,6 +248,13 @@
               >
                 <el-option
                   v-for="item in optionsStore"
+                  :key="item.id"
+                  :label="item.enterpriseName"
+                  :value="item.id"
+              ></el-option>-->
+              <el-select v-model="form.manufacturer" filterable placeholder="请选择设备厂商">
+                <el-option
+                  v-for="item in deviceStoreList"
                   :key="item.id"
                   :label="item.enterpriseName"
                   :value="item.id"
@@ -420,10 +427,11 @@ import {
   delDevice,
   addDevice,
   updateDevice,
-  exportDevice
+  exportDevice,
+  listDeviceStore
 } from "@/api/device/device";
 
-import { listDeviceStore } from "@/api/deviceStore/deviceStore";
+// import { listDeviceStore } from "@/api/deviceStore/deviceStore";
 import { listCategory } from "@/api/device/category";
 import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
@@ -453,6 +461,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 设备商列表
+      deviceStoreList: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -492,7 +502,12 @@ export default {
         deviceName: [
           { required: true, message: "设备名称不能为空", trigger: "blur" }
         ],
-        typeId: [{ required: true, message: "请选择设备类型", trigger: "blur" }]
+        typeId: [
+          { required: true, message: "请选择设备类型", trigger: "blur" }
+        ],
+        manufacturer: [
+          { required: true, message: "请选择设备厂商", trigger: "blur" }
+        ]
       },
       optionsType: [],
       typeTotal: 0,
@@ -517,8 +532,9 @@ export default {
   created() {
     this.getList();
     this.getType();
-    this.getStoreList();
+    // this.getStoreList();
     this.getGameType();
+    this.listDeviceStore();
   },
   mixins: [mixins, region],
   methods: {
@@ -535,7 +551,12 @@ export default {
         this.loading = false;
       });
     },
-    // 图片查看
+
+    listDeviceStore() {
+      listDeviceStore(null).then(response => {
+        this.deviceStoreList = response.rows;
+      });
+    },
     showImg(data) {
       this.bigImg = data;
       this.showViewer = true;
@@ -639,12 +660,12 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      // getDevice().then(response => {
-      //   this.deviceType = response.deviceType;
-      this.reset();
-      this.open = true;
-      this.title = "添加投注配置";
-      // });
+      getDevice().then(response => {
+        this.deviceType = response.deviceType;
+        this.reset();
+        this.open = true;
+        this.title = "添加设备";
+      });
     },
     /** 修改按钮操作 */
     handleUpdate(row) {

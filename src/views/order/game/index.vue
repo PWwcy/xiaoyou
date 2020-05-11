@@ -19,7 +19,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="所属公司" prop="commodityName">
+      <el-form-item label="所属公司" prop="companyName">
         <el-input
           v-model="queryParams.companyName"
           placeholder
@@ -318,7 +318,7 @@ export default {
         count: undefined,
         userName: undefined,
         companyName: undefined,
-        deviceNumber: undefined
+        deviceNumber: undefined,
       },
       // 表单参数
       form: {},
