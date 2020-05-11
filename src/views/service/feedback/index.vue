@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="反馈人名称" prop="userName"  label-width="100px">
+      <el-form-item label="反馈人名称" prop="userName" label-width="100px">
         <el-input
           v-model="queryParams.userName"
           placeholder="请输入反馈人名称"
@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-        <el-form-item label="状态" prop="status">
+      <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
           <el-option label="未处理" value="0" />
           <el-option label="已处理" value="1" />
@@ -38,30 +38,32 @@
     <el-table v-loading="loading" :data="feedbackList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="反馈图片" align="center" prop="picture" >
+      <el-table-column label="反馈图片" align="center" prop="picture">
         <template slot-scope="scope">
-          <img :src="scope.row.picture" class="td-img" @click="showImg(scope.row.picture)">
+          <img :src="scope.row.picture" class="td-img" @click="showImg(scope.row.picture)" />
         </template>
       </el-table-column>
       <el-table-column label="反馈内容" align="center" prop="content" />
       <el-table-column label="用户id" align="center" prop="userId" />
       <el-table-column label="联系方式" align="center" prop="contactMode" />
-      <el-table-column label="状态" align="center" prop="status" >
+      <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <span>{{formatStatus(scope.row.status)}}</span>
         </template>
       </el-table-column>
       <el-table-column label="反馈人名称" align="center" prop="userName" />
-      <el-table-column label="反馈时间" align="center" prop="createTime"/>
+      <el-table-column label="反馈时间" align="center" prop="createTime" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
+            v-if="scope.row.status == 0"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['service:feedback:edit']"
           >确认</el-button>
+          <span v-else>已确认</span>
         </template>
       </el-table-column>
     </el-table>
@@ -105,15 +107,19 @@
       </div>
     </el-dialog>
 
-    <el-image-viewer
-      v-if="showViewer"
-      :on-close="closeViewer"
-      :url-list="[bigImg]" />
+    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[bigImg]" />
   </div>
 </template>
 
 <script>
-import { listFeedback, getFeedback, delFeedback, addFeedback, updateFeedback, exportFeedback } from "@/api/service/feedback";
+import {
+  listFeedback,
+  getFeedback,
+  delFeedback,
+  addFeedback,
+  updateFeedback,
+  exportFeedback
+} from "@/api/service/feedback";
 
 export default {
   data() {
@@ -148,11 +154,10 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      },
+      rules: {},
 
-      showViewer:false,
-      bigImg:''
+      showViewer: false,
+      bigImg: ""
     };
   },
   created() {
@@ -168,16 +173,16 @@ export default {
         this.loading = false;
       });
     },
-    showImg(data){
+    showImg(data) {
       this.bigImg = data;
       this.showViewer = true;
     },
     // 关闭查看器
     closeViewer() {
-      this.showViewer = false
+      this.showViewer = false;
     },
     formatStatus(val) {
-      return val==0 ? '未处理' : val == 1 ? '已处理' : ''
+      return val == 0 ? "未处理" : val == 1 ? "已处理" : "";
     },
     // 取消按钮
     cancel() {
@@ -210,9 +215,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!=1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length != 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -222,10 +227,10 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      const id = row.id || this.ids
+      const id = row.id || this.ids;
       updateFeedback(id).then(response => {
         // this.form = response.data;
-      /*  this.open = true;
+        /*  this.open = true;
         this.title = "修改反馈";*/
         if (response.code === 200) {
           this.msgSuccess("确认成功");
@@ -268,28 +273,34 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       this.$confirm('是否确认删除反馈编号为"' + ids + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
           return delFeedback(ids);
-        }).then(() => {
+        })
+        .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        }).catch(function() {});
+        })
+        .catch(function() {});
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有反馈数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+      this.$confirm("是否确认导出所有反馈数据项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
           return exportFeedback(queryParams);
-        }).then(response => {
+        })
+        .then(response => {
           this.download(response.msg);
-        }).catch(function() {});
+        })
+        .catch(function() {});
     }
   }
 };

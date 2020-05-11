@@ -197,7 +197,7 @@
                 icon="el-icon-key"
                 @click="handleResetPwd(scope.row)"
                 v-hasPermi="['system:user:resetPwd']"
-              >重置</el-button>
+              >重置密码</el-button>
             </template>
           </el-table-column>
         </el-table>

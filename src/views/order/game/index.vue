@@ -52,7 +52,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="danger"
           icon="el-icon-delete"
@@ -61,7 +61,7 @@
           @click="handleDelete"
           v-hasPermi="['order:game:remove']"
         >删除</el-button>
-      </el-col>
+      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -94,6 +94,7 @@
         </template>
       </el-table-column>
       <el-table-column label="下单人" align="center" prop="userName" />
+      <el-table-column label="收款方" align="center" prop="userName" />
       <el-table-column label="公司名称" align="center" prop="companyName" />
       <el-table-column label="获得游豆" align="center" prop="getBean" />
       <el-table-column label="支付金额" align="center" prop="payMoney" />
@@ -105,13 +106,13 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['order:game:remove']"
-          >删除</el-button>
+          >删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>

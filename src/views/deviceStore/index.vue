@@ -171,6 +171,9 @@
             <el-radio :label="1">否</el-radio>
           </el-radio-group>
         </el-form-item>
+        <!-- <el-form-item label="收款账号" prop="makeuser" v-if="form.isownpayment === 0">
+          <el-input v-model="form.makeuser  " placeholder="请输入收款账号" />
+        </el-form-item>-->
 
         <el-form-item label="商户号" prop="mchId" v-show="show">
           <el-input v-model="form.mchId" placeholder="请输入商户号" />
@@ -247,9 +250,25 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {},
+      rules: {
+        enterpriseName: {
+          required: true,
+          message: "设备商名称不能为空",
+          trigger: "blur"
+        },
+        phone: {
+          required: true,
+          message: "联系电话不能为空",
+          trigger: "blur"
+        }
+        // makeuser: {
+        //   required: true,
+        //   message: "收款账号不能为空",
+        //   trigger: "blur"
+        // }
+      },
       // 是否显示
-      show:true,
+      show: true
     };
   },
   created() {
@@ -263,13 +282,12 @@ export default {
       return val == 0 ? "是" : val == 1 ? "否" : "";
     },
 
-    isShow:function(val){
-      if(val==0){
+    isShow: function(val) {
+      if (val == 0) {
         this.show = true;
-      }else{
+      } else {
         this.show = false;
       }
-
     },
     /** 查询设备商列表 */
     getList() {
@@ -330,9 +348,9 @@ export default {
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids;
-      if(row.isownpayment==0){
+      if (row.isownpayment == 0) {
         this.show = true;
-      }else{
+      } else {
         this.show = false;
       }
 

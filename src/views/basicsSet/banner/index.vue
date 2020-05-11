@@ -272,6 +272,7 @@ export default {
         picture: undefined,
         sort: undefined
       };
+      this.initFileList();
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -317,6 +318,8 @@ export default {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
                 this.open = false;
+                this.reset();
+                this.resetRegion("form");
                 this.getList();
               } else {
                 this.msgError(response.msg);
@@ -326,7 +329,9 @@ export default {
             addBanner(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");
+                this.reset();
                 this.open = false;
+                this.resetRegion("form");
                 this.getList();
               } else {
                 this.msgError(response.msg);

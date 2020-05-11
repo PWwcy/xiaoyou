@@ -82,7 +82,7 @@
           <img :src="scope.row.cover" class="td-img" @click="showImgs(scope.row.cover)" />
         </template>
       </el-table-column>
-      <el-table-column label="城市id" align="center" prop="cityId" />
+      <el-table-column label="城市ID" align="center" prop="cityId" />
       <el-table-column label="免费体验次数" align="center" prop="experienceNum" />
       <el-table-column label="顺序" align="center" prop="pos" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -126,8 +126,9 @@
         <el-form-item label="类型名称" prop="typeName">
           <el-input v-model="form.typeName" placeholder="请输入类型名称" />
         </el-form-item>
-        <el-form-item label="城市id" prop="cityId">
-          <el-input v-model="form.cityId" placeholder="请输入城市id" />
+        <el-form-item label="城市" prop="cityId">
+          <!-- <el-input v-model="form.cityId" placeholder="请输入城市id" /> -->
+          <el-input-number v-model="form.cityId" controls-position="right" placeholder="请输入城市id" />
         </el-form-item>
 
         <el-form-item label="免费体验次数" prop="experienceNum">
@@ -136,8 +137,16 @@
         <el-form-item label="顺序" prop="pos">
           <el-input v-model="form.pos" placeholder="请输入顺序" />
         </el-form-item>
+        <el-form-item label="免费体验次数" prop="num">
+          <el-input-number
+            v-model="form.num"
+            :min="0"
+            controls-position="right"
+            placeholder="请输入免费体验次数"
+          />
+        </el-form-item>
         <el-form-item label="玩法介绍" prop="playIntroduce">
-          <el-input type="textarea" v-model="form.playIntroduce" placeholder="请输入玩法介绍" />
+          <el-input type="textarea" v-model="form.playIntroduce" placeholder="请输入设备玩法介绍" />
         </el-form-item>
         <el-form-item label="游戏模式" prop="mode">
           <el-select

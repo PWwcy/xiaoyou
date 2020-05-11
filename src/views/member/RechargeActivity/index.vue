@@ -328,9 +328,9 @@ export default {
       this.form = {
         id: undefined,
         activityName: undefined,
-        money: 0,
-        getbean: 0,
-        givebean: 0,
+        money: undefined,
+        getbean: undefined,
+        givebean: undefined,
         lastUpdateTime: undefined,
         createTime: undefined,
         createby: undefined,
