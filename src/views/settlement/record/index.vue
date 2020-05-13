@@ -1,53 +1,41 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="字典名称" prop="dictName">
+      <el-form-item label="结算金额" prop="amount">
         <el-input
-          v-model="queryParams.dictName"
-          placeholder="请输入字典名称"
+          v-model="queryParams.amount"
+          placeholder="请输入结算金额"
           clearable
           size="small"
-          style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="字典类型" prop="dictType">
+      <el-form-item label="结算企业id" prop="enterpriseId">
         <el-input
-          v-model="queryParams.dictType"
-          placeholder="请输入字典类型"
+          v-model="queryParams.enterpriseId"
+          placeholder="请输入结算企业id"
           clearable
           size="small"
-          style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="字典状态"
+      <el-form-item label="收款人" prop="payee">
+        <el-input
+          v-model="queryParams.payee"
+          placeholder="请输入收款人"
           clearable
           size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
-      <el-form-item label="创建时间">
-        <el-date-picker
-          v-model="dateRange"
+      <el-form-item label="收款账户" prop="account">
+        <el-input
+          v-model="queryParams.account"
+          placeholder="请输入收款账户"
+          clearable
           size="small"
-          style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -62,7 +50,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:dict:add']"
+          v-hasPermi="['settlement:record:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -72,7 +60,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:dict:edit']"
+          v-hasPermi="['settlement:record:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -82,36 +70,30 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:dict:remove']"
+          v-hasPermi="['settlement:record:remove']"
         >删除</el-button>
       </el-col>
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="warning"-->
-<!--          icon="el-icon-download"-->
-<!--          size="mini"-->
-<!--          @click="handleExport"-->
-<!--          v-hasPermi="['system:dict:export']"-->
-<!--        >导出</el-button>-->
-<!--      </el-col>-->
+      <el-col :span="1.5">
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          v-hasPermi="['settlement:record:export']"
+        >导出</el-button>
+      </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="字典编号" align="center" prop="dictId" />
-      <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
-      <el-table-column label="字典类型" align="center" :show-overflow-tooltip="true">
+      <el-table-column label="结算时间" align="center" prop="id" />
+      <el-table-column label="结算金额" align="center" prop="amount" />
+      <el-table-column label="结算企业id" align="center" prop="enterpriseId" />
+      <el-table-column label="收款人" align="center" prop="payee" />
+      <el-table-column label="收款账户" align="center" prop="account" />
+      <el-table-column label="结算时间" align="center" prop="settlementTime" width="180">
         <template slot-scope="scope">
-          <router-link :to="'/dict/type/data/' + scope.row.dictId" class="link-type">
-            <span>{{ scope.row.dictType }}</span>
-          </router-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-      <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.settlementTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -121,14 +103,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:dict:edit']"
+            v-hasPermi="['settlement:record:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:dict:remove']"
+            v-hasPermi="['settlement:record:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -142,26 +124,28 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改参数配置对话框 -->
+    <!-- 添加或修改结算记录对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="字典名称" prop="dictName">
-          <el-input v-model="form.dictName" placeholder="请输入字典名称" />
+        <el-form-item label="结算金额" prop="amount">
+          <el-input v-model="form.amount" placeholder="请输入结算金额" />
         </el-form-item>
-        <el-form-item label="字典类型" prop="dictType">
-          <el-input v-model="form.dictType" placeholder="请输入字典类型" />
+        <el-form-item label="结算企业id" prop="enterpriseId">
+          <el-input v-model="form.enterpriseId" placeholder="请输入结算企业id" />
         </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{dict.dictLabel}}</el-radio>
-          </el-radio-group>
+        <el-form-item label="收款人" prop="payee">
+          <el-input v-model="form.payee" placeholder="请输入收款人" />
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+        <el-form-item label="收款账户" prop="account">
+          <el-input v-model="form.account" placeholder="请输入收款账户" />
+        </el-form-item>
+        <el-form-item label="结算时间" prop="settlementTime">
+          <el-date-picker clearable size="small" style="width: 200px"
+            v-model="form.settlementTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择结算时间">
+          </el-date-picker>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -173,10 +157,9 @@
 </template>
 
 <script>
-import { listType, getType, delType, addType, updateType, exportType } from "@/api/system/dict/type";
+import { listRecord, getRecord, delRecord, addRecord, updateRecord, exportRecord } from "@/api/settlement/record";
 
 export default {
-  name: "Dict",
   data() {
     return {
       // 遮罩层
@@ -189,57 +172,41 @@ export default {
       multiple: true,
       // 总条数
       total: 0,
-      // 字典表格数据
-      typeList: [],
+      // 结算记录表格数据
+      recordList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
       open: false,
-      // 状态数据字典
-      statusOptions: [],
-      // 日期范围
-      dateRange: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        dictName: undefined,
-        dictType: undefined,
-        status: undefined
+        amount: undefined,
+        enterpriseId: undefined,
+        payee: undefined,
+        account: undefined,
+        settlementTime: undefined,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        dictName: [
-          { required: true, message: "字典名称不能为空", trigger: "blur" }
-        ],
-        dictType: [
-          { required: true, message: "字典类型不能为空", trigger: "blur" }
-        ]
       }
     };
   },
   created() {
     this.getList();
-    this.getDicts("sys_normal_disable").then(response => {
-      this.statusOptions = response.data;
-    });
   },
   methods: {
-    /** 查询字典类型列表 */
+    /** 查询结算记录列表 */
     getList() {
       this.loading = true;
-      listType(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.typeList = response.rows;
-          this.total = response.total;
-          this.loading = false;
-        }
-      );
-    },
-    // 字典状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status);
+      listRecord(this.queryParams).then(response => {
+        this.recordList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
     },
     // 取消按钮
     cancel() {
@@ -249,11 +216,13 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        dictId: undefined,
-        dictName: undefined,
-        dictType: undefined,
-        status: "0",
-        remark: undefined
+        id: undefined,
+        amount: undefined,
+        enterpriseId: undefined,
+        payee: undefined,
+        account: undefined,
+        settlementTime: undefined,
+        createBy: undefined
       };
       this.resetForm("form");
     },
@@ -264,38 +233,37 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length!=1
+      this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加字典类型";
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.dictId)
-      this.single = selection.length!=1
-      this.multiple = !selection.length
+      this.title = "添加结算记录";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const dictId = row.dictId || this.ids
-      getType(dictId).then(response => {
+      const id = row.id || this.ids
+      getRecord(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改字典类型";
+        this.title = "修改结算记录";
       });
     },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.dictId != undefined) {
-            updateType(this.form).then(response => {
+          if (this.form.id != undefined) {
+            updateRecord(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -305,7 +273,7 @@ export default {
               }
             });
           } else {
-            addType(this.form).then(response => {
+            addRecord(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -320,13 +288,13 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const dictIds = row.dictId || this.ids;
-      this.$confirm('是否确认删除字典编号为"' + dictIds + '"的数据项?', "警告", {
+      const ids = row.id || this.ids;
+      this.$confirm('是否确认删除结算记录编号为"' + ids + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delType(dictIds);
+          return delRecord(ids);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
@@ -335,12 +303,12 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有类型数据项?', "警告", {
+      this.$confirm('是否确认导出所有结算记录数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return exportType(queryParams);
+          return exportRecord(queryParams);
         }).then(response => {
           this.download(response.msg);
         }).catch(function() {});

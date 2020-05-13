@@ -46,15 +46,15 @@
           v-hasPermi="['device:category:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['device:category:export']"
-        >导出</el-button>
-      </el-col>
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="warning"-->
+<!--          icon="el-icon-download"-->
+<!--          size="mini"-->
+<!--          @click="handleExport"-->
+<!--          v-hasPermi="['device:category:export']"-->
+<!--        >导出</el-button>-->
+<!--      </el-col>-->
     </el-row>
 
     <el-table v-loading="loading" :data="categoryList" @selection-change="handleSelectionChange">

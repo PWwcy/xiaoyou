@@ -175,10 +175,10 @@
           <el-input v-model="form.makeuser  " placeholder="请输入收款账号" />
         </el-form-item>-->
 
-        <el-form-item label="商户号" prop="mchId" v-show="show">
+        <el-form-item label="商户号" prop="mchId" v-if="show">
           <el-input v-model="form.mchId" placeholder="请输入商户号" />
         </el-form-item>
-        <el-form-item label="API密钥" prop="apiKey" v-show="show">
+        <el-form-item label="API密钥" prop="apiKey" v-if="show">
           <el-input v-model="form.apiKey" placeholder="请输入API密钥" />
         </el-form-item>
 
@@ -260,12 +260,23 @@ export default {
           required: true,
           message: "联系电话不能为空",
           trigger: "blur"
+        },
+
+        contacts:{
+          required: true,
+          message: "联系人不能为空",
+          trigger: "blur"
+        },
+        mchId: {
+          required: true,
+          message: "商户号不能为空",
+          trigger: "blur"
+        },
+        apiKey: {
+          required: true,
+          message: "商户密钥不能为空",
+          trigger: "blur"
         }
-        // makeuser: {
-        //   required: true,
-        //   message: "收款账号不能为空",
-        //   trigger: "blur"
-        // }
       },
       // 是否显示
       show: true
