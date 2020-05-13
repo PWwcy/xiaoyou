@@ -462,8 +462,8 @@ export default {
       this.form = {
         id: undefined,
         commodityName: undefined,
-        price: 0,
-        gameBean: 0,
+        price: undefined,
+        gameBean: undefined,
         commodityPicture: undefined,
         commodityIntroduce: undefined,
         storeId: undefined,

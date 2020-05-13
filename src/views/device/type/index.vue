@@ -82,7 +82,7 @@
           <img :src="scope.row.cover" class="td-img" @click="showImgs(scope.row.cover)" />
         </template>
       </el-table-column>
-      <el-table-column label="城市ID" align="center" prop="cityId" />
+      <el-table-column label="城市" align="center" prop="cityId" />
       <el-table-column label="免费体验次数" align="center" prop="experienceNum" />
       <el-table-column label="顺序" align="center" prop="pos" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -128,18 +128,23 @@
         </el-form-item>
         <el-form-item label="城市" prop="cityId">
           <!-- <el-input v-model="form.cityId" placeholder="请输入城市id" /> -->
-          <el-input-number v-model="form.cityId" controls-position="right" placeholder="请输入城市id" />
+          <el-input v-model="form.cityId" controls-position="right" placeholder="请输入城市" />
         </el-form-item>
 
-        <el-form-item label="免费体验次数" prop="experienceNum">
+        <!-- <el-form-item label="免费体验次数" prop="experienceNum">
           <el-input v-model="form.experienceNum" placeholder="请输入免费体验次数" />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="顺序" prop="pos">
-          <el-input v-model="form.pos" placeholder="请输入顺序" />
-        </el-form-item>
-        <el-form-item label="免费体验次数" prop="num">
           <el-input-number
-            v-model="form.num"
+            v-model="form.pos"
+            placeholder="请输入顺序"
+            controls-position="right"
+            :min="0"
+          />
+        </el-form-item>
+        <el-form-item label="免费体验次数" prop="experienceNum">
+          <el-input-number
+            v-model="form.experienceNum"
             :min="0"
             controls-position="right"
             placeholder="请输入免费体验次数"
@@ -174,11 +179,12 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleIconRemove"
             :on-success="handleIconSuccess"
+            :before-upload="iconUpload"
             :limit="1"
             :file-list="iconList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500KB</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="封面图片" prop="cover">
@@ -187,11 +193,12 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleCoverRemove"
             :on-success="handleCoverSuccess"
+            :before-upload="coverUpload"
             :limit="1"
             :file-list="coverList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500KB</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="图片" prop="pictureList">
@@ -277,7 +284,9 @@ export default {
       modelParams: {
         pageNum: 1,
         pageSize: 10
-      }
+      },
+
+      imgTypeArr: ["jpg", "jpeg", "png"]
     };
   },
   created() {
@@ -314,6 +323,14 @@ export default {
       }
     },
 
+    // 图标
+    iconUpload(file) {
+      return this.beforeUpload(file, 500 * 1024);
+    },
+    // 封面
+    coverUpload(file) {
+      return this.beforeUpload(file, 500 * 1024);
+    },
     /** 监听封面图片*/
     handleCoverRemove(file, fileList) {
       this.form.cover = null;

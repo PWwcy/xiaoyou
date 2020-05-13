@@ -161,7 +161,23 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {}
+      rules: {
+        modeName: [
+          { required: true, message: "请输入模式名称", trigger: "blur" },
+          {
+            min: 2,
+            max: 10,
+            message: "长度在 2 到 10 个字符",
+            trigger: "blur"
+          },
+          {
+            required: true,
+            pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9.·-]+$/,
+            message: "模式名称不支持特殊字符",
+            trigger: "blur"
+          }
+        ]
+      }
     };
   },
   created() {

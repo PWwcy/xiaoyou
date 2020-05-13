@@ -107,7 +107,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="类型对应内容id" prop="contentId">
-        <el-input v-model="form.contentId" placeholder="请输入类型对应内容id" />
+          <el-input v-model="form.contentId" placeholder="请输入类型对应内容id" />
         </el-form-item>
         <el-form-item label="城市">
           <!-- <el-input v-model="form.cityId" placeholder="请输入城市id" /> -->
@@ -129,6 +129,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
+            :before-upload="imgUpload"
             accept="image/*"
             :limit="1"
             :on-exceed="handleExceed"
@@ -136,7 +137,7 @@
             :file-list="uploadFileList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500KB</div>
           </el-upload>
         </el-form-item>
 
@@ -205,7 +206,7 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        picture: [{ required: true, message: "请选择图片", trigger: "blur" }]
+        picture: [{ required: true, message: "请选择图片", trigger: "change" }]
       },
       fileList: [],
       showViewer: false,
@@ -235,6 +236,9 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
+    imgUpload(file) {
+      return this.beforeUpload(file, 500 * 1024);
+    },
     addSelected(data) {
       console.log(data);
       this.form.province = data.province.value;
@@ -252,9 +256,14 @@ export default {
     },
     handleSuccess(response, file, fileList) {
       this.form.picture = response.data.picture;
+      this.$refs["form"].clearValidate();
+      this.msgSuccess("上传成功");
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    handleRemove() {
+      this.form.picture = undefined;
     },
 
     // 取消按钮

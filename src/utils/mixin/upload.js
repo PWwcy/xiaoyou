@@ -4,7 +4,9 @@ export default {
       uploadFileList: [],
       urlArr: [],
       bigImg: null,
-      showViewer: false
+      showViewer: false,
+      imgTypeArr: ['jpg', 'jpeg', 'png']
+
     }
   },
   computed: {
@@ -83,6 +85,25 @@ export default {
         }
       }
     },
+    beforeUpload(file, size) {
+      if (!file) return;
+      let name = file.name.split(".").pop();
+      if (this.imgTypeArr.indexOf(name.toLowerCase()) == -1) {
+        this.msgInfo("请上传 jpg/png 图片");
+        return false;
+      }
+      if (file.size > size) {
+        size = size / 1024;
+        let unit = "KB";
+        if (size > 1024) {
+          size = size / 1024;
+          unit = "MB";
+        }
+        this.msgInfo("文件大小不能超过" + size + unit);
+        return false;
+      }
+      return true;
+    },
     handleRemove(file, fileList) {
       // console.log(file, fileList);
       // this.uploadFileList = fileList
@@ -106,6 +127,7 @@ export default {
     handleSuccess(response, file, fileList) {
       // this.uploadFileList = fileList
       this.urlArr.push(response.data.picture)
+      this.msgSuccess('上传成功')
       // if (this.uploadFileList) {
       //   this.uploadFileList.push(response.data.picture);
       // } else {

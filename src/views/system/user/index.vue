@@ -112,15 +112,15 @@
               v-hasPermi="['system:user:remove']"
             >删除</el-button>
           </el-col>
-<!--          <el-col :span="1.5">-->
-<!--            <el-button-->
-<!--              type="info"-->
-<!--              icon="el-icon-upload2"-->
-<!--              size="mini"-->
-<!--              @click="handleImport"-->
-<!--              v-hasPermi="['system:user:import']"-->
-<!--            >导入</el-button>-->
-<!--          </el-col>-->
+          <!--          <el-col :span="1.5">-->
+          <!--            <el-button-->
+          <!--              type="info"-->
+          <!--              icon="el-icon-upload2"-->
+          <!--              size="mini"-->
+          <!--              @click="handleImport"-->
+          <!--              v-hasPermi="['system:user:import']"-->
+          <!--            >导入</el-button>-->
+          <!--          </el-col>-->
           <el-col :span="1.5">
             <el-button
               type="warning"
@@ -429,10 +429,34 @@ export default {
       // 表单校验
       rules: {
         userName: [
-          { required: true, message: "用户名称不能为空", trigger: "blur" }
+          { required: true, message: "用户名称不能为空", trigger: "blur" },
+          {
+            min: 2,
+            max: 10,
+            message: "长度在 2 到 10 个字符",
+            trigger: "blur"
+          },
+          {
+            required: true,
+            pattern: /^[a-zA-Z][a-zA-Z0-9_]+$/,
+            message: "用户名称不支持特殊字符和汉字",
+            trigger: "blur"
+          }
         ],
         nickName: [
-          { required: true, message: "用户昵称不能为空", trigger: "blur" }
+          { required: true, message: "用户昵称不能为空", trigger: "blur" },
+          {
+            min: 2,
+            max: 10,
+            message: "长度在 2 到 10 个字符",
+            trigger: "blur"
+          },
+          {
+            required: true,
+            pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9.·-]+$/,
+            message: "用户昵称不支持特殊字符",
+            trigger: "blur"
+          }
         ],
         deptId: [
           { required: true, message: "归属部门不能为空", trigger: "blur" }
