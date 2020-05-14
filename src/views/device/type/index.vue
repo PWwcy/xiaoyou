@@ -127,8 +127,17 @@
           <el-input v-model="form.typeName" placeholder="请输入类型名称" />
         </el-form-item>
         <el-form-item label="城市" prop="cityId">
-          <!-- <el-input v-model="form.cityId" placeholder="请输入城市id" /> -->
-          <el-input v-model="form.cityId" controls-position="right" placeholder="请输入城市" />
+          <!-- <el-input v-model="form.cityId" controls-position="right" placeholder="请输入城市" /> -->
+          <v-distpicker
+            class="city-select"
+            size="small"
+            :province="regionForm.province"
+            :city="regionForm.city"
+            :area="regionForm.area"
+            @province="onChangeProvince($event, 'regionForm')"
+            @city="onChangeCity($event, 'regionForm')"
+            @area="onChangeArea($event, 'regionForm')"
+          ></v-distpicker>
         </el-form-item>
 
         <!-- <el-form-item label="免费体验次数" prop="experienceNum">
@@ -237,9 +246,13 @@ import {
 } from "@/api/device/type";
 import { listMode } from "@/api/operate/mode";
 
+import VDistpicker from "v-distpicker";
+
 import mixins from "@/utils/mixin/upload";
+import region from "@/utils/mixin/region";
 
 export default {
+  components: { VDistpicker },
   data() {
     return {
       // 遮罩层
@@ -293,7 +306,7 @@ export default {
     this.getList();
     this.getModelList();
   },
-  mixins: [mixins],
+  mixins: [mixins, region],
   methods: {
     /** 查询设备类型列表 */
     getList() {
@@ -455,6 +468,7 @@ export default {
       this.form.modeList = this.form.modeList && this.form.modeList.join(",");
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.initForm("form");
           if (this.form.id != undefined) {
             updateType(this.form).then(response => {
               if (response.code === 200) {
