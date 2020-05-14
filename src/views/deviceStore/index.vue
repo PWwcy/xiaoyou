@@ -110,11 +110,11 @@
       <el-table-column label="可用余额" align="center" prop="availableBalance" />
       <el-table-column label="备注" align="center" prop="remarks" />
       <!-- <el-table-column label="是否删除 0 是 1 否" align="center" prop="isDel" /> -->
-      <el-table-column label="是否删除" align="center" prop="isDel">
-        <template slot-scope="scope">
-          <span>{{ formatStatus(scope.row.isDel) }}</span>
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="是否删除" align="center" prop="isDel">-->
+<!--        <template slot-scope="scope">-->
+<!--          <span>{{ formatStatus(scope.row.isDel) }}</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="收入" align="center" prop="income" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

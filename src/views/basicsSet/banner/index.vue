@@ -101,7 +101,7 @@
         <el-form-item label="类型 " prop="typeId">
           <el-radio-group v-model="form.typeId">
             <el-radio :label="0">活动</el-radio>
-            <el-radio :label="1">html</el-radio>
+<!--            <el-radio :label="1">html</el-radio>-->
             <el-radio :label="2">会员</el-radio>
             <el-radio :label="3">商品</el-radio>
           </el-radio-group>

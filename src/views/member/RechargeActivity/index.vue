@@ -50,7 +50,7 @@
       </el-form-item>
       <el-form-item label="创建人" prop="createby">
         <el-input
-          v-model="queryParams.createby"
+          v-model="queryParams.createBy"
           placeholder="请输入创建人"
           clearable
           size="small"

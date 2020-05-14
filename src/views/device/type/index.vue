@@ -131,9 +131,7 @@
           <el-input-number v-model="form.cityId" controls-position="right" placeholder="请输入城市id" />
         </el-form-item>
 
-        <el-form-item label="免费体验次数" prop="experienceNum">
-          <el-input v-model="form.experienceNum" placeholder="请输入免费体验次数" />
-        </el-form-item>
+
         <el-form-item label="顺序" prop="pos">
           <el-input v-model="form.pos" placeholder="请输入顺序" />
         </el-form-item>
@@ -277,7 +275,7 @@ export default {
       modelParams: {
         pageNum: 1,
         pageSize: 10
-      }
+      },
     };
   },
   created() {
