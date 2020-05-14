@@ -33,6 +33,8 @@ import RaddarChart from "./dashboard/RaddarChart";
 import PieChart from "./dashboard/PieChart";
 import BarChart from "./dashboard/BarChart";
 
+import { homeData } from "@/api/index";
+
 const lineChartData = {
   newVisitis: {
     expectedData: [100, 120, 161, 134, 105, 160, 165],
@@ -66,9 +68,17 @@ export default {
       lineChartData: lineChartData.newVisitis
     };
   },
+  created() {
+    this.getData();
+  },
   methods: {
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type];
+    },
+    getData() {
+      homeData().then(res => {
+        console.log(res);
+      });
     }
   }
 };
