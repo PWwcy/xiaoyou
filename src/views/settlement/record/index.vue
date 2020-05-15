@@ -1,15 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="结算金额" prop="amount">
-        <el-input
-          v-model="queryParams.amount"
-          placeholder="请输入结算金额"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+
       <el-form-item label="结算企业id" prop="enterpriseId">
         <el-input
           v-model="queryParams.enterpriseId"
@@ -73,15 +65,6 @@
           v-hasPermi="['settlement:record:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['settlement:record:export']"
-        >导出</el-button>
-      </el-col>
     </el-row>
 
     <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
@@ -139,14 +122,7 @@
         <el-form-item label="收款账户" prop="account">
           <el-input v-model="form.account" placeholder="请输入收款账户" />
         </el-form-item>
-        <el-form-item label="结算时间" prop="settlementTime">
-          <el-date-picker clearable size="small" style="width: 200px"
-            v-model="form.settlementTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择结算时间">
-          </el-date-picker>
-        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
