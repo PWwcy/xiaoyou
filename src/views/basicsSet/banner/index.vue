@@ -54,7 +54,10 @@
     <el-table v-loading="loading" :data="bannerList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="城市id" align="center" prop="cityId" />
+      <!-- <el-table-column label="城市id" align="center" prop="cityId" /> -->
+      <el-table-column label="省" align="center" prop="province" />
+      <el-table-column label="市" align="center" prop="city" />
+      <el-table-column label="区/县" align="center" prop="area" />
       <el-table-column label="图片地址" align="center" prop="picture">
         <template slot-scope="scope">
           <img
@@ -279,7 +282,10 @@ export default {
         contentId: undefined,
         cityId: undefined,
         picture: undefined,
-        sort: undefined
+        sort: undefined,
+        province: undefined,
+        city: undefined,
+        area: undefined
       };
       this.initFileList();
       this.resetForm("form");
