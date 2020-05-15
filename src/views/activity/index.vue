@@ -418,6 +418,7 @@ export default {
       this.form.pictureList = this.urlArrs;
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.initForm("form");
           if (this.form.id != undefined) {
             updateActivity(this.form).then(response => {
               if (response.code === 200) {

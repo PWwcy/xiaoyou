@@ -383,6 +383,7 @@ export default {
       getRechargeActivity(id).then(response => {
         this.memberCard = response.memberCard;
         this.form = response.data;
+        this.form.cTime = [this.form.startTime, this.form.endTime];
         this.open = true;
         this.title = "修改会员充值活动";
         if (this.form && this.form.picture) {
