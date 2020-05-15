@@ -458,6 +458,7 @@ export default {
         status: 0
       };
       this.initFileList();
+      this.resetRegion("form");
       this.resetForm("form");
     },
     /** 搜索按钮操作 */

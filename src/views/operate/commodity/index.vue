@@ -476,6 +476,7 @@ export default {
         salesVolume: undefined
       };
       this.initFileList();
+      this.resetRegion("form");
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -530,6 +531,7 @@ export default {
         if (valid) {
           // this.form.commodityPicture = this.initFile();
           this.form.commodityPicture = this.urlArrs.join();
+          this.initForm("form");
           if (this.form.id != undefined) {
             this.testForm();
             updateCommodity(this.form).then(response => {

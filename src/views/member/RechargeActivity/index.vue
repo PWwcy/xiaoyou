@@ -93,7 +93,6 @@
           v-hasPermi="['member:RechargeActivity:remove']"
         >删除</el-button>
       </el-col>
-
     </el-row>
 
     <el-table
@@ -149,7 +148,7 @@
     />
 
     <!-- 添加或修改会员充值活动对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="380px">
+    <el-dialog :title="title" :visible.sync="open" width="580px">
       <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <el-form-item label="活动名称" prop="activityName" style="padding-right: 30px;">
           <el-input v-model="form.activityName" placeholder="请输入活动名称" />
@@ -193,6 +192,16 @@
           />
           <span class="my-unit-span">{{beanUnit}}</span>
         </el-form-item>
+        <el-form-item label="活动时间" prop="cTime">
+          <el-date-picker
+            v-model="form.cTime"
+            type="datetimerange"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            :default-time="['08:00:00']"
+            @change="timeChange"
+          ></el-date-picker>
+        </el-form-item>
         <el-form-item label="图片" prop="picture">
           <el-upload
             :action="uploadFileUrl"
@@ -227,6 +236,7 @@ import {
   exportRechargeActivity
 } from "@/api/member/RechargeActivity";
 
+import { formatDate } from "@/utils";
 import mixins from "@/utils/mixin/upload";
 export default {
   data() {
@@ -260,6 +270,7 @@ export default {
       },
       // 表单参数
       form: {},
+      cTime: "",
       // 表单校验
       rules: {
         activityName: [
@@ -276,7 +287,8 @@ export default {
         ],
         picture: [
           { required: true, message: "请选择上传图片", trigger: "blur" }
-        ]
+        ],
+        cTime: [{ required: true, message: "请选择活动时间", trigger: "blur" }]
       },
       pictureList: [], // 回显图片,
       memberCard: [] // 会员卡
@@ -313,7 +325,12 @@ export default {
         url: response.data.picture,
         uid: file.uid
       };
+      this.$refs["form"].clearValidate();
       this.pictureList.push(obj);
+    },
+    timeChange(data) {
+      this.form.startTime = formatDate(data[0]);
+      this.form.endTime = formatDate(data[1]);
     },
     // 表单重置
     reset() {
@@ -326,8 +343,12 @@ export default {
         lastUpdateTime: undefined,
         createTime: undefined,
         createby: undefined,
-        picture: undefined
+        picture: undefined,
+        cTime: undefined,
+        startTime: undefined,
+        endTime: undefined
       };
+      this.pictureList = [];
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -376,9 +397,9 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      console.log(this.form);
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.cTime = undefined;
           if (this.form.id != undefined) {
             updateRechargeActivity(this.form).then(response => {
               if (response.code === 200) {

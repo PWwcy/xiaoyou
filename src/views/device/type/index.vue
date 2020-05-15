@@ -69,8 +69,11 @@
 
     <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="顺序" align="center" prop="id" />
+      <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="类型名称" align="center" prop="typeName" />
+      <el-table-column label="省" align="center" prop="province" />
+      <el-table-column label="市" align="center" prop="city" />
+      <el-table-column label="区" align="center" prop="area" />
       <el-table-column label="图标" align="center">
         <template slot-scope="scope">
           <img :src="scope.row.icon" class="td-img" @click="showImgs(scope.row.icon)" />
@@ -82,7 +85,7 @@
           <img :src="scope.row.cover" class="td-img" @click="showImgs(scope.row.cover)" />
         </template>
       </el-table-column>
-      <el-table-column label="城市" align="center" prop="cityId" />
+      <!-- <el-table-column label="城市" align="center" prop="cityId" /> -->
       <el-table-column label="免费体验次数" align="center" prop="experienceNum" />
       <el-table-column label="顺序" align="center" prop="pos" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -398,6 +401,7 @@ export default {
       this.uploadFileList = [];
       this.coverList = [];
       this.iconList = [];
+      this.resetRegion("form");
       this.resetForm("form");
     },
     /** 搜索按钮操作 */

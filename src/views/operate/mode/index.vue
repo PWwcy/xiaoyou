@@ -176,6 +176,9 @@ export default {
             message: "模式名称不支持特殊字符",
             trigger: "blur"
           }
+        ],
+        difficult: [
+          { required: true, message: "请选择模式难度", trigger: "blur" }
         ]
       }
     };

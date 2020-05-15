@@ -288,6 +288,7 @@ export default {
         area: undefined
       };
       this.initFileList();
+      this.resetRegion("form");
       this.resetForm("form");
     },
     /** 搜索按钮操作 */

@@ -159,6 +159,19 @@
           </el-radio-group>
         </el-form-item>
 
+        <el-form-item label="城市">
+          <v-distpicker
+            class="city-select"
+            size="small"
+            :province="regionForm.province"
+            :city="regionForm.city"
+            :area="regionForm.area"
+            @province="onChangeProvince($event, 'regionForm')"
+            @city="onChangeCity($event, 'regionForm')"
+            @area="onChangeArea($event, 'regionForm')"
+          ></v-distpicker>
+        </el-form-item>
+
         <el-form-item label="报名游豆" prop="link" v-show="isShow">
           <el-input v-model="form.bean" placeholder="请输入报名游豆" />
         </el-form-item>
@@ -231,10 +244,15 @@ import {
   updateActivity,
   exportActivity
 } from "@/api/activity/activity";
+import VDistpicker from "v-distpicker";
 
 import mixins from "@/utils/mixin/upload";
+import region from "@/utils/mixin/region";
 
 export default {
+  components: {
+    VDistpicker
+  },
   data() {
     return {
       dialogImageUrl: "",
@@ -283,7 +301,7 @@ export default {
   created() {
     this.getList();
   },
-  mixins: [mixins],
+  mixins: [mixins, region],
   methods: {
     /** 查询活动列表 */
     getList() {
@@ -337,10 +355,14 @@ export default {
         pictureList: undefined,
         isFree: 0,
         bean: 0,
-        cover: undefined
+        cover: undefined,
+        province: undefined,
+        city: undefined,
+        area: undefined
       };
       this.coverList = [];
       this.initFileList();
+      this.resetRegion("form");
       this.resetForm("form");
     },
     formatStatus(val) {

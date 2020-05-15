@@ -54,7 +54,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-    <!--  <el-col :span="1.5">
+      <!--  <el-col :span="1.5">
         <el-button
           type="primary"
           icon="el-icon-plus"
@@ -63,16 +63,16 @@
           v-hasPermi="['api:user:add']"
         >新增</el-button>
       </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="success"-->
-<!--          icon="el-icon-edit"-->
-<!--          size="mini"-->
-<!--          :disabled="single"-->
-<!--          @click="handleUpdate"-->
-<!--          v-hasPermi="['api:user:edit']"-->
-<!--        >修改</el-button>-->
-<!--      </el-col>-->
+      <!--      <el-col :span="1.5">-->
+      <!--        <el-button-->
+      <!--          type="success"-->
+      <!--          icon="el-icon-edit"-->
+      <!--          size="mini"-->
+      <!--          :disabled="single"-->
+      <!--          @click="handleUpdate"-->
+      <!--          v-hasPermi="['api:user:edit']"-->
+      <!--        >修改</el-button>-->
+      <!--      </el-col>-->
       <!-- <el-col :span="1.5">
         <el-button
           type="danger"
@@ -447,6 +447,7 @@ export default {
         lastLoginTime: undefined,
         type: 0
       };
+      this.resetRegion("form");
       this.resetForm("form");
     },
     /** 搜索按钮操作 */

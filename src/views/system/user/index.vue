@@ -438,8 +438,10 @@ export default {
           },
           {
             required: true,
-            pattern: /^[a-zA-Z][a-zA-Z0-9_]+$/,
-            message: "用户名称不支持特殊字符和汉字",
+            // pattern: /^[a-zA-Z0-9_]+$/,
+            // message: "用户名称不支持特殊字符和中文",
+            pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9.·-]+$/,
+            message: "用户昵称不支持特殊字符",
             trigger: "blur"
           }
         ],
