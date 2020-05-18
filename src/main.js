@@ -100,6 +100,8 @@ Vue.use(Element, {
 
 Vue.config.productionTip = false
 
+console.log(router);
+
 new Vue({
     el: '#app',
     router,

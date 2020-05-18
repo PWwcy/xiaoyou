@@ -212,6 +212,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
+            :before-upload="beforeUploadM"
             :file-list="uploadFileList"
           >
             <i class="el-icon-plus"></i>
@@ -226,11 +227,11 @@
 
     <!-- 查看地图 -->
     <el-dialog title="查看地图" :visible.sync="isShowMap" width="900px">
-      <v-map ref="map" :centers="longLat"></v-map>
+      <v-map ref="map" vid="map" :centers="longLat"></v-map>
     </el-dialog>
     <!-- 选择地图 -->
-    <el-dialog title="选择地图" :visible.sync="isChooseMap" width="900px">
-      <v-map ref="cmap" :centers="longLat" :showLocal="true" :height="300"></v-map>
+    <el-dialog title="选择地图" :visible.sync="isChooseMap" width="900px" :closed="closed">
+      <v-map ref="cmap" vid="cmap" :centers="longLat" :showLocal="true" :height="300"></v-map>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="sureLocal">确 定</el-button>
         <el-button @click="isChooseMap = false">取 消</el-button>
@@ -412,16 +413,25 @@ export default {
     },
     // 选择地图
     chooseMap() {
-      this.longLat = [114.397169, 30.50576];
+      // this.longLat = [114.397169, 30.50576];
+      if (this.form.longitudeandlatitude) {
+        this.longLat = this.form.longitudeandlatitude.split(",");
+        this.longLat.forEach(item => parseInt(item));
+      }
       this.isChooseMap = true;
       let a = setTimeout(() => {
-        this.$refs.cmap.setCenter(this.longLat);
+        this.$refs.cmap.setCenter(this.longLat, this.form.address, true);
         clearTimeout(a);
       }, 300);
+    },
+    closed() {
+      console.log(123);
     },
     // 确定地点
     sureLocal() {
       let obj = this.$refs.cmap.getCenter();
+      this.form.xcoordinate = obj.location.lat;
+      this.form.ycoordinate = obj.location.lng;
       this.form.longitudeandlatitude =
         obj.location.lng + "," + obj.location.lat;
       this.form.address = obj.address;
@@ -499,7 +509,6 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          // this.form.storepicture = this.initFile();
           this.form.pictureList = this.urlArrs;
           if (this.form.id != undefined) {
             updateStore(this.form).then(response => {
@@ -512,7 +521,6 @@ export default {
               }
             });
           } else {
-            console.log(this.form);
             addStore(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");

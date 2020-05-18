@@ -126,12 +126,12 @@
           ></v-distpicker>
         </el-form-item>
         <el-form-item label="图片地址" prop="picture">
+          <!-- :before-remove="beforeRemove" -->
           <el-upload
             class="upload-demo"
+            :on-remove="handleRemove"
             :action="uploadFileUrl"
             :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
             :before-upload="imgUpload"
             accept="image/*"
             :limit="1"
@@ -267,6 +267,7 @@ export default {
     },
     handleRemove() {
       this.form.picture = undefined;
+      console.log(13);
     },
 
     // 取消按钮

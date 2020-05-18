@@ -46,15 +46,15 @@
           v-hasPermi="['device:category:remove']"
         >删除</el-button>
       </el-col>
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="warning"-->
-<!--          icon="el-icon-download"-->
-<!--          size="mini"-->
-<!--          @click="handleExport"-->
-<!--          v-hasPermi="['device:category:export']"-->
-<!--        >导出</el-button>-->
-<!--      </el-col>-->
+      <!--      <el-col :span="1.5">-->
+      <!--        <el-button-->
+      <!--          type="warning"-->
+      <!--          icon="el-icon-download"-->
+      <!--          size="mini"-->
+      <!--          @click="handleExport"-->
+      <!--          v-hasPermi="['device:category:export']"-->
+      <!--        >导出</el-button>-->
+      <!--      </el-col>-->
     </el-row>
 
     <el-table v-loading="loading" :data="categoryList" @selection-change="handleSelectionChange">
@@ -97,16 +97,18 @@
         </el-form-item>
 
         <el-form-item label="图片" prop="picture">
+          <!-- 
+          :before-remove="beforeRemove"-->
           <el-upload
             class="upload-demo"
-            :action="uploadFileUrl"
-            :on-preview="handlePreview"
             :on-remove="handleRemove"
-            :before-remove="beforeRemove"
+            :on-preview="handlePreview"
+            :action="uploadFileUrl"
             accept="image/*"
             :on-exceed="handleExceed"
             :on-success="handleSuccess"
-            :file-list="fileList"
+            :before-upload="beforeUploadM"
+            :file-list="uploadFileList"
           >
             <!-- :limit="1" -->
             <el-button size="small" type="primary">点击上传</el-button>
@@ -132,6 +134,7 @@ import {
   exportCategory
 } from "@/api/device/category";
 
+import upload from "@/utils/mixin/upload";
 export default {
   data() {
     return {
@@ -171,6 +174,7 @@ export default {
   created() {
     this.getList();
   },
+  mixins: [upload],
   methods: {
     /** 查询设备分类列表 */
     getList() {
@@ -182,25 +186,25 @@ export default {
       });
     },
     // 上传图片
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    handleSuccess(response, file, fileList) {
-      this.form.picture = response.data.picture;
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
+    // handleRemove(file, fileList) {
+    //   console.log(file, fileList);
+    // },
+    // handlePreview(file) {
+    //   console.log(file);
+    // },
+    // handleExceed(files, fileList) {
+    //   this.$message.warning(
+    //     `当前限制选择 1 个文件，本次选择了 ${
+    //       files.length
+    //     } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+    //   );
+    // },
+    // handleSuccess(response, file, fileList) {
+    //   this.form.picture = response.data.picture;
+    // },
+    // beforeRemove(file, fileList) {
+    //   return this.$confirm(`确定移除 ${file.name}？`);
+    // },
     // 取消按钮
     cancel() {
       this.open = false;

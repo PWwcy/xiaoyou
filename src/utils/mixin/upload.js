@@ -85,6 +85,10 @@ export default {
         }
       }
     },
+    // 上传之前
+    beforeUploadM(file) {
+      return this.beforeUpload(file, 500 * 1024)
+    },
     beforeUpload(file, size) {
       if (!file) return;
       let name = file.name.split(".").pop();
@@ -105,7 +109,7 @@ export default {
       return true;
     },
     handleRemove(file, fileList) {
-      // console.log(file, fileList);
+      console.log(file, fileList);
       // this.uploadFileList = fileList
       this.urlArr = [];
       if (fileList.length > 0) {
@@ -126,6 +130,10 @@ export default {
     },
     handleSuccess(response, file, fileList) {
       // this.uploadFileList = fileList
+      // console.log(file)
+      if (file.size > 500 * 1024) {
+        this.$
+      }
       this.urlArr.push(response.data.picture)
       this.msgSuccess('上传成功')
       // if (this.uploadFileList) {

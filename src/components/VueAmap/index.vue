@@ -1,6 +1,6 @@
 <template>
-  <div class="_map">
-    <div class="amap-page-container" v-if="center.length > 0" :style="style_">
+  <div class="_map" v-if="show">
+    <div class="amap-page-container" :style="style_">
       <el-amap-search-box
         class="search-box"
         :search-option="searchOption"
@@ -9,10 +9,10 @@
       <!-- :plugin="plugin" -->
       <el-amap
         ref="map"
-        vid="amapDemo"
+        :vid="'amapDemo'+vid"
+        class="amap-demo"
         :zoom="zoom"
         :center="center"
-        class="amap-demo"
         :events="events"
       >
         <el-amap-marker
@@ -51,31 +51,27 @@ export default {
     height: {
       type: Number,
       default: 500
+    },
+    vid: {
+      type: String,
+      default: ""
     }
   },
   data() {
     var me = this;
     me.city = me.city || "成都";
     return {
+      show: false,
       list: [],
       currIndex: 0,
-      zoom: 20,
+      zoom: 16,
       center: [],
       events: {
-        init: o => {
-          console.log(o);
-          o.setCity(me.city, result => {
-            // console.log("----------setCity", result);
-            if (result && result.length > 0) {
-              me.zoom = 16;
-              me.makerConf.position = result;
-              me.getList(result);
-            }
-          });
-          //去掉logo
-          if (document.getElementsByClassName("amap-logo")[0])
-            document.getElementsByClassName("amap-logo")[0].style.display =
-              "none";
+        init: o => {},
+
+        click: e => {
+          let { lng, lat } = e.lnglat;
+          me.getList([lng, lat]);
         },
         dragend: function(e) {
           //console.log("dragging",e,this.getCenter());
@@ -92,31 +88,33 @@ export default {
       searchOption: {
         city: me.city,
         citylimit: true
-      },
-      plugin: [
-        "ToolBar",
-        "Scale",
-        {
-          pName: "Geolocation",
-          events: {
-            init(o) {},
-            complete: function(result) {
-              //定位成功
-              var address = result.formattedAddress;
-              var point = result.position;
-              var obj = {
-                address: address,
-                name: "",
-                location: point
-              };
-              me.list = [obj];
-              console.log(obj);
-              me.makerConf.position = [point.lng, point.lat];
-            },
-            error: function() {}
-          }
-        }
-      ]
+      }
+      // plugin: [
+      //   "ToolBar",
+      //   "Scale",
+      //   {
+      //     pName: "Geolocation",
+      //     events: {
+      //       init(o) {
+      //         console.log(o);
+      //       },
+      //       complete: function(result) {
+      //         //定位成功
+      //         var address = result.formattedAddress;
+      //         var point = result.position;
+      //         var obj = {
+      //           address: address,
+      //           name: "",
+      //           location: point
+      //         };
+      //         me.list = [obj];
+      //         console.log(obj);
+      //         me.makerConf.position = [point.lng, point.lat];
+      //       },
+      //       error: function() {}
+      //     }
+      //   }
+      // ]
     };
   },
   created() {
@@ -132,16 +130,28 @@ export default {
   },
   methods: {
     // 设置中心点
-    setCenter(arr) {
+    setCenter(arr, location, list = false) {
+      if (typeof arr[0] === "string") {
+        arr[0] = arr[0] * 1;
+        arr[1] = arr[1] * 1;
+      }
+      this.city = location;
       this.makerConf.position = arr;
       this.center = arr;
-      this.getList(arr);
+      if (list) {
+        this.getList(arr);
+      }
+      this.show = false;
+      this.$nextTick(() => {
+        this.show = true;
+      });
     },
     // 获取选中的地点
     getCenter() {
-      console.log('----------------',this.list)
+      // console.log('----------------',this.list)
       return this.list[this.currIndex];
     },
+
     select: function(item, index) {
       var me = this;
       me.currIndex = index;
@@ -153,6 +163,7 @@ export default {
     getList: function(result) {
       //获取列表
       var me = this;
+      this.center = result;
       me.$Geocoder({
         lnglatXY: result,
         success: function(res) {
@@ -211,8 +222,15 @@ export default {
     }
   },
   watch: {
-    list: function() {
+    list: function(val, val2) {
+      if (val.length == 0) return;
       this.currIndex = 0;
+      this.makerConf.position = [val[0].location.lng, val[0].location.lat];
+      val.forEach((item, index) => {
+        if (item.location.lng == this.center[0]) {
+          this.currIndex = index;
+        }
+      });
     }
   }
 };
