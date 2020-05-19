@@ -139,7 +139,7 @@
       <el-table-column label="市" align="center" prop="city" />
       <el-table-column label="区" align="center" prop="area" />
       <el-table-column label="地址" align="center" prop="address" />
-      <el-table-column label="设备厂商" align="center" prop="manufacturer" />
+      <el-table-column label="设备厂商" align="center" prop="enterpriseName" />
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <span>{{formatStatus(scope.row.status)}}</span>

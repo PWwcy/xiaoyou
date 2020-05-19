@@ -84,10 +84,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="得分" align="center" prop="score" />
-      <el-table-column label="游玩时长" align="center" prop="gameTime" />
-      <el-table-column label="获得积分" align="center" prop="getIntegral" />
-      <el-table-column label="消耗卡路里" align="center" prop="burnCalories" />
       <el-table-column label="订单类型" align="center" prop="orderType">
         <template slot-scope="scope">
           <span>{{orderType(scope.row.orderType)}}</span>

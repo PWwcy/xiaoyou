@@ -54,7 +54,7 @@
       <el-table-column label="昵称" align="center" prop="nickName" />
       <el-table-column label="商品id" align="center" prop="commodityId" />
       <el-table-column label="商品名称" align="center" prop="commodityName" />
-      <el-table-column label="商店名称" align="center" prop="storeName" />
+      <el-table-column label="商家名称" align="center" prop="storeName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
