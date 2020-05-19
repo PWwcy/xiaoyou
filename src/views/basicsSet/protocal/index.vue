@@ -5,7 +5,7 @@
     <el-form ref="form" :model="form" :rules="rules">
       <el-row>
         <el-col>
-          <el-form-item label="用户协议">
+          <el-form-item label="用户协议" style="margin-left: 30px">
             <Editor v-model="form.useProtocol" style="width: 90%;margin: 50px auto;"/>
           </el-form-item>
         </el-col>
