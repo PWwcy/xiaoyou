@@ -10,33 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="充值金额" prop="money">
-        <el-input
-          v-model="queryParams.money"
-          placeholder="请输入充值金额"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="获得游豆数量" prop="getbean">
-        <el-input
-          v-model="queryParams.getbean"
-          placeholder="请输入获得游豆数量"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="赠送游豆数量" prop="givebean">
-        <el-input
-          v-model="queryParams.givebean"
-          placeholder="请输入赠送游豆数量"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+
       <el-form-item label="最后更新时间" prop="lastUpdateTime">
         <el-date-picker
           clearable
@@ -48,7 +22,7 @@
           placeholder="选择最后更新时间"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="创建人" prop="createby">
+      <el-form-item label="创建人" prop="createBy">
         <el-input
           v-model="queryParams.createBy"
           placeholder="请输入创建人"

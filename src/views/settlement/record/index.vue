@@ -69,7 +69,7 @@
 
     <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="结算时间" align="center" prop="id" />
+      <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="结算金额" align="center" prop="amount" />
       <el-table-column label="结算企业id" align="center" prop="enterpriseId" />
       <el-table-column label="收款人" align="center" prop="payee" />

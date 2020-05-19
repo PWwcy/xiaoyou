@@ -8,7 +8,6 @@
           size="small"
           :province="regionQuery.province"
           :city="regionQuery.city"
-          :area="regionQuery.area"
           @province="onChangeProvince($event, 'regionQuery')"
           @city="onChangeCity($event, 'regionQuery')"
           @area="onChangeArea($event, 'regionQuery')"
@@ -30,7 +29,7 @@
           <el-option label="禁用" value="1" />
         </el-select>
       </el-form-item>
-      <el-form-item label="用户类型 " prop="status">
+      <el-form-item label="用户类型 " prop="type">
         <el-select v-model="queryParams.type" placeholder="用户类型 " clearable size="small">
           <el-option label="普通用户" value="0" />
           <el-option label="会员会员" value="1" />

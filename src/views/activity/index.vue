@@ -319,7 +319,6 @@ export default {
         this.isShow = true;
       }
     },
-
     handlePictureCardPreview1(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;

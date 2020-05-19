@@ -220,10 +220,12 @@
         </el-form-item>
         <el-form-item label="限会员可购买" prop="onlymembers">
           <el-radio-group v-model="form.onlyMembers">
-            <el-radio :label="0">是</el-radio>
-            <el-radio :label="1">否</el-radio>
+            <el-radio disabled  :label="0">是</el-radio>
+            <el-radio disabled :label="1">否</el-radio>
           </el-radio-group>
         </el-form-item>
+
+
 
         <el-form-item label="商品介绍" prop="commodityIntroduce">
           <Editor v-model="form.commodityIntroduce" />
@@ -244,6 +246,18 @@
             <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
           </el-upload>
         </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="排序" prop="sort">
+            <el-input-number
+              v-model="form.sort"
+              placeholder="请输入排序值"
+              controls-position="right"
+              :min="0"
+            />
+          </el-form-item>
+        </el-col>
+        </el-row>
         <el-form-item label="商品图片" prop="commodityPicture">
           <!-- <el-upload
             class="upload-demo"
@@ -331,7 +345,7 @@ export default {
         commodityIntroduce: undefined,
         storeId: undefined,
         status: undefined,
-        onlyMembers: undefined,
+        onlyMembers: 0,
         salesVolume: undefined,
         province: undefined,
         city: undefined,
@@ -353,8 +367,8 @@ export default {
           { required: true, message: "游豆不能为空", trigger: "blur" }
         ],
         price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
-        storeId: [{ required: true, message: "请选择商家", trigger: "blur" }]
-        /* formStatus: [{ required: true, message: "请选择状态", trigger: "blur" }]*/
+        storeId: [{ required: true, message: "请选择商家", trigger: "blur" }],
+        sort: [{ required: true, message: "排序不能为空", trigger: "blur" }]
       },
 
       fileList: [],

@@ -165,7 +165,22 @@
         <el-form-item label="玩法介绍" prop="playIntroduce">
           <el-input type="textarea" v-model="form.playIntroduce" placeholder="请输入设备玩法介绍" />
         </el-form-item>
-        <el-form-item label="游戏模式" prop="mode">
+        <el-form-item label="游戏分类" prop="categoryId">
+          <el-select
+            v-model="form.categoryId"
+            placeholder="请选择"
+            filterable
+            v-el-select-loadmore="loadmore"
+          >
+            <el-option
+              v-for="item in optionsType"
+              :key="item.id"
+              :label="item.categoryName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+     <!--   <el-form-item label="游戏模式" prop="modeList">
           <el-select
             v-model="form.modeList"
             multiple
@@ -182,9 +197,9 @@
               :label="item.modeName"
               :value="item.id"
             ></el-option>
-            <!-- :id="item.value" -->
+            &lt;!&ndash; :id="item.value" &ndash;&gt;
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="图标" prop="icon">
           <el-upload
             :action="uploadFileUrl"
@@ -250,7 +265,7 @@ import {
 import { listMode } from "@/api/operate/mode";
 
 import VDistpicker from "v-distpicker";
-
+import { listCategory } from "@/api/device/category";
 import mixins from "@/utils/mixin/upload";
 import region from "@/utils/mixin/region";
 
@@ -290,13 +305,16 @@ export default {
       rules: {
         picture: [{ required: true, message: "图片不能为空", trigger: "blur" }],
         cover: [{ required: true, message: "封面不能为空", trigger: "blur" }],
-        icon: [{ required: true, message: "图标不能为空", trigger: "blur" }]
+        icon: [{ required: true, message: "图标不能为空", trigger: "blur" }],
+        modeList:  [{ required: true, message: "游戏模式不能为空", trigger: "blur" }],
+        categoryId: [{ required: true, message: "游戏分类不能为空", trigger: "blur" }],
       },
-      pictureList: [], //
+      pictureList: [],
       coverList: [], // 封面
       iconList: [], // 图标
       modelList: [], // 模式
       modelTotal: 0,
+      optionsType: [],
       modelParams: {
         pageNum: 1,
         pageSize: 10
@@ -307,6 +325,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getType();
     this.getModelList();
   },
   mixins: [mixins, region],
@@ -329,6 +348,13 @@ export default {
         this.modelTotal = response.total;
       });
     },
+    // 获取游戏分类列表
+    getType() {
+      listCategory(this.queryParamsType).then(response => {
+        const list = response.rows;
+        this.optionsType = [...this.optionsType, ...list];
+      });
+    },
     loadmore() {
       if (
         this.modelParams.pageNum * this.modelParams.pageSize >=
@@ -336,6 +362,10 @@ export default {
       ) {
         this.modelParams.pageNum++;
         this.getModelList();
+      }
+      {
+        this.modelParams.pageNum++;
+        this.getType();
       }
     },
 

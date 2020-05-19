@@ -68,7 +68,7 @@
     </el-row>
     <el-table v-loading="loading" :data="commodityList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="兑换时间" align="center" prop="id" />
+      <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="订单编号" width="240" align="center" prop="orderNumber" />
       <el-table-column label="所属商家" align="center" prop="storeName" />
       <el-table-column label="商品名称" align="center" prop="commodityName" />
