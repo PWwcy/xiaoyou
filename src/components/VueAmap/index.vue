@@ -162,6 +162,7 @@ export default {
     //this.$refs.map.$$getCenter()
     getList: function(result) {
       //获取列表
+      if (!this.showLocal) return;
       var me = this;
       this.center = result;
       me.$Geocoder({
