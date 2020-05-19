@@ -345,7 +345,7 @@ export default {
         commodityIntroduce: undefined,
         storeId: undefined,
         status: undefined,
-        onlyMembers: 0,
+        onlyMembers: undefined,
         salesVolume: undefined,
         province: undefined,
         city: undefined,

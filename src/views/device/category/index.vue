@@ -59,7 +59,7 @@
 
     <el-table v-loading="loading" :data="categoryList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="游戏类别名称" align="center" prop="id" />
+      <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="游戏类别名称" align="center" prop="categoryName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

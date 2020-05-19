@@ -30,9 +30,9 @@
           @keyup.enter.native="handleQuery"
         />-->
       </el-form-item>
-      <el-form-item label="设备厂商" prop="manufacturer">
+      <el-form-item label="设备厂商" prop="enterpriseName">
         <el-input
-          v-model="queryParams.manufacturer"
+          v-model="queryParams.enterpriseName"
           placeholder="请输入设备厂商"
           clearable
           size="small"
@@ -134,7 +134,7 @@
       <!--        </template>-->
       <!--      </el-table-column>-->
       <el-table-column label="设备类型" align="center" prop="typeName" />
-      <el-table-column label="设备分类" align="center" prop="categoryName" />
+     <!-- <el-table-column label="设备分类" align="center" prop="categoryName" />-->
       <el-table-column label="省" align="center" prop="province" />
       <el-table-column label="市" align="center" prop="city" />
       <el-table-column label="区" align="center" prop="area" />
@@ -351,23 +351,23 @@
               <el-input v-model="form.remarks" type="textarea" placeholder="请输入备注" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="游戏分类" prop="categoryId">
-              <el-select
-                v-model="form.categoryId"
-                placeholder="请选择"
-                filterable
-                v-el-select-loadmore="loadmore"
-              >
-                <el-option
-                  v-for="item in optionsType"
-                  :key="item.id"
-                  :label="item.categoryName"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="24">-->
+<!--            <el-form-item label="游戏分类" prop="categoryId">-->
+<!--              <el-select-->
+<!--                v-model="form.categoryId"-->
+<!--                placeholder="请选择"-->
+<!--                filterable-->
+<!--                v-el-select-loadmore="loadmore"-->
+<!--              >-->
+<!--                <el-option-->
+<!--                  v-for="item in optionsType"-->
+<!--                  :key="item.id"-->
+<!--                  :label="item.categoryName"-->
+<!--                  :value="item.id"-->
+<!--                ></el-option>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
           <el-col :span="24">
             <el-form-item label="描述" prop="describe">
               <el-input v-model="form.describe" placeholder="请输入描述" />

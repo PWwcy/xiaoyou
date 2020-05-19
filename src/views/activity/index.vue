@@ -95,6 +95,8 @@
       <el-table-column label="活动标题" align="center" prop="title" />
       <el-table-column label="活动描述" align="center" prop="describe" />
       <el-table-column label="活动内容" align="center" prop="content" />
+      <el-table-column label="省" align="center" prop="province" />
+      <el-table-column label="市" align="center" prop="city" />
       <el-table-column label="是否免费" align="center" prop="isFree">
         <template slot-scope="scope">
           <span>{{formatStatus(scope.row.isFree)}}</span>
@@ -102,7 +104,7 @@
       </el-table-column>
       <el-table-column label="所需游豆" align="center" prop="bean" />
 
-      <el-table-column label="外部链接" align="center" prop="link">
+    <!--  <el-table-column label="外部链接" align="center" prop="link">
         <template slot-scope="scope">
           <a
             class="other-link"
@@ -111,7 +113,7 @@
             target="_blank"
           >{{scope.row.link}}</a>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -175,9 +177,9 @@
         <el-form-item label="报名游豆" prop="link" v-show="isShow">
           <el-input v-model="form.bean" placeholder="请输入报名游豆" />
         </el-form-item>
-        <el-form-item label="外部链接" prop="link">
-          <el-input v-model="form.link" placeholder="请输入外部链接" />
-        </el-form-item>
+<!--        <el-form-item label="外部链接" prop="link">-->
+<!--          <el-input v-model="form.link" placeholder="请输入外部链接" />-->
+<!--        </el-form-item>-->
         <el-form-item label="封面图片" prop="cover">
           <el-upload
             :action="uploadFileUrl"
@@ -398,6 +400,7 @@ export default {
         this.open = true;
         this.title = "修改活动";
         this.echoImg(this.form.picture);
+        this.assignRegion(this.form);
         if (this.form.cover) {
           this.coverList.push({
             url: this.form.cover,

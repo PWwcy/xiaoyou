@@ -2,10 +2,10 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
 
-      <el-form-item label="结算企业id" prop="enterpriseId">
+      <el-form-item label="结算企业" prop="enterpriseId">
         <el-input
-          v-model="queryParams.enterpriseId"
-          placeholder="请输入结算企业id"
+          v-model="queryParams.enterpriseName"
+          placeholder="请输入结算企业"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -71,7 +71,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="结算金额" align="center" prop="amount" />
-      <el-table-column label="结算企业id" align="center" prop="enterpriseId" />
+      <el-table-column label="结算企业" align="center" prop="enterpriseName" />
       <el-table-column label="收款人" align="center" prop="payee" />
       <el-table-column label="收款账户" align="center" prop="account" />
       <el-table-column label="结算时间" align="center" prop="settlementTime" width="180">
@@ -111,10 +111,19 @@
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="结算金额" prop="amount">
-          <el-input v-model="form.amount" placeholder="请输入结算金额" />
+          <el-input-number
+            controls-position="right"
+            v-model="form.amount"
+            placeholder="请输入结算金额"
+            :min="0"
+          />
         </el-form-item>
         <el-form-item label="结算企业id" prop="enterpriseId">
-          <el-input v-model="form.enterpriseId" placeholder="请输入结算企业id" />
+          <el-input-number
+            controls-position="right"
+            v-model="form.enterpriseId"
+            placeholder="请输入结算企业id"
+          />
         </el-form-item>
         <el-form-item label="收款人" prop="payee">
           <el-input v-model="form.payee" placeholder="请输入收款人" />
