@@ -24,7 +24,12 @@
       <br />
       <el-row>
         <el-col :lg="2" :md="2">
-          <el-upload action="#" :http-request="requestUpload" :show-file-list="false" :before-upload="beforeUpload">
+          <el-upload
+            action="#"
+            :http-request="requestUpload"
+            :show-file-list="false"
+            :before-upload="beforeUpload"
+          >
             <el-button size="small">
               上传
               <i class="el-icon-upload el-icon--right"></i>
@@ -54,7 +59,10 @@
 <script>
 import store from "@/store";
 import { VueCropper } from "vue-cropper";
-import { uploadAvatar } from "@/api/system/user";
+import { uploadHead } from "@/api/system/user";
+import { updateUserProfile } from "@/api/system/user";
+
+import axios from "axios";
 
 export default {
   components: { VueCropper },
@@ -85,8 +93,7 @@ export default {
       this.open = true;
     },
     // 覆盖默认的上传行为
-    requestUpload() {
-    },
+    requestUpload() {},
     // 向左旋转
     rotateLeft() {
       this.$refs.cropper.rotateLeft();
@@ -112,21 +119,45 @@ export default {
         };
       }
     },
+    updateUserMsg(res) {
+      let user = this.user;
+      user.avatar = res.data.picture;
+      uploadHead(user).then(response => {
+        if (response.code === 200) {
+          this.open = false;
+          // this.$store.commit("SET_AVATAR", res.data.picture);
+          this.$store.dispatch("GetInfo");
+          this.options.img = res.data.picture;
+          this.$emit("getInfo");
+          this.msgSuccess("修改成功");
+        } else {
+          this.msgError(response.msg);
+        }
+        this.$refs.cropper.clearCrop();
+      });
+    },
     // 上传图片
     uploadImg() {
+      let self = this;
       this.$refs.cropper.getCropBlob(data => {
         let formData = new FormData();
-        formData.append("avatarfile", data);
-        uploadAvatar(formData).then(response => {
-          if (response.code === 200) {
-            this.open = false;
-            this.options.img = process.env.VUE_APP_BASE_API + response.imgUrl;
-            this.msgSuccess("修改成功");
-          } else {
-            this.msgError(response.msg);
-          }
-          this.$refs.cropper.clearCrop();
-        });
+        formData.append("file", data);
+        axios
+          .post(process.env.VUE_APP_BASE_URL + "/api/file", formData)
+          .then(res => {
+            console.log(res);
+            self.updateUserMsg(res.data);
+          });
+        // uploadAvatar(formData).then(response => {
+        //   if (response.code === 200) {
+        //     this.open = false;
+        //     this.options.img = process.env.VUE_APP_BASE_API + response.imgUrl;
+        //     this.msgSuccess("修改成功");
+        //   } else {
+        //     this.msgError(response.msg);
+        //   }
+        //   this.$refs.cropper.clearCrop();
+        // });
       });
     },
     // 实时预览

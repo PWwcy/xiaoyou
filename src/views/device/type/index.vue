@@ -236,6 +236,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
+            :before-upload="beforeUploadM"
             :file-list="uploadFileList"
           >
             <i class="el-icon-plus"></i>

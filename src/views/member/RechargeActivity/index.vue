@@ -182,6 +182,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handlePicRemove"
             :on-success="handlePicSuccess"
+            :before-upload="beforeUploadM"
             :limit="2"
             :file-list="pictureList"
           >

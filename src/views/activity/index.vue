@@ -186,6 +186,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleCoverRemove"
             :on-success="handleCoverSuccess"
+            :before-upload="beforeUploadM"
             :limit="2"
             :file-list="coverList"
           >
@@ -215,6 +216,7 @@
             :on-remove="handleRemove"
             multiple
             :on-success="handleSuccess"
+            :before-upload="beforeUploadM"
             :file-list="uploadFileList"
           >
             <i class="el-icon-plus"></i>

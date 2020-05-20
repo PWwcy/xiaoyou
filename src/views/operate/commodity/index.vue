@@ -238,6 +238,7 @@
             :action="uploadFileUrl"
             :on-remove="handleImgRemove"
             :on-success="handleImgSuccess"
+            :before-upload="beforeUploadM"
             :on-preview="handlePictureCardPreview"
             :limit="2"
             :file-list="imgList"
@@ -280,6 +281,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
+            :before-upload="beforeUploadM"
             :file-list="uploadFileList"
           >
             <i class="el-icon-plus"></i>

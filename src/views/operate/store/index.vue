@@ -88,10 +88,15 @@
 
     <el-table v-loading="loading" :data="storeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="商家id" align="center" prop="id" />
+      <el-table-column label="商家ID" align="center" prop="id" />
       <el-table-column label="商家名称" align="center" prop="storename" />
 
       <el-table-column label="商家电话" align="center" prop="storephone" />
+
+      <el-table-column label="省" align="center" prop="province" />
+      <el-table-column label="市" align="center" prop="city" />
+      <el-table-column label="区/县" align="center" prop="area" />
+
       <el-table-column label="地址" align="center" prop="address" />
       <el-table-column label="商家介绍" align="center" prop="storeintroduce" />
       <el-table-column label="预约须知" align="center" prop="appointmentnotice" />
@@ -181,6 +186,18 @@
             <i slot="suffix" class="el-icon-map-location shou" @click="chooseMap"></i>
           </el-input>
         </el-form-item>
+        <el-form-item label="地区" prop>
+          <v-distpicker
+            size="small"
+            :province="regionForm.province"
+            :city="regionForm.city"
+            :area="regionForm.area"
+            disabled
+            @province="onChangeProvince($event, 'regionForm')"
+            @city="onChangeCity($event, 'regionForm')"
+            @area="onChangeArea($event, 'regionForm')"
+          ></v-distpicker>
+        </el-form-item>
         <!-- <el-form-item label="经度" prop="xcoordinate">
           <el-input v-model="form.xcoordinate" placeholder="请输入经度" />
         </el-form-item>
@@ -212,6 +229,7 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
+            :before-upload="beforeUploadM"
             :file-list="uploadFileList"
           >
             <i class="el-icon-plus"></i>
@@ -226,11 +244,11 @@
 
     <!-- 查看地图 -->
     <el-dialog title="查看地图" :visible.sync="isShowMap" width="900px">
-      <v-map ref="map" :centers="longLat"></v-map>
+      <v-map ref="map" vid="map" :centers="longLat"></v-map>
     </el-dialog>
     <!-- 选择地图 -->
-    <el-dialog title="选择地图" :visible.sync="isChooseMap" width="900px">
-      <v-map ref="cmap" :centers="longLat" :showLocal="true" :height="300"></v-map>
+    <el-dialog title="选择地图" :visible.sync="isChooseMap" width="900px" :closed="closed">
+      <v-map ref="cmap" vid="cmap" :centers="longLat" :showLocal="true" :height="300"></v-map>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="sureLocal">确 定</el-button>
         <el-button @click="isChooseMap = false">取 消</el-button>
@@ -412,16 +430,30 @@ export default {
     },
     // 选择地图
     chooseMap() {
-      this.longLat = [114.397169, 30.50576];
+      this.longLat = [104.06, 30.67];
+      if (this.form.longitudeandlatitude) {
+        this.longLat = this.form.longitudeandlatitude.split(",");
+        this.longLat.forEach(item => parseInt(item));
+      }
       this.isChooseMap = true;
       let a = setTimeout(() => {
-        this.$refs.cmap.setCenter(this.longLat);
+        this.$refs.cmap.setCenter(this.longLat, this.form.address, true);
         clearTimeout(a);
       }, 300);
+    },
+    closed() {
+      console.log(123);
     },
     // 确定地点
     sureLocal() {
       let obj = this.$refs.cmap.getCenter();
+
+      let pro = obj.dObj;
+      obj = obj.obj;
+
+      this.form.xcoordinate = obj.location.lat;
+      this.form.ycoordinate = obj.location.lng;
+      this.assignRegion(pro);
       this.form.longitudeandlatitude =
         obj.location.lng + "," + obj.location.lat;
       this.form.address = obj.address;
@@ -490,6 +522,7 @@ export default {
       const id = row.id || this.ids;
       getStore(id).then(response => {
         this.form = response.data;
+        this.assignRegion(this.form);
         this.open = true;
         this.title = "修改商家";
         this.echoImg(this.form.storepicture);
@@ -499,8 +532,8 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          // this.form.storepicture = this.initFile();
           this.form.pictureList = this.urlArrs;
+          this.initForm("form");
           if (this.form.id != undefined) {
             updateStore(this.form).then(response => {
               if (response.code === 200) {
@@ -512,7 +545,6 @@ export default {
               }
             });
           } else {
-            console.log(this.form);
             addStore(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");

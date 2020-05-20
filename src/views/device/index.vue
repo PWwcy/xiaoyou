@@ -378,7 +378,7 @@
           <!--              <Editor v-model="form.playIntroduce" />-->
           <!--            </el-form-item>-->
           <!--          </el-col>-->
-          <el-col :span="24" style="margin-top: 60px;">
+          <el-col :span="24">
             <el-form-item label="设备图片" prop="picture">
               <!-- <el-upload
                 class="upload-demo"
@@ -402,6 +402,7 @@
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
                 :on-success="handleSuccess"
+                :before-upload="beforeUploadM"
                 :file-list="uploadFileList"
               >
                 <i class="el-icon-plus"></i>
