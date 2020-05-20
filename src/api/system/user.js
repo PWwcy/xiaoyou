@@ -118,6 +118,15 @@ export function uploadAvatar(data) {
   })
 }
 
+// 用户头像上传
+export function uploadHead(data) {
+  return request({
+    url: '/system/user/profile/updateUserAvatar',
+    method: 'post',
+    data: data
+  })
+}
+
 // 下载用户导入模板
 export function importTemplate() {
   return request({

@@ -63,6 +63,11 @@ export default {
     return {
       show: false,
       list: [],
+      dd: {
+        province: undefined,
+        city: undefined,
+        area: undefined
+      },
       currIndex: 0,
       zoom: 16,
       center: [],
@@ -86,7 +91,7 @@ export default {
         content: ""
       },
       searchOption: {
-        city: me.city,
+        // city: me.city,
         citylimit: true
       }
       // plugin: [
@@ -149,7 +154,7 @@ export default {
     // 获取选中的地点
     getCenter() {
       // console.log('----------------',this.list)
-      return this.list[this.currIndex];
+      return { obj: this.list[this.currIndex], dObj: this.dd };
     },
 
     select: function(item, index) {
@@ -168,7 +173,13 @@ export default {
       me.$Geocoder({
         lnglatXY: result,
         success: function(res) {
+          console.log(res);
           if (res.regeocode && res.regeocode.pois) {
+            if (res.regeocode.addressComponent) {
+              me.dd.province = res.regeocode.addressComponent.province;
+              me.dd.city = res.regeocode.addressComponent.city;
+              me.dd.area = res.regeocode.addressComponent.district;
+            }
             me.list = res.regeocode.pois;
           } else {
             me.list = [];
