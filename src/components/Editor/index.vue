@@ -18,6 +18,7 @@
       class="editor"
       v-model="content"
       ref="quillEditor"
+      :style="style_"
       :options="editorOption"
       @blur="onEditorBlur($event)"
       @focus="onEditorFocus($event)"
@@ -58,6 +59,10 @@ export default {
     maxSize: {
       type: Number,
       default: 4000 //kb
+    },
+    height: {
+      type: Number,
+      default: 192
     }
   },
   components: { quillEditor },
@@ -87,8 +92,8 @@ export default {
           }
         }
       },
-     // uploadImgUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
-      uploadImgUrl: process.env.VUE_APP_BASE_API + '/api/file',
+      // uploadImgUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
+      uploadImgUrl: process.env.VUE_APP_BASE_API + "/api/file",
       headers: {
         Authorization: "Bearer " + getToken()
       }
@@ -97,6 +102,13 @@ export default {
   watch: {
     value: function() {
       this.content = this.value;
+    }
+  },
+  computed: {
+    style_() {
+      return {
+        height: this.height + "px"
+      };
     }
   },
   methods: {
@@ -150,7 +162,7 @@ export default {
 <style>
 .editor {
   line-height: normal !important;
-  height: 192px;
+  /* height: 192px; */
 }
 .editor-body .el-upload {
   display: none;

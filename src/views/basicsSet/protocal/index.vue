@@ -1,19 +1,17 @@
 <template>
-  <div>
-
-
-    <el-form ref="form" :model="form" :rules="rules">
-      <el-row>
-        <el-col>
-          <el-form-item label="用户协议">
-            <Editor v-model="form.useProtocol" style="width: 90%;margin: 50px auto;"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+  <div class="yh-body">
+    <el-form class="el-form" ref="form" :model="form" label-position="top" :rules="rules">
+      <!-- <el-row>
+      <el-col>-->
+      <el-form-item label="用户协议">
+        <Editor v-model="form.useProtocol" :height="300" />
+      </el-form-item>
+      <!-- </el-col>
+      </el-row>-->
     </el-form>
-    <div slot="footer" class="dialog-footer" style="padding-top:20px;margin-left: 100px">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+    <div class="dialog-footer" style="padding-top:20px;margin-top: 100px">
       <el-button @click="cancel">取 消</el-button>
+      <el-button type="primary" @click="submitForm">确 定</el-button>
     </div>
   </div>
 </template>
@@ -28,7 +26,7 @@ import {
   updateProtocal,
   exportProtocal
 } from "@/api/basicsSet/protocal";
-import Editor from '@/components/Editor';
+import Editor from "@/components/Editor";
 export default {
   components: {
     Editor
@@ -193,3 +191,15 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.yh-body {
+  padding: 5%;
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    button {
+      width: 120px;
+    }
+  }
+}
+</style>

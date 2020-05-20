@@ -1,26 +1,27 @@
 <template>
-  <div>
-
-
-    <el-form ref="form" :model="form" :rules="rules">
-      <el-row>
-        <el-col>
-          <el-form-item label="关于我们">
-            <Editor v-model="form.aboutContent" style="width: 90%;margin: 50px auto;"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+  <div class="yh-body">
+    <el-form ref="form" :model="form" :rules="rules" label-position="top">
+      <el-form-item label="关于我们">
+        <Editor v-model="form.aboutContent" :height="300" />
+      </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer" style="padding-top:20px;margin-left: 100px">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+    <div class="dialog-footer" style="padding-top:20px;margin-top: 100px">
       <el-button @click="cancel">取 消</el-button>
+      <el-button type="primary" @click="submitForm">确 定</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { listAbout, getAbout, delAbout, addAbout, updateAbout, exportAbout } from "@/api/basicsSet/about";
-import Editor from '@/components/Editor';
+import {
+  listAbout,
+  getAbout,
+  delAbout,
+  addAbout,
+  updateAbout,
+  exportAbout
+} from "@/api/basicsSet/about";
+import Editor from "@/components/Editor";
 export default {
   components: {
     Editor
@@ -47,13 +48,12 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        aboutContent: undefined,
+        aboutContent: undefined
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {}
     };
   },
   created() {
@@ -94,9 +94,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!=1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length != 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -107,7 +107,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
+      const id = row.id || this.ids;
       getAbout(id).then(response => {
         this.form = response.data;
         this.open = true;
@@ -145,30 +145,52 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除关于我们编号为"' + ids + '"的数据项?', "警告", {
+      this.$confirm(
+        '是否确认删除关于我们编号为"' + ids + '"的数据项?',
+        "警告",
+        {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        }).then(function() {
+        }
+      )
+        .then(function() {
           return delAbout(ids);
-        }).then(() => {
+        })
+        .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        }).catch(function() {});
+        })
+        .catch(function() {});
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有关于我们数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+      this.$confirm("是否确认导出所有关于我们数据项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
           return exportAbout(queryParams);
-        }).then(response => {
+        })
+        .then(response => {
           this.download(response.msg);
-        }).catch(function() {});
+        })
+        .catch(function() {});
     }
   }
 };
 </script>
+<style lang="scss" scoped>
+.yh-body {
+  padding: 5%;
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    button {
+      width: 120px;
+    }
+  }
+}
+</style>
