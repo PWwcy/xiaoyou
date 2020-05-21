@@ -205,7 +205,7 @@
               <el-input v-model="form.deviceName" placeholder="请输入设备名称" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="设备类型" prop="typeId">
               <!-- <el-input v-model="form.typeId" placeholder="请输入设备类型" /> -->
               <el-select v-model="form.typeId" placeholder="请选择">
@@ -218,24 +218,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="地区">
-              <v-distpicker
-                :province="regionForm.province"
-                :city="regionForm.city"
-                :area="regionForm.area"
-                @province="onChangeProvince($event, 'regionForm')"
-                @city="onChangeCity($event, 'regionForm')"
-                @area="onChangeArea($event, 'regionForm')"
-              ></v-distpicker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="地址" prop="address">
-              <el-input v-model="form.address" placeholder="请输入地址" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="设备厂商" prop="manufacturer">
               <!-- <el-input v-model="form.manufacturer" placeholder="请输入设备厂商" /> -->
               <!-- <el-select
@@ -258,6 +241,55 @@
                   :value="item.id"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :span="24">
+            <el-form-item label="地区">
+              <v-distpicker
+                :province="regionForm.province"
+                :city="regionForm.city"
+                :area="regionForm.area"
+                @province="onChangeProvince($event, 'regionForm')"
+                @city="onChangeCity($event, 'regionForm')"
+                @area="onChangeArea($event, 'regionForm')"
+              ></v-distpicker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="地址" prop="address">
+              <el-input v-model="form.address" placeholder="请输入地址" />
+            </el-form-item>
+          </el-col>-->
+          <el-col :span="24">
+            <el-form-item label="地址" prop="address">
+              <el-input v-model="form.address" placeholder="请输入地址" @change="getLngLat">
+                <i slot="suffix" class="el-icon-map-location shou" @click="chooseMap"></i>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="经纬度" prop="longitudeandlatitude">
+              <el-input
+                v-model="form.longitudeandlatitude"
+                placeholder="请输入经纬度,如:104.066541,30.572269"
+                @change="getAddress"
+              >
+                <i slot="suffix" class="el-icon-map-location shou" @click="chooseMap"></i>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="地区" prop>
+              <v-distpicker
+                size="small"
+                :province="regionForm.province"
+                :city="regionForm.city"
+                :area="regionForm.area"
+                disabled
+                @province="onChangeProvince($event, 'regionForm')"
+                @city="onChangeCity($event, 'regionForm')"
+                @area="onChangeArea($event, 'regionForm')"
+              ></v-distpicker>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -414,6 +446,20 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 查看地图 -->
+    <el-dialog title="查看地图" :visible.sync="isShowMap" width="900px">
+      <v-map ref="map" vid="map" :centers="longLat"></v-map>
+    </el-dialog>
+    <!-- 选择地图 -->
+    <el-dialog title="选择地图" :visible.sync="isChooseMap" width="900px">
+      <v-map ref="cmap" vid="cmap" :centers="longLat" :showLocal="true" :height="300"></v-map>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="sureLocal">确 定</el-button>
+        <el-button @click="isChooseMap = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 图片查看 -->
     <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[bigImg]" />
   </div>
@@ -434,13 +480,15 @@ import {
 import { listCategory } from "@/api/device/category";
 import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
+import vMap from "@/components/VueAmap";
 
 import mixins from "@/utils/mixin/upload";
 import region from "@/utils/mixin/region";
 export default {
   components: {
     Editor,
-    VDistpicker
+    VDistpicker,
+    vMap
   },
   data() {
     return {
@@ -525,7 +573,12 @@ export default {
       fileList: [],
       showViewer: false,
       bigImg: "",
-      deviceType: []
+      deviceType: [],
+
+      // 地图 经纬度
+      longLat: [],
+      isChooseMap: false,
+      isShowMap: false
     };
   },
   created() {
@@ -564,6 +617,95 @@ export default {
     closeViewer() {
       this.showViewer = false;
     },
+
+    // 获取位置的经纬度
+    getLngLat() {
+      let self = this;
+      if (AMap) {
+        let add = this.form.address;
+        AMap.plugin("AMap.Geocoder", function() {
+          var geocoder = new AMap.Geocoder({
+            // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+            city: "成都"
+          });
+
+          geocoder.getLocation(add, function(status, result) {
+            if (status === "complete" && result.info === "OK") {
+              // result中对应详细地理坐标信息
+              self.form.longitudeandlatitude =
+                result.geocodes[0].location.lng +
+                "," +
+                result.geocodes[0].location.lat;
+              self.form.ycoordinate = result.geocodes[0].location.lng;
+              self.form.xcoordinate = result.geocodes[0].location.lat;
+            } else {
+              self.form.longitudeandlatitude = null;
+              self.form.ycoordinate = null;
+              self.form.xcoordinate = null;
+            }
+          });
+        });
+      }
+    },
+    // 获取位置
+    getAddress() {
+      let self = this;
+      if (AMap) {
+        let lnglat = this.form.longitudeandlatitude.split(",");
+        AMap.plugin(["AMap.Geocoder"], () => {
+          const geocoder = new AMap.Geocoder({
+            radius: 1000,
+            extensions: "all"
+          });
+          // var lnglatXY = options.lnglatXY || [114.397169, 30.50576]; //已知点坐标
+          geocoder.getAddress(lnglat, function(status, result) {
+            if (status === "complete" && result.info === "OK") {
+              console.log(result);
+              self.form.address = result.regeocode.formattedAddress;
+            } else {
+            }
+          });
+        });
+      }
+    },
+    // 查看地图
+    lookMap(data) {
+      this.longLat = [data.ycoordinate * 1, data.xcoordinate * 1];
+      this.isShowMap = true;
+      let a = setTimeout(() => {
+        this.$refs.map.setCenter(this.longLat);
+        clearTimeout(a);
+      }, 300);
+    },
+    // 选择地图
+    chooseMap() {
+      this.longLat = [104.06, 30.67];
+      if (this.form.longitudeandlatitude) {
+        this.longLat = this.form.longitudeandlatitude.split(",");
+        this.longLat.forEach(item => parseInt(item));
+      }
+      this.isChooseMap = true;
+      let a = setTimeout(() => {
+        this.$refs.cmap.setCenter(this.longLat, this.form.address, true);
+        clearTimeout(a);
+      }, 300);
+    },
+    // 确定地点
+    sureLocal() {
+      let obj = this.$refs.cmap.getCenter();
+
+      let pro = obj.dObj;
+      obj = obj.obj;
+
+      this.form.xcoordinate = obj.location.lat;
+      this.form.ycoordinate = obj.location.lng;
+      this.assignRegion(pro);
+      this.form.longitudeandlatitude =
+        obj.location.lng + "," + obj.location.lat;
+      this.form.address = obj.address;
+      this.isChooseMap = false;
+    },
+
     // 加载更多
     loadmore() {
       if (
