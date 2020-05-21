@@ -146,10 +146,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="赠送游豆" align="center" prop="giveBean" />
       <el-table-column label="普通消费金额" align="center" prop="money" />
       <el-table-column label="会员消费扣次数" align="center" prop="deductionFrequency" />
-      <el-table-column label="时长" align="center" prop="duration" />
       <el-table-column label="单个小时团体消费次数" align="center" prop="groupFrequency" />
       <el-table-column label="普通团体消费金额" align="center" prop="groupMoney" />
       <el-table-column label="添加时间" align="center" prop="addTime" width="180">
@@ -271,17 +269,17 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="赠送游豆" prop="giveBean">
-              <el-input-number
-                v-model="form.giveBean"
-                placeholder="请输入赠送游豆"
-                controls-position="right"
-                :min="0"
-              />
-              <span class="my-unit-span">{{beanUnit}}</span>
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="赠送游豆" prop="giveBean">-->
+<!--              <el-input-number-->
+<!--                v-model="form.giveBean"-->
+<!--                placeholder="请输入赠送游豆"-->
+<!--                controls-position="right"-->
+<!--                :min="0"-->
+<!--              />-->
+<!--              <span class="my-unit-span">{{beanUnit}}</span>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
           <el-col :span="12">
             <el-form-item label="普通消费金额" prop="money">
               <el-input-number
@@ -304,7 +302,7 @@
               <span class="my-unit-span">{{numUnit}}</span>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+     <!--     <el-col :span="12">
             <el-form-item label="时长" prop="duration">
               <el-input-number
                 v-model="form.duration"
@@ -314,7 +312,7 @@
               />
               <span class="my-unit-span">{{minUnit}}</span>
             </el-form-item>
-          </el-col>
+          </el-col>-->
           <el-col :span="12">
             <el-form-item label="单个小时团体消费次数" prop="groupFrequency">
               <el-input-number

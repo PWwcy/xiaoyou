@@ -97,7 +97,11 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="商品id" align="center" prop="id" />
       <el-table-column label="商品名称" align="center" prop="commodityName" />
+      <el-table-column label="省" align="center" prop="province" />
+      <el-table-column label="城市" align="center" prop="city" />
+      <el-table-column label="区域" align="center" prop="area" />
       <el-table-column label="价格" align="center" prop="price" />
+      <el-table-column label="促销价" align="center" prop="promotionPrice" />
       <el-table-column label="游豆" align="center" prop="gameBean" />
       <el-table-column label="商品主图" align="center" prop="img">
         <template slot-scope="scope">
@@ -125,6 +129,7 @@
         </template>
       </el-table-column>
       <el-table-column label="销量" align="center" prop="salesVolume" />
+      <el-table-column label="库存" align="center" prop="stock" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -180,6 +185,19 @@
                 :min="0"
               />
               <span class="my-unit-span">{{beanUnit}}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="促销价格" prop="promotionPrice">
+              <el-input-number
+                v-model="form.promotionPrice"
+                placeholder="请输入促销价格"
+                controls-position="right"
+                :min="0"
+              />
+              <span class="my-unit-span">{{moneyUnit}}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -247,6 +265,15 @@
             <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
           </el-upload>
         </el-form-item>
+
+        <el-form-item label="库存" prop="stock">
+          <el-input-number
+            v-model="form.stock"
+            placeholder="请输入库存数量"
+            controls-position="right"
+            :min="0"
+          />
+        </el-form-item>
       <el-row>
         <el-col :span="12">
           <el-form-item label="排序" prop="sort">
@@ -259,6 +286,8 @@
           </el-form-item>
         </el-col>
         </el-row>
+
+
         <el-form-item label="商品图片" prop="commodityPicture">
           <!-- <el-upload
             class="upload-demo"
@@ -370,7 +399,8 @@ export default {
         ],
         price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
         storeId: [{ required: true, message: "请选择商家", trigger: "blur" }],
-        sort: [{ required: true, message: "排序不能为空", trigger: "blur" }]
+        sort: [{ required: true, message: "排序不能为空", trigger: "blur" }],
+        stock: [{ required: true, message: "库存不能为空", trigger: "blur" }]
       },
 
       fileList: [],

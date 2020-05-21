@@ -108,7 +108,6 @@
       <el-table-column label="消费游豆数量" align="center" prop="totalBean" />
       <el-table-column label="剩余游豆数量" align="center" prop="gameBean" />
       <el-table-column label="消费次数" align="center" prop="totalNum" />
-      <el-table-column label="用户积分" align="center" prop="totalIntegral" />
       <el-table-column label="电话号码" align="center" prop="phone" />
       <el-table-column label="用户性别" align="center" prop="sex">
         <template slot-scope="scope">
@@ -143,9 +142,9 @@
           <router-link :to="'/user/consumption/data/' + scope.row.id" class="link-type">
             <el-button size="mini" type="text" icon="el-icon-tickets">消费详细</el-button>
           </router-link>
-          <router-link :to="'/user/integral/data/' + scope.row.id" class="link-type">
-            <el-button size="mini" type="text" icon="el-icon-tickets">积分详细</el-button>
-          </router-link>
+<!--          <router-link :to="'/user/integral/data/' + scope.row.id" class="link-type">-->
+<!--            <el-button size="mini" type="text" icon="el-icon-tickets">积分详细</el-button>-->
+<!--          </router-link>-->
           <!-- <el-button
             size="mini"
             type="text"

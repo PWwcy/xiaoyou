@@ -39,6 +39,18 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="购买时间">
+        <el-date-picker
+          v-model="dateRange"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -175,6 +187,8 @@ import {
 export default {
   data() {
     return {
+      // 日期范围
+      dateRange: "",
       // 遮罩层
       loading: true,
       // 选中数组
@@ -226,7 +240,7 @@ export default {
     /** 查询商品订单列表 */
     getList() {
       this.loading = true;
-      listCommodity(this.queryParams).then(response => {
+      listCommodity(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.commodityList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -260,6 +274,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },

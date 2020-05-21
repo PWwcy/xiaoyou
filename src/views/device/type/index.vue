@@ -56,7 +56,7 @@
           v-hasPermi="['device:type:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!--<el-col :span="1.5">
         <el-button
           type="warning"
           icon="el-icon-download"
@@ -64,7 +64,7 @@
           @click="handleExport"
           v-hasPermi="['device:type:export']"
         >导出</el-button>
-      </el-col>
+      </el-col>-->
     </el-row>
 
     <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
@@ -79,7 +79,6 @@
           <img :src="scope.row.icon" class="td-img" @click="showImgs(scope.row.icon)" />
         </template>
       </el-table-column>
-      <el-table-column label="玩法介绍" align="center" prop="playIntroduce" />
       <el-table-column label="封面图片" align="center" prop="cover">
         <template slot-scope="scope">
           <img :src="scope.row.cover" class="td-img" @click="showImgs(scope.row.cover)" />
@@ -124,8 +123,8 @@
     />
 
     <!-- 添加或修改设备类型对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+    <el-dialog :title="title" :visible.sync="open" width="800px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="类型名称" prop="typeName">
           <el-input v-model="form.typeName" placeholder="请输入类型名称" />
         </el-form-item>
@@ -163,7 +162,7 @@
           />
         </el-form-item>
         <el-form-item label="玩法介绍" prop="playIntroduce">
-          <el-input type="textarea" v-model="form.playIntroduce" placeholder="请输入设备玩法介绍" />
+          <Editor v-model="form.playIntroduce" style="margin-bottom: 70px"/>
         </el-form-item>
         <el-form-item label="游戏分类" prop="categoryId">
           <el-select
@@ -263,6 +262,7 @@ import {
   exportType,
   getModelList
 } from "@/api/device/type";
+import Editor from "@/components/Editor";
 import { listMode } from "@/api/operate/mode";
 
 import VDistpicker from "v-distpicker";
@@ -271,7 +271,10 @@ import mixins from "@/utils/mixin/upload";
 import region from "@/utils/mixin/region";
 
 export default {
-  components: { VDistpicker },
+  components: {
+    Editor,
+    VDistpicker
+  },
   data() {
     return {
       // 遮罩层

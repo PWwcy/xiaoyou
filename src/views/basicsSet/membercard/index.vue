@@ -192,7 +192,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="活得次数" prop="getFrequency">
+            <el-form-item label="获得次数" prop="getFrequency">
               <el-input-number
                 v-model="form.getFrequency"
                 placeholder="请输入活得次数"

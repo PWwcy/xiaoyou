@@ -10,7 +10,17 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
+      <el-form-item label="类型" prop="memberCardType">
+        <el-select v-model="queryParams.memberCardType" placeholder="请选择类型" clearable size="small">
+          <!-- <el-option label="请选择字典生成" value /> -->
+          <el-option
+            v-for="item in typeList"
+            :key="item.id"
+            :value="item.dictLabel"
+            :label="item.dictLabel"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="下单人" prop="userName">
         <el-input
           v-model="queryParams.userName"
@@ -20,7 +30,18 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
+      <el-form-item label="购买时间">
+        <el-date-picker
+          v-model="dateRange"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -180,6 +201,8 @@ import { listData } from "@/api/system/dict/data";
 export default {
   data() {
     return {
+      // 日期范围
+      dateRange: "",
       // 遮罩层
       loading: true,
       // 选中数组
@@ -230,17 +253,19 @@ export default {
       cardList: [],
       cTotal: 0,
       cPage: 1,
-      cPageSize: 10
+      cPageSize: 10,
+      typeList: [],
     };
   },
   created() {
     this.getList();
+    this.getMCardType();
   },
   methods: {
     /** 查询充值订单列表 */
     getList() {
       this.loading = true;
-      listRecharge(this.queryParams).then(response => {
+      listRecharge(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.rechargeList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -266,6 +291,20 @@ export default {
       this.open = false;
       this.reset();
     },
+    // 获取会员卡类型
+    getMCardType() {
+      let para = {
+        pageNum: this.tPage,
+        pageSize: this.tPagesize,
+        dictType: "sys_membercard_type"
+      };
+      listData(para).then(res => {
+        if (res.code === 200) {
+          this.typeList = res.rows;
+          this.tTotal = res.total;
+        }
+      });
+    },
     // 表单重置
     reset() {
       this.form = {
@@ -290,6 +329,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },

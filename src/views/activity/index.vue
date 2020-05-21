@@ -28,7 +28,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="外部链接" prop="link">
+  <!--    <el-form-item label="外部链接" prop="link">
         <el-input
           v-model="queryParams.link"
           placeholder="请输入外部链接"
@@ -36,7 +36,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -295,6 +295,9 @@ export default {
       rules: {
         title: [
           { required: true, message: "活动标题不能为空", trigger: "blur" }
+        ],
+        describe: [
+          { required: true, message: "活动描述不能为空", trigger: "blur" }
         ]
       },
       isShow: false,

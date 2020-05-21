@@ -263,7 +263,9 @@ export default {
         picture: [
           { required: true, message: "请选择上传图片", trigger: "blur" }
         ],
-        cTime: [{ required: true, message: "请选择活动时间", trigger: "blur" }]
+        cTime: [{ required: true, message: "请选择活动时间", trigger: "blur" }],
+
+        memberCardId: [{ required: true, message: "请选择会员卡", trigger: "blur" }]
       },
       pictureList: [], // 回显图片,
       memberCard: [] // 会员卡

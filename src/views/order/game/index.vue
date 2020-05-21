@@ -28,17 +28,29 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="购买时间" prop="buyTime">
-        <el-date-picker
-          clearable
-          size="small"
-          style="width: 200px"
-          v-model="queryParams.buyTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择购买时间"
-        ></el-date-picker>
-      </el-form-item>
+<!--      <el-form-item label="购买时间" prop="buyTime">-->
+<!--        <el-date-picker-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          style="width: 200px"-->
+<!--          v-model="queryParams.buyTime"-->
+<!--          type="date"-->
+<!--          value-format="yyyy-MM-dd"-->
+<!--          placeholder="选择购买时间"-->
+<!--        ></el-date-picker>-->
+<!--      </el-form-item>-->
+        <el-form-item label="购买时间">
+          <el-date-picker
+            v-model="dateRange"
+            size="small"
+            style="width: 240px"
+            value-format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          ></el-date-picker>
+        </el-form-item>
       <el-form-item label="消费方式" prop="payType">
         <el-select v-model="queryParams.payType" placeholder="请选择" clearable size="small">
           <el-option label="会员卡" value="0" />
@@ -92,7 +104,7 @@
       <el-table-column label="下单人" align="center" prop="userName" />
       <el-table-column label="收款方" align="center" prop="payee" />
       <el-table-column label="公司名称" align="center" prop="companyName" />
-      <el-table-column label="获得游豆" align="center" prop="getBean" />
+<!--      <el-table-column label="获得游豆" align="center" prop="getBean" />-->
       <el-table-column label="支付金额" align="center" prop="payMoney" />
       <el-table-column label="消耗次数" align="center" prop="num" />
       <el-table-column label="消费方式" align="center" prop="payType">
@@ -155,6 +167,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
+
           <el-col :span="12">
             <el-form-item label="得分" prop="score">
               <el-input-number
@@ -199,17 +212,17 @@
               <span class="my-unit-span">{{numUnit}}</span>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="获得游豆" prop="getBean">
-              <el-input-number
-                v-model="form.getBean"
-                placeholder="请输入获得游豆"
-                controls-position="right"
-                :min="0"
-              />
-              <span class="my-unit-span">{{beanUnit}}</span>
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="获得游豆" prop="getBean">-->
+<!--              <el-input-number-->
+<!--                v-model="form.getBean"-->
+<!--                placeholder="请输入获得游豆"-->
+<!--                controls-position="right"-->
+<!--                :min="0"-->
+<!--              />-->
+<!--              <span class="my-unit-span">{{beanUnit}}</span>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
           <el-col :span="12">
             <el-form-item label="支付金额" prop="payMoney">
               <el-input-number
@@ -277,6 +290,8 @@ export default {
       multiple: true,
       // 总条数
       total: 0,
+      // 日期范围
+      dateRange: "",
       // 游戏订单表格数据
       gameList: [],
       // 弹出层标题
@@ -332,7 +347,7 @@ export default {
     /** 查询游戏订单列表 */
     getList() {
       this.loading = true;
-      listGame(this.queryParams).then(response => {
+      listGame(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.gameList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -397,6 +412,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
