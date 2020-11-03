@@ -138,6 +138,8 @@ export default {
       // res为图片服务器返回的数据
       // 获取富文本组件实例
       let quill = this.$refs.quillEditor.quill;
+      console.log(quill);
+
       // 如果上传成功
       if (res.code == 200) {
         // 获取光标所在位置
