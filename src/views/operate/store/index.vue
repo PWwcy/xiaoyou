@@ -1,6 +1,11 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+    <el-form
+      :model="queryParams"
+      ref="queryForm"
+      :inline="true"
+      label-width="68px"
+    >
       <el-form-item label="地区">
         <v-distpicker
           size="small"
@@ -14,7 +19,12 @@
         <!-- @selected="onSelected" -->
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
+        <el-select
+          v-model="queryParams.status"
+          placeholder="请选择状态"
+          clearable
+          size="small"
+        >
           <el-option label="正常" value="0" />
           <el-option label="已删除" value="1" />
           <el-option label="停止" value="2" />
@@ -40,8 +50,16 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -53,7 +71,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['operate:store:add']"
-        >新增</el-button>
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -63,7 +82,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['operate:store:edit']"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -73,7 +93,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['operate:store:remove']"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -82,24 +103,31 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['operate:store:export']"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="storeList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="storeList"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="商家ID" align="center" prop="id" />
       <el-table-column label="商家名称" align="center" prop="storename" />
-
       <el-table-column label="商家电话" align="center" prop="storephone" />
-
       <el-table-column label="省" align="center" prop="province" />
       <el-table-column label="市" align="center" prop="city" />
       <el-table-column label="区/县" align="center" prop="area" />
 
-      <el-table-column label="地址" align="center" prop="address" />
+      <el-table-column label="详细地址" align="center" prop="address" />
       <el-table-column label="商家介绍" align="center" prop="storeintroduce" />
-      <el-table-column label="预约须知" align="center" prop="appointmentnotice" />
+      <el-table-column
+        label="预约须知"
+        align="center"
+        prop="appointmentnotice"
+      />
       <el-table-column label="联系人" align="center" prop="contacts" />
       <el-table-column label="地图信息" align="center">
         <template slot-scope="scope">
@@ -109,7 +137,8 @@
             type="text"
             icon="el-icon-location"
             @click="lookMap(scope.row)"
-          >查看地图</el-button>
+            >查看地图</el-button
+          >
         </template>
       </el-table-column>
       <!-- <el-table-column label="状态" align="center" prop="status">
@@ -118,7 +147,11 @@
         </template>
       </el-table-column>-->
       <el-table-column label="添加时间" align="center" prop="createTime" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -126,20 +159,22 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['operate:store:edit']"
-          >修改</el-button>
+            >修改</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['operate:store:remove']"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -172,21 +207,22 @@
         <el-form-item label="商家电话" prop="storephone">
           <el-input v-model="form.storephone" placeholder="请输入商家电话" />
         </el-form-item>
-        <el-form-item label="地址" prop="address">
-          <el-input v-model="form.address" placeholder="请输入地址" @change="getLngLat">
-            <i slot="suffix" class="el-icon-map-location shou" @click="chooseMap"></i>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="经纬度" prop="longitudeandlatitude">
+
+        <el-form-item label="详细地址" prop="address">
           <el-input
-            v-model="form.longitudeandlatitude"
-            placeholder="请输入经纬度,如:104.066541,30.572269"
-            @change="getAddress"
+            v-model="form.address"
+            placeholder="请输入详细地址"
+            @focus="chooseMap"
           >
-            <i slot="suffix" class="el-icon-map-location shou" @click="chooseMap"></i>
+            <!-- @change="getLngLat" -->
+            <i
+              slot="suffix"
+              class="el-icon-map-location shou"
+              @click="chooseMap"
+            ></i>
           </el-input>
         </el-form-item>
-        <el-form-item label="地区" prop>
+        <el-form-item label="地区" prop="area">
           <v-distpicker
             size="small"
             :province="regionForm.province"
@@ -198,6 +234,21 @@
             @area="onChangeArea($event, 'regionForm')"
           ></v-distpicker>
         </el-form-item>
+        <el-form-item label="经纬度" prop="longitudeandlatitude">
+          <el-input
+            v-model="form.longitudeandlatitude"
+            disabled
+            @change="getAddress"
+          >
+            <!-- placeholder="请输入经纬度,如:104.066541,30.572269" -->
+            <i
+              slot="suffix"
+              class="el-icon-map-location shou"
+              @click="chooseMap"
+            ></i>
+          </el-input>
+        </el-form-item>
+
         <!-- <el-form-item label="经度" prop="xcoordinate">
           <el-input v-model="form.xcoordinate" placeholder="请输入经度" />
         </el-form-item>
@@ -205,10 +256,16 @@
           <el-input v-model="form.ycoordinate" placeholder="请输入纬度" />
         </el-form-item>-->
         <el-form-item label="商家介绍" prop="storeintroduce">
-          <el-input v-model="form.storeintroduce" placeholder="请输入商家介绍" />
+          <el-input
+            v-model="form.storeintroduce"
+            placeholder="请输入商家介绍"
+          />
         </el-form-item>
         <el-form-item label="预约须知" prop="appointmentnotice">
-          <el-input v-model="form.appointmentnotice" placeholder="请输入预约须知" />
+          <el-input
+            v-model="form.appointmentnotice"
+            placeholder="请输入预约须知"
+          />
         </el-form-item>
 
         <el-form-item label="联系人" prop="contacts">
@@ -247,15 +304,30 @@
       <v-map ref="map" vid="map" :centers="longLat"></v-map>
     </el-dialog>
     <!-- 选择地图 -->
-    <el-dialog title="选择地图" :visible.sync="isChooseMap" width="900px" :closed="closed">
-      <v-map ref="cmap" vid="cmap" :centers="longLat" :showLocal="true" :height="300"></v-map>
+    <el-dialog
+      title="选择地图"
+      :visible.sync="isChooseMap"
+      width="900px"
+      :closed="closed"
+    >
+      <v-map
+        ref="cmap"
+        vid="cmap"
+        :centers="longLat"
+        :showLocal="true"
+        :height="300"
+      ></v-map>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="sureLocal">确 定</el-button>
         <el-button @click="isChooseMap = false">取 消</el-button>
       </div>
     </el-dialog>
 
-    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[bigImg]" />
+    <el-image-viewer
+      v-if="showViewer"
+      :on-close="closeViewer"
+      :url-list="[bigImg]"
+    />
   </div>
 </template>
 
@@ -266,7 +338,7 @@ import {
   delStore,
   addStore,
   updateStore,
-  exportStore
+  exportStore,
 } from "@/api/operate/store";
 import Editor from "@/components/Editor";
 import VDistpicker from "v-distpicker";
@@ -278,7 +350,7 @@ export default {
   components: {
     Editor,
     VDistpicker,
-    vMap
+    vMap,
   },
   data() {
     return {
@@ -317,24 +389,25 @@ export default {
         area: undefined,
         status: undefined,
         contacts: undefined,
-        createTime: undefined
+        createTime: undefined,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         storename: [
-          { required: true, message: "商家名称不能为空", trigger: "blur" }
+          { required: true, message: "商家名称不能为空", trigger: "blur" },
         ],
         storephone: [
           { required: true, message: "商家电话不能为空", trigger: "blur" },
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
             message: "请输入正确的手机号码",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
-        address: [{ required: true, message: "地址不能为空", trigger: "blur" }]
+        address: [{ required: true, message: "地址不能为空", trigger: "blur" }],
+        area: [{ required: true, message: "地区不能为空", trigger: "blur" }],
       },
       fileList: [],
       showViewer: false,
@@ -342,7 +415,7 @@ export default {
 
       // 地图 经纬度
       longLat: [],
-      isChooseMap: false
+      isChooseMap: false,
     };
   },
   created() {
@@ -354,7 +427,7 @@ export default {
     getList() {
       this.loading = true;
       this.initForm("queryParams");
-      listStore(this.queryParams).then(response => {
+      listStore(this.queryParams).then((response) => {
         this.storeList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -369,13 +442,13 @@ export default {
       let self = this;
       if (AMap) {
         let add = this.form.address;
-        AMap.plugin("AMap.Geocoder", function() {
+        AMap.plugin("AMap.Geocoder", function () {
           var geocoder = new AMap.Geocoder({
             // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
-            city: "成都"
+            city: "成都",
           });
 
-          geocoder.getLocation(add, function(status, result) {
+          geocoder.getLocation(add, function (status, result) {
             if (status === "complete" && result.info === "OK") {
               // result中对应详细地理坐标信息
               self.form.longitudeandlatitude =
@@ -401,10 +474,10 @@ export default {
         AMap.plugin(["AMap.Geocoder"], () => {
           const geocoder = new AMap.Geocoder({
             radius: 1000,
-            extensions: "all"
+            extensions: "all",
           });
           // var lnglatXY = options.lnglatXY || [114.397169, 30.50576]; //已知点坐标
-          geocoder.getAddress(lnglat, function(status, result) {
+          geocoder.getAddress(lnglat, function (status, result) {
             if (status === "complete" && result.info === "OK") {
               console.log(result);
               self.form.address = result.regeocode.formattedAddress;
@@ -433,7 +506,7 @@ export default {
       this.longLat = [104.06, 30.67];
       if (this.form.longitudeandlatitude) {
         this.longLat = this.form.longitudeandlatitude.split(",");
-        this.longLat.forEach(item => parseInt(item));
+        this.longLat.forEach((item) => parseInt(item));
       }
       this.isChooseMap = true;
       let a = setTimeout(() => {
@@ -458,6 +531,9 @@ export default {
         obj.location.lng + "," + obj.location.lat;
       this.form.address = obj.address;
       this.isChooseMap = false;
+      // this.resetForm("form");
+      // this.$refs.form.resetFields();
+      this.$refs.form.clearValidate("address");
     },
 
     formatStatus(val) {
@@ -469,7 +545,6 @@ export default {
       this.reset();
     },
     onSelected(data) {
-      console.log(data);
       this.queryParams.province = data.province.value;
       this.queryParams.city = data.city.value;
       this.queryParams.area = data.area.value;
@@ -487,7 +562,7 @@ export default {
         appointmentnotice: undefined,
         xcoordinate: undefined,
         ycoordinate: undefined,
-        status: 0
+        status: 0,
       };
       this.initFileList();
       this.resetRegion("form");
@@ -506,7 +581,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
+      this.ids = selection.map((item) => item.id);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
@@ -520,7 +595,7 @@ export default {
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids;
-      getStore(id).then(response => {
+      getStore(id).then((response) => {
         this.form = response.data;
         this.assignRegion(this.form);
         this.open = true;
@@ -529,13 +604,13 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm: function() {
-      this.$refs["form"].validate(valid => {
+    submitForm: function () {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           this.form.pictureList = this.urlArrs;
           this.initForm("form");
           if (this.form.id != undefined) {
-            updateStore(this.form).then(response => {
+            updateStore(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -545,7 +620,7 @@ export default {
               }
             });
           } else {
-            addStore(this.form).then(response => {
+            addStore(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -564,16 +639,16 @@ export default {
       this.$confirm('是否确认删除商家编号为"' + ids + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
-        .then(function() {
+        .then(function () {
           return delStore(ids);
         })
         .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
         })
-        .catch(function() {});
+        .catch(function () {});
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -581,16 +656,16 @@ export default {
       this.$confirm("是否确认导出所有商家数据项?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
-        .then(function() {
+        .then(function () {
           return exportStore(queryParams);
         })
-        .then(response => {
+        .then((response) => {
           this.download(response.msg);
         })
-        .catch(function() {});
-    }
-  }
+        .catch(function () {});
+    },
+  },
 };
 </script>

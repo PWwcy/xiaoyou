@@ -18,6 +18,7 @@ import './assets/icons' // icon
 import './permission' // permission control
 import { getDicts } from "@/api/system/dict/data";
 import { getConfigKey } from "@/api/system/config";
+import { formatDate } from "@/utils"
 import { parseTime, resetForm, addDateRange, selectDictLabel, download } from "@/utils/ruoyi";
 import myConst from "@/utils/const"
 import Pagination from "@/components/Pagination";
@@ -48,18 +49,20 @@ Vue.prototype.dayUnit = myConst.dayUnit;
 Vue.prototype.minUnit = myConst.minUnit;
 // 得分单位
 Vue.prototype.scoreUnit = myConst.scoreUnit;
+Vue.prototype.formatDate = formatDate;
+
 
 
 Vue.prototype.msgSuccess = function (msg) {
-    this.$message({ showClose: true, message: msg, type: "success" });
+  this.$message({ showClose: true, message: msg, type: "success" });
 }
 
 Vue.prototype.msgError = function (msg) {
-    this.$message({ showClose: true, message: msg, type: "error" });
+  this.$message({ showClose: true, message: msg, type: "error" });
 }
 
 Vue.prototype.msgInfo = function (msg) {
-    this.$message.info(msg);
+  this.$message.info(msg);
 }
 
 // 全局组件挂载
@@ -70,19 +73,19 @@ Vue.use(permission)
 Vue.use(VueAMap);
 // 高德地圖插件
 VueAMap.initAMapApiLoader({
-    key: "e1dedc6bdd765d46693986ff7ff969f4",
-    plugin: [
-        "AMap.Autocomplete", //输入提示插件
-        "AMap.PlaceSearch", //POI搜索插件
-        "AMap.Scale", //右下角缩略图插件 比例尺
-        "AMap.OverView", //地图鹰眼插件
-        "AMap.ToolBar", //地图工具条
-        "AMap.MapType", //类别切换控件，实现默认图层与卫星图、实施交通图层之间切换的控制
-        "AMap.PolyEditor", //编辑 折线多，边形
-        "AMap.CircleEditor", //圆形编辑器插件
-        "AMap.Geolocation" //定位控件，用来获取和展示用户主机所在的经纬度位置
-    ],
-    uiVersion: "1.0"
+  key: "e1dedc6bdd765d46693986ff7ff969f4",
+  plugin: [
+    "AMap.Autocomplete", //输入提示插件
+    "AMap.PlaceSearch", //POI搜索插件
+    "AMap.Scale", //右下角缩略图插件 比例尺
+    "AMap.OverView", //地图鹰眼插件
+    "AMap.ToolBar", //地图工具条
+    "AMap.MapType", //类别切换控件，实现默认图层与卫星图、实施交通图层之间切换的控制
+    "AMap.PolyEditor", //编辑 折线多，边形
+    "AMap.CircleEditor", //圆形编辑器插件
+    "AMap.Geolocation" //定位控件，用来获取和展示用户主机所在的经纬度位置
+  ],
+  uiVersion: "1.0"
 });
 
 /**
@@ -95,7 +98,7 @@ VueAMap.initAMapApiLoader({
  */
 
 Vue.use(Element, {
-    size: Cookies.get('size') || 'medium' // set element-ui default size
+  size: Cookies.get('size') || 'medium' // set element-ui default size
 })
 
 Vue.config.productionTip = false
@@ -103,8 +106,8 @@ Vue.config.productionTip = false
 console.log(router);
 
 new Vue({
-    el: '#app',
-    router,
-    store,
-    render: h => h(App)
+  el: '#app',
+  router,
+  store,
+  render: h => h(App)
 })

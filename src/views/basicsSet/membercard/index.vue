@@ -12,7 +12,12 @@
         />
       </el-form-item>
       <el-form-item label="类型" prop="memberCardType">
-        <el-select v-model="queryParams.memberCardType" placeholder="请选择类型" clearable size="small">
+        <el-select
+          v-model="queryParams.memberCardType"
+          placeholder="请选择类型"
+          clearable
+          size="small"
+        >
           <!-- <el-option label="请选择字典生成" value /> -->
           <el-option
             v-for="item in typeList"
@@ -23,8 +28,16 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -36,7 +49,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['basicsSet:membercard:add']"
-        >新增</el-button>
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -46,7 +60,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['basicsSet:membercard:edit']"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -56,7 +71,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['basicsSet:membercard:remove']"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -65,7 +81,8 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['basicsSet:membercard:export']"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
     </el-row>
 
@@ -103,22 +120,38 @@
         </template>
       </el-table-column>
     </el-table>-->
-    <el-table v-loading="loading" :data="membercardList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="membercardList"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="会员卡名称" align="center" prop="memberCardName" />
+      <el-table-column
+        label="会员卡名称"
+        align="center"
+        prop="memberCardName"
+      />
       <el-table-column label="类型" align="center">
         <template slot-scope="scope">
-          <span>{{type_(scope.row.memberCardType)}}</span>
+          <span>{{ type_(scope.row.memberCardType) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="充值金额" align="center" prop="rechargeAmount" />
       <el-table-column label="获得游豆" align="center" prop="getBean" />
       <el-table-column label="获得次数" align="center" prop="getFrequency" />
-      <el-table-column label="有效期" align="center" prop="termOfValidity"></el-table-column>
+      <el-table-column
+        label="有效期"
+        align="center"
+        prop="termOfValidity"
+      ></el-table-column>
 
       <el-table-column label="修改时间" align="center" prop="updateTime" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -126,20 +159,22 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['basicsSet:membercard:edit']"
-          >修改</el-button>
+            >修改</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['basicsSet:membercard:remove']"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -152,12 +187,19 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="会员卡名称" prop="memberCardName">
-              <el-input v-model="form.memberCardName" placeholder="请输入会员卡名称" />
+              <el-input
+                v-model="form.memberCardName"
+                placeholder="请输入会员卡名称"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="类型" prop="memberCardType">
-              <el-select v-model="form.memberCardType" placeholder="请选择类型">
+              <el-select
+                v-model="form.memberCardType"
+                placeholder="请选择类型"
+                :disabled="form.id"
+              >
                 <!-- <el-option label="请选择字典生成" value /> -->
                 <el-option
                   v-for="item in typeList"
@@ -177,7 +219,7 @@
                 controls-position="right"
                 :min="0"
               />
-              <span class="my-unit-span">{{moneyUnit}}</span>
+              <span class="my-unit-span">{{ moneyUnit }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -188,7 +230,7 @@
                 controls-position="right"
                 :min="0"
               />
-              <span class="my-unit-span">{{beanUnit}}</span>
+              <span class="my-unit-span">{{ beanUnit }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -199,7 +241,7 @@
                 controls-position="right"
                 :min="0"
               />
-              <span class="my-unit-span">{{numUnit}}</span>
+              <span class="my-unit-span">{{ numUnit }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -210,7 +252,7 @@
                 controls-position="right"
                 :min="0"
               />
-              <span class="my-unit-span">{{dayUnit}}</span>
+              <span class="my-unit-span">{{ dayUnit }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -223,7 +265,7 @@
           </el-form-item>-->
         </el-row>
       </el-form>
-      <div slot="footer" class="dialog-footer" style="margin-top: 30px;">
+      <div slot="footer" class="dialog-footer" style="margin-top: 30px">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
@@ -237,7 +279,7 @@ import {
   delMembercard,
   addMembercard,
   updateMembercard,
-  exportMembercard
+  exportMembercard,
 } from "@/api/basicsSet/membercard";
 import { listData } from "@/api/system/dict/data";
 
@@ -245,7 +287,7 @@ import Editor from "@/components/Editor";
 
 export default {
   components: {
-    Editor
+    Editor,
   },
   data() {
     return {
@@ -275,36 +317,36 @@ export default {
         getBean: undefined,
         getFrequency: undefined,
         termOfValidity: undefined,
-        content: undefined
+        content: undefined,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         memberCardName: [
-          { required: true, message: "会员卡名称不能为空", trigger: "blur" }
+          { required: true, message: "会员卡名称不能为空", trigger: "blur" },
         ],
         memberCardType: [
-          { required: true, message: "请选择类型", trigger: "blur" }
+          { required: true, message: "请选择类型", trigger: "blur" },
         ],
         rechargeAmount: [
-          { required: true, message: "充值金额不能为空", trigger: "blur" }
+          { required: true, message: "充值金额不能为空", trigger: "blur" },
         ],
         getBean: [
-          { required: true, message: "获得游豆不能为空", trigger: "blur" }
+          { required: true, message: "获得游豆不能为空", trigger: "blur" },
         ],
         getFrequency: [
-          { required: true, message: "获得次数不能为空", trigger: "blur" }
+          { required: true, message: "获得次数不能为空", trigger: "blur" },
         ],
         termOfValidity: [
-          { required: true, message: "有效期不能为空", trigger: "blur" }
-        ]
+          { required: true, message: "有效期不能为空", trigger: "blur" },
+        ],
       },
 
       typeList: [],
       tTotal: 0,
       tPage: 1,
-      tPagesize: 10
+      tPagesize: 10,
     };
   },
   created() {
@@ -315,7 +357,7 @@ export default {
     /** 查询会员卡列表 */
     getList() {
       this.loading = true;
-      listMembercard(this.queryParams).then(response => {
+      listMembercard(this.queryParams).then((response) => {
         this.membercardList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -326,9 +368,9 @@ export default {
       let para = {
         pageNum: this.tPage,
         pageSize: this.tPagesize,
-        dictType: "sys_membercard_type"
+        dictType: "sys_membercard_type",
       };
-      listData(para).then(res => {
+      listData(para).then((res) => {
         if (res.code === 200) {
           this.typeList = res.rows;
           this.tTotal = res.total;
@@ -336,7 +378,7 @@ export default {
       });
     },
     type_(s) {
-      let arr = this.typeList.filter(item => {
+      let arr = this.typeList.filter((item) => {
         return item.dictCode == s;
       });
       return arr.length === 0 ? s : arr[0].dictLabel;
@@ -356,7 +398,7 @@ export default {
         getBean: undefined,
         getFrequency: undefined,
         termOfValidity: undefined,
-        content: undefined
+        content: undefined,
       };
       this.resetForm("form");
     },
@@ -372,7 +414,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
+      this.ids = selection.map((item) => item.id);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
@@ -386,7 +428,7 @@ export default {
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids;
-      getMembercard(id).then(response => {
+      getMembercard(id).then((response) => {
         this.form = response.data;
         if (!isNaN(this.form.memberCardType * 1)) {
           this.form.memberCardType = this.form.memberCardType * 1;
@@ -396,11 +438,11 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm: function() {
-      this.$refs["form"].validate(valid => {
+    submitForm: function () {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.id != undefined) {
-            updateMembercard(this.form).then(response => {
+            updateMembercard(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -410,7 +452,7 @@ export default {
               }
             });
           } else {
-            addMembercard(this.form).then(response => {
+            addMembercard(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -429,16 +471,16 @@ export default {
       this.$confirm('是否确认删除会员卡编号为"' + ids + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
-        .then(function() {
+        .then(function () {
           return delMembercard(ids);
         })
         .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
         })
-        .catch(function() {});
+        .catch(function () {});
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -446,16 +488,16 @@ export default {
       this.$confirm("是否确认导出所有会员卡数据项?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
-        .then(function() {
+        .then(function () {
           return exportMembercard(queryParams);
         })
-        .then(response => {
+        .then((response) => {
           this.download(response.msg);
         })
-        .catch(function() {});
-    }
-  }
+        .catch(function () {});
+    },
+  },
 };
 </script>

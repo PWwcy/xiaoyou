@@ -1,6 +1,11 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+    <el-form
+      :model="queryParams"
+      ref="queryForm"
+      :inline="true"
+      label-width="68px"
+    >
       <el-form-item label="类型名称" prop="typeName">
         <el-input
           v-model="queryParams.typeName"
@@ -21,8 +26,16 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -34,7 +47,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['device:type:add']"
-        >新增</el-button>
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -44,7 +58,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['device:type:edit']"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -54,7 +69,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['device:type:remove']"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
       <!--<el-col :span="1.5">
         <el-button
@@ -67,7 +83,11 @@
       </el-col>-->
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="typeList"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="类型名称" align="center" prop="typeName" />
@@ -76,18 +96,34 @@
       <el-table-column label="区" align="center" prop="area" />
       <el-table-column label="图标" align="center">
         <template slot-scope="scope">
-          <img :src="scope.row.icon" class="td-img" @click="showImgs(scope.row.icon)" />
+          <img
+            :src="scope.row.icon"
+            class="td-img"
+            @click="showImgs(scope.row.icon)"
+          />
         </template>
       </el-table-column>
       <el-table-column label="封面图片" align="center" prop="cover">
         <template slot-scope="scope">
-          <img :src="scope.row.cover" class="td-img" @click="showImgs(scope.row.cover)" />
+          <img
+            :src="scope.row.cover"
+            class="td-img"
+            @click="showImgs(scope.row.cover)"
+          />
         </template>
       </el-table-column>
       <!-- <el-table-column label="城市" align="center" prop="cityId" /> -->
-      <el-table-column label="免费体验次数" align="center" prop="experienceNum" />
+      <el-table-column
+        label="免费体验次数"
+        align="center"
+        prop="experienceNum"
+      />
       <el-table-column label="顺序" align="center" prop="pos" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -95,14 +131,16 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['device:type:edit']"
-          >修改</el-button>
+            >修改</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['device:type:remove']"
-          >删除</el-button>
+            >删除</el-button
+          >
           <!-- <el-button
             size="mini"
             type="text"
@@ -115,7 +153,7 @@
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -162,7 +200,7 @@
           />
         </el-form-item>
         <el-form-item label="玩法介绍" prop="playIntroduce">
-          <Editor v-model="form.playIntroduce" style="margin-bottom: 70px"/>
+          <Editor v-model="form.playIntroduce" style="margin-bottom: 70px" />
         </el-form-item>
         <el-form-item label="游戏分类" prop="categoryId">
           <el-select
@@ -179,7 +217,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-     <!--   <el-form-item label="游戏模式" prop="modeList">
+        <!--   <el-form-item label="游戏模式" prop="modeList">
           <el-select
             v-model="form.modeList"
             multiple
@@ -210,7 +248,9 @@
             :file-list="iconList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500KB</div>
+            <div slot="tip" class="el-upload__tip">
+              只能上传jpg/png文件，且不超过500KB。推荐使用像素值为300*247的图片
+            </div>
           </el-upload>
         </el-form-item>
         <el-form-item label="封面图片" prop="cover">
@@ -224,7 +264,9 @@
             :file-list="coverList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500KB</div>
+            <div slot="tip" class="el-upload__tip">
+              只能上传jpg/png文件，且不超过500KB。推荐使用像素值为690*236的图片
+            </div>
           </el-upload>
         </el-form-item>
         <el-form-item label="图片" prop="pictureList">
@@ -239,6 +281,9 @@
             :file-list="uploadFileList"
           >
             <i class="el-icon-plus"></i>
+            <div slot="tip" class="el-upload__tip">
+              只能上传jpg/png文件，且不超过500KB。推荐使用像素值为690*356的图片
+            </div>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -248,7 +293,11 @@
       </div>
     </el-dialog>
     <!-- 图片查看 -->
-    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="imgArr" />
+    <el-image-viewer
+      v-if="showViewer"
+      :on-close="closeViewer"
+      :url-list="imgArr"
+    />
   </div>
 </template>
 
@@ -260,7 +309,7 @@ import {
   addType,
   updateType,
   exportType,
-  getModelList
+  getModelList,
 } from "@/api/device/type";
 import Editor from "@/components/Editor";
 import { listMode } from "@/api/operate/mode";
@@ -273,7 +322,7 @@ import region from "@/utils/mixin/region";
 export default {
   components: {
     Editor,
-    VDistpicker
+    VDistpicker,
   },
   data() {
     return {
@@ -301,7 +350,7 @@ export default {
         playIntroduce: undefined,
         picture: undefined,
         cityId: undefined,
-        pos: undefined
+        pos: undefined,
       },
       // 表单参数
       form: {},
@@ -310,8 +359,12 @@ export default {
         picture: [{ required: true, message: "图片不能为空", trigger: "blur" }],
         cover: [{ required: true, message: "封面不能为空", trigger: "blur" }],
         icon: [{ required: true, message: "图标不能为空", trigger: "blur" }],
-        modeList:  [{ required: true, message: "游戏模式不能为空", trigger: "blur" }],
-        categoryId: [{ required: true, message: "游戏分类不能为空", trigger: "blur" }],
+        modeList: [
+          { required: true, message: "游戏模式不能为空", trigger: "blur" },
+        ],
+        categoryId: [
+          { required: true, message: "游戏分类不能为空", trigger: "blur" },
+        ],
       },
       pictureList: [],
       coverList: [], // 封面
@@ -321,10 +374,10 @@ export default {
       optionsType: [],
       modelParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       },
 
-      imgTypeArr: ["jpg", "jpeg", "png"]
+      imgTypeArr: ["jpg", "jpeg", "png"],
     };
   },
   created() {
@@ -337,7 +390,7 @@ export default {
     /** 查询设备类型列表 */
     getList() {
       this.loading = true;
-      listType(this.queryParams).then(response => {
+      listType(this.queryParams).then((response) => {
         this.typeList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -346,7 +399,7 @@ export default {
     // 获取游戏模式列表
     getModelList() {
       console.log(this.modelParams);
-      listMode(this.modelParams).then(response => {
+      listMode(this.modelParams).then((response) => {
         let list = response.rows;
         this.modelList = [...this.modelList, ...list];
         this.modelTotal = response.total;
@@ -354,7 +407,7 @@ export default {
     },
     // 获取游戏分类列表
     getType() {
-      listCategory(this.queryParamsType).then(response => {
+      listCategory(this.queryParamsType).then((response) => {
         const list = response.rows;
         this.optionsType = [...this.optionsType, ...list];
       });
@@ -392,7 +445,7 @@ export default {
       let obj = {
         url: response.data.picture,
         name: file.name,
-        uid: file.uid
+        uid: file.uid,
       };
       this.coverList.push(obj);
     },
@@ -407,7 +460,7 @@ export default {
       let obj = {
         url: response.data.picture,
         name: file.name,
-        uid: file.uid
+        uid: file.uid,
       };
       this.iconList.push(obj);
     },
@@ -429,7 +482,7 @@ export default {
         pictureList: undefined,
         cover: undefined,
         icon: undefined,
-        modeList: undefined
+        modeList: undefined,
       };
       this.initFileList();
       this.uploadFileList = [];
@@ -450,7 +503,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
+      this.ids = selection.map((item) => item.id);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
@@ -471,17 +524,19 @@ export default {
       if (this.modelList.length === 0) {
         this.getModelList();
       }
-      getType(id).then(response => {
+      getType(id).then((response) => {
         this.form = response.data.deviceType;
         this.open = true;
         this.title = "修改设备类型";
         this.echoImg(this.form.picture);
         this.form.modeList =
           response.data.modes &&
-          response.data.modes.map(item => {
+          response.data.modes.map((item) => {
             return item.id;
           });
-        console.log(this.form);
+        this.regionForm.province = this.form.province;
+        this.regionForm.city = this.form.city;
+        this.regionForm.area = this.form.area;
         if (this.form.cover != null && this.form.cover != "") {
           var obj = {};
           obj.url = this.form.cover;
@@ -501,14 +556,14 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm: function() {
+    submitForm: function () {
       this.form.pictureList = this.urlArrs;
       this.form.modeList = this.form.modeList && this.form.modeList.join(",");
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           this.initForm("form");
           if (this.form.id != undefined) {
-            updateType(this.form).then(response => {
+            updateType(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -518,7 +573,7 @@ export default {
               }
             });
           } else {
-            addType(this.form).then(response => {
+            addType(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -540,17 +595,17 @@ export default {
         {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         }
       )
-        .then(function() {
+        .then(function () {
           return delType(ids);
         })
         .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
         })
-        .catch(function() {});
+        .catch(function () {});
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -558,16 +613,16 @@ export default {
       this.$confirm("是否确认导出所有设备类型数据项?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
-        .then(function() {
+        .then(function () {
           return exportType(queryParams);
         })
-        .then(response => {
+        .then((response) => {
           this.download(response.msg);
         })
-        .catch(function() {});
-    }
+        .catch(function () {});
+    },
   },
   directives: {
     "el-select-loadmore": {
@@ -576,15 +631,15 @@ export default {
         const SELECTWRAP_DOM = el.querySelector(
           ".el-select-dropdown .el-select-dropdown__wrap"
         );
-        SELECTWRAP_DOM.addEventListener("scroll", function() {
+        SELECTWRAP_DOM.addEventListener("scroll", function () {
           const condition =
             this.scrollHeight - this.scrollTop <= this.clientHeight;
           if (condition) {
             binding.value();
           }
         });
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>

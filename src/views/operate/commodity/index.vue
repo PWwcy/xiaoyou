@@ -1,6 +1,11 @@
 <template>
   <div class="app-container">
-    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+    <el-form
+      ref="queryForm"
+      :model="queryParams"
+      :inline="true"
+      label-width="68px"
+    >
       <el-form-item label="地区">
         <v-distpicker
           size="small"
@@ -33,22 +38,40 @@
       </el-form-item>
 
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
+        <el-select
+          v-model="queryParams.status"
+          placeholder="请选择状态"
+          clearable
+          size="small"
+        >
           <el-option label="在售" :value="0" />
           <el-option label="售完" :value="1" />
           <el-option label="下架" :value="2" />
         </el-select>
       </el-form-item>
       <el-form-item label="限会员可购买" prop="onlyMembers" label-width="100px">
-        <el-select v-model="queryParams.onlyMembers" placeholder="是否限会员可购买 " clearable size="small">
+        <el-select
+          v-model="queryParams.onlyMembers"
+          placeholder="是否限会员可购买 "
+          clearable
+          size="small"
+        >
           <el-option label="是" :value="0" />
           <el-option label="否" :value="1" />
         </el-select>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -60,7 +83,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['operate:commodity:add']"
-        >新增</el-button>
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -70,7 +94,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['operate:commodity:edit']"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -80,7 +105,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['operate:commodity:remove']"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -89,11 +115,16 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="commodityList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="commodityList"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="商品id" align="center" prop="id" />
       <el-table-column label="商品名称" align="center" prop="commodityName" />
@@ -105,7 +136,11 @@
       <el-table-column label="游豆" align="center" prop="gameBean" />
       <el-table-column label="商品主图" align="center" prop="img">
         <template slot-scope="scope">
-          <img class="td-img" :src="scope.row.img" @click="showImg(scope.row.img)" />
+          <img
+            class="td-img"
+            :src="scope.row.img"
+            @click="showImg(scope.row.img)"
+          />
         </template>
       </el-table-column>
       <!--      <el-table-column label="商品图片" align="center" prop="commodityPicture">-->
@@ -120,17 +155,26 @@
       <el-table-column label="商家名称" align="center" prop="storeName" />
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
-          <span>{{formatStatus(scope.row.status)}}</span>
+          <span>{{ formatStatus(scope.row.status) }}</span>
         </template>
       </el-table-column>
+      <el-table-column
+        label="顺序"
+        align="center"
+        prop="sort"
+      ></el-table-column>
       <el-table-column label="限会员可购买" align="center" prop="onlyMembers">
         <template slot-scope="scope">
-          <span>{{onlyMembersFormat(scope.row.onlyMembers)}}</span>
+          <span>{{ onlyMembersFormat(scope.row.onlyMembers) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="销量" align="center" prop="salesVolume" />
       <el-table-column label="库存" align="center" prop="stock" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -138,20 +182,22 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['operate:commodity:edit']"
-          >修改</el-button>
+            >修改</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['operate:commodity:remove']"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -173,7 +219,7 @@
                 controls-position="right"
                 :min="0"
               />
-              <span class="my-unit-span">{{moneyUnit}}</span>
+              <span class="my-unit-span">{{ moneyUnit }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -184,7 +230,7 @@
                 controls-position="right"
                 :min="0"
               />
-              <span class="my-unit-span">{{beanUnit}}</span>
+              <span class="my-unit-span">{{ beanUnit }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -197,11 +243,11 @@
                 controls-position="right"
                 :min="0"
               />
-              <span class="my-unit-span">{{moneyUnit}}</span>
+              <span class="my-unit-span">{{ moneyUnit }}</span>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="地区">
+        <!-- <el-form-item label="地区">
           <v-distpicker
             size="small"
             :province="regionForm.province"
@@ -211,7 +257,7 @@
             @city="onChangeCity($event, 'regionForm')"
             @area="onChangeArea($event, 'regionForm')"
           />
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="商家" prop="storeId">
           <!-- <el-input v-model="form.storeId" placeholder="请输入商店id" /> -->
@@ -229,6 +275,28 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="库存" prop="stock">
+              <el-input-number
+                v-model="form.stock"
+                placeholder="请输入库存数量"
+                controls-position="right"
+                :min="0"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sort">
+              <el-input-number
+                v-model="form.sort"
+                placeholder="请输入排序值"
+                controls-position="right"
+                :min="0"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="状态" prop="formStatus">
           <el-radio-group v-model="form.status">
             <el-radio :label="0">在售</el-radio>
@@ -236,14 +304,13 @@
             <el-radio :label="2">下架</el-radio>
           </el-radio-group>
         </el-form-item>
+
         <el-form-item label="限会员可购买" prop="onlymembers">
           <el-radio-group v-model="form.onlyMembers">
-            <el-radio disabled  :label="0">是</el-radio>
+            <el-radio disabled :label="0">是</el-radio>
             <el-radio disabled :label="1">否</el-radio>
           </el-radio-group>
         </el-form-item>
-
-
 
         <el-form-item label="商品介绍" prop="commodityIntroduce">
           <Editor v-model="form.commodityIntroduce" />
@@ -251,7 +318,7 @@
         <!-- <el-form-item label="商品介绍" prop="commodityIntroduce">
           <el-input v-model="form.commodityIntroduce" placeholder="请输入商品介绍" />
         </el-form-item>-->
-        <el-form-item label="商品主图" prop="img" style="margin-top: 90px;">
+        <el-form-item label="商品主图" prop="img" style="margin-top: 90px">
           <el-upload
             :action="uploadFileUrl"
             :on-remove="handleImgRemove"
@@ -265,28 +332,6 @@
             <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
           </el-upload>
         </el-form-item>
-
-        <el-form-item label="库存" prop="stock">
-          <el-input-number
-            v-model="form.stock"
-            placeholder="请输入库存数量"
-            controls-position="right"
-            :min="0"
-          />
-        </el-form-item>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="排序" prop="sort">
-            <el-input-number
-              v-model="form.sort"
-              placeholder="请输入排序值"
-              controls-position="right"
-              :min="0"
-            />
-          </el-form-item>
-        </el-col>
-        </el-row>
-
 
         <el-form-item label="商品图片" prop="commodityPicture">
           <!-- <el-upload
@@ -314,6 +359,9 @@
             :file-list="uploadFileList"
           >
             <i class="el-icon-plus"></i>
+            <div slot="tip" class="el-upload__tip">
+              只能上传jpg/png文件，且不超过500kb。推荐使用像素值为338*240的图片
+            </div>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -323,7 +371,11 @@
       </div>
     </el-dialog>
 
-    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[bigImg]" />
+    <el-image-viewer
+      v-if="showViewer"
+      :on-close="closeViewer"
+      :url-list="[bigImg]"
+    />
   </div>
 </template>
 
@@ -334,7 +386,7 @@ import {
   delCommodity,
   addCommodity,
   updateCommodity,
-  exportCommodity
+  exportCommodity,
 } from "@/api/operate/commodity";
 import { listStore } from "@/api/operate/store";
 import Editor from "@/components/Editor";
@@ -345,7 +397,7 @@ import region from "@/utils/mixin/region";
 export default {
   components: {
     Editor,
-    VDistpicker
+    VDistpicker,
   },
   data() {
     return {
@@ -382,7 +434,7 @@ export default {
         city: undefined,
         area: undefined,
         storeName: undefined,
-        appointmentNotice: undefined
+        appointmentNotice: undefined,
       },
       // 表单参数
       form: {},
@@ -392,15 +444,15 @@ export default {
           { required: true, message: "请选择是否限会员购买", trigger: "blur" }
         ],*/
         commodityName: [
-          { required: true, message: "商品名称不能为空", trigger: "blur" }
+          { required: true, message: "商品名称不能为空", trigger: "blur" },
         ],
         gameBean: [
-          { required: true, message: "游豆不能为空", trigger: "blur" }
+          { required: true, message: "游豆不能为空", trigger: "blur" },
         ],
         price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
         storeId: [{ required: true, message: "请选择商家", trigger: "blur" }],
         sort: [{ required: true, message: "排序不能为空", trigger: "blur" }],
-        stock: [{ required: true, message: "库存不能为空", trigger: "blur" }]
+        stock: [{ required: true, message: "库存不能为空", trigger: "blur" }],
       },
 
       fileList: [],
@@ -413,7 +465,7 @@ export default {
       sPageSize: 10,
       sTotal: 0,
       // 商品主图
-      imgList: []
+      imgList: [],
     };
   },
   created() {
@@ -427,7 +479,7 @@ export default {
     getList() {
       this.loading = true;
       this.initForm("queryParams");
-      listCommodity(this.queryParams).then(response => {
+      listCommodity(this.queryParams).then((response) => {
         this.commodityList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -443,7 +495,7 @@ export default {
       let obj = {
         url: response.data.picture,
         name: file.name,
-        uid: file.uid
+        uid: file.uid,
       };
       this.imgList.push(obj);
     },
@@ -451,9 +503,9 @@ export default {
     getStoreList() {
       let para = {
         pageNum: this.sPage,
-        pageSize: this.sPageSize
+        pageSize: this.sPageSize,
       };
-      listStore(para).then(response => {
+      listStore(para).then((response) => {
         this.storeList = response.rows;
         this.sTotal = response.total;
       });
@@ -519,7 +571,7 @@ export default {
         province: undefined,
         city: undefined,
         area: undefined,
-        salesVolume: undefined
+        salesVolume: undefined,
       };
       this.initFileList();
       this.resetRegion("form");
@@ -538,7 +590,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
+      this.ids = selection.map((item) => item.id);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
@@ -555,7 +607,7 @@ export default {
       this.reset();
       this.imgList = [];
       const id = row.id || this.ids;
-      getCommodity(id).then(response => {
+      getCommodity(id).then((response) => {
         this.form = response.data;
         this.assignRegion(this.form);
         this.open = true;
@@ -572,15 +624,15 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm: function() {
-      this.$refs["form"].validate(valid => {
+    submitForm: function () {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           // this.form.commodityPicture = this.initFile();
           this.form.commodityPicture = this.urlArrs.join();
           this.initForm("form");
           if (this.form.id != undefined) {
             this.testForm();
-            updateCommodity(this.form).then(response => {
+            updateCommodity(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -590,7 +642,7 @@ export default {
               }
             });
           } else {
-            addCommodity(this.form).then(response => {
+            addCommodity(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -609,16 +661,16 @@ export default {
       this.$confirm('是否确认删除商品编号为"' + ids + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
-        .then(function() {
+        .then(function () {
           return delCommodity(ids);
         })
         .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
         })
-        .catch(function() {});
+        .catch(function () {});
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -626,16 +678,16 @@ export default {
       this.$confirm("是否确认导出所有商品数据项?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
-        .then(function() {
+        .then(function () {
           return exportCommodity(queryParams);
         })
-        .then(response => {
+        .then((response) => {
           this.download(response.msg);
         })
-        .catch(function() {});
-    }
+        .catch(function () {});
+    },
   },
   directives: {
     // 底部加载更多
@@ -645,16 +697,16 @@ export default {
         const SELECTWRAP_DOM = el.querySelector(
           ".el-select-dropdown .el-select-dropdown__wrap"
         );
-        SELECTWRAP_DOM.addEventListener("scroll", function() {
+        SELECTWRAP_DOM.addEventListener("scroll", function () {
           const condition =
             this.scrollHeight - this.scrollTop <= this.clientHeight;
           if (condition) {
             binding.value();
           }
         });
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>
 <style scoped>

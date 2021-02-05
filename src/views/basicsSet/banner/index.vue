@@ -1,6 +1,11 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+    <el-form
+      :model="queryParams"
+      ref="queryForm"
+      :inline="true"
+      label-width="68px"
+    >
       <el-form-item label="城市" prop="cityId">
         <v-distpicker
           class="city-select"
@@ -14,8 +19,16 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -27,7 +40,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['basicsSet:banner:add']"
-        >新增</el-button>
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -37,7 +51,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['basicsSet:banner:edit']"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -47,11 +62,16 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['basicsSet:banner:remove']"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="bannerList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="bannerList"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
       <!-- <el-table-column label="城市id" align="center" prop="cityId" /> -->
@@ -70,7 +90,11 @@
         </template>
       </el-table-column>
       <el-table-column label="排序" align="center" prop="sort" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -78,20 +102,22 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['basicsSet:banner:edit']"
-          >修改</el-button>
+            >修改</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['basicsSet:banner:remove']"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -110,7 +136,10 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="类型对应内容id" prop="contentId">
-          <el-input v-model="form.contentId" placeholder="请输入类型对应内容id" />
+          <el-input
+            v-model="form.contentId"
+            placeholder="请输入类型对应内容id"
+          />
         </el-form-item>
         <el-form-item label="城市">
           <!-- <el-input v-model="form.cityId" placeholder="请输入城市id" /> -->
@@ -140,12 +169,18 @@
             :file-list="uploadFileList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500KB</div>
+            <div slot="tip" class="el-upload__tip">
+              只能上传jpg/png文件，且不超过500KB。推荐使用像素值为630*290的图片
+            </div>
           </el-upload>
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="form.sort" controls-position="right" :min="0" />
+          <el-input-number
+            v-model="form.sort"
+            controls-position="right"
+            :min="0"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -154,7 +189,11 @@
       </div>
     </el-dialog>
 
-    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[bigImg]" />
+    <el-image-viewer
+      v-if="showViewer"
+      :on-close="closeViewer"
+      :url-list="[bigImg]"
+    />
   </div>
 </template>
 
@@ -165,7 +204,7 @@ import {
   delBanner,
   addBanner,
   updateBanner,
-  exportBanner
+  exportBanner,
 } from "@/api/basicsSet/banner";
 import VDistpicker from "v-distpicker";
 
@@ -173,7 +212,7 @@ import upload from "@/utils/mixin/upload";
 import region from "@/utils/mixin/region";
 export default {
   components: {
-    VDistpicker
+    VDistpicker,
   },
   data() {
     return {
@@ -203,17 +242,17 @@ export default {
         picture: undefined,
         province: undefined,
         city: undefined,
-        area: undefined
+        area: undefined,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        picture: [{ required: true, message: "请选择图片", trigger: "change" }]
+        picture: [{ required: true, message: "请选择图片", trigger: "change" }],
       },
       fileList: [],
       showViewer: false,
-      bigImg: ""
+      bigImg: "",
     };
   },
   created() {
@@ -225,7 +264,7 @@ export default {
     getList() {
       this.loading = true;
       this.initForm("queryParams");
-      listBanner(this.queryParams).then(response => {
+      listBanner(this.queryParams).then((response) => {
         this.bannerList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -252,9 +291,9 @@ export default {
     // 图片选择
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
       );
     },
     handleSuccess(response, file, fileList) {
@@ -286,7 +325,7 @@ export default {
         sort: undefined,
         province: undefined,
         city: undefined,
-        area: undefined
+        area: undefined,
       };
       this.initFileList();
       this.resetRegion("form");
@@ -305,7 +344,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
+      this.ids = selection.map((item) => item.id);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
@@ -319,7 +358,7 @@ export default {
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids;
-      getBanner(id).then(response => {
+      getBanner(id).then((response) => {
         this.form = response.data;
         this.open = true;
         this.addFileList(this.form.picture);
@@ -327,12 +366,12 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm: function() {
-      this.$refs["form"].validate(valid => {
+    submitForm: function () {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           this.initForm("form");
           if (this.form.id != undefined) {
-            updateBanner(this.form).then(response => {
+            updateBanner(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -344,7 +383,7 @@ export default {
               }
             });
           } else {
-            addBanner(this.form).then(response => {
+            addBanner(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess("新增成功");
                 this.reset();
@@ -365,16 +404,16 @@ export default {
       this.$confirm('是否确认删除banner编号为"' + ids + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
-        .then(function() {
+        .then(function () {
           return delBanner(ids);
         })
         .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
         })
-        .catch(function() {});
+        .catch(function () {});
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -382,16 +421,16 @@ export default {
       this.$confirm("是否确认导出所有banner数据项?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
-        .then(function() {
+        .then(function () {
           return exportBanner(queryParams);
         })
-        .then(response => {
+        .then((response) => {
           this.download(response.msg);
         })
-        .catch(function() {});
-    }
-  }
+        .catch(function () {});
+    },
+  },
 };
 </script>
